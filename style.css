@@ -634,3 +634,210 @@ NOTIFICACIÓN FLOTANTE (TOAST)
 .btn-cerrar-confirmacion:active {
     transform: scale(0.97);
 }
+/* ==========================================================================
+   🛠️ ARMA TU PLATO - BUILDER INTERACTIVO
+   ========================================================================== */
+.arma-tu-plato {
+  background: linear-gradient(135deg, #fff9f0 0%, #ffffff 100%);
+  border: 2px solid #ffc107;
+  position: relative;
+  overflow: visible;
+}
+
+.badge-especial {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: linear-gradient(135deg, #ff4757, #ff6b81);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+  z-index: 5;
+  animation: pulsoBadge 2s infinite ease-in-out;
+}
+
+@keyframes pulsoBadge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.precio-detalle-atp {
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-weight: 600;
+  margin-top: -6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* BUILDER */
+.builder-atp {
+  padding: 15px !important;
+}
+
+.titulo-paso {
+  background: #fff3cd;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border-left: 4px solid #ffc107;
+  margin-top: 20px !important;
+  margin-bottom: 12px !important;
+}
+
+.titulo-paso:first-child {
+  margin-top: 0 !important;
+}
+
+.ayuda-atp {
+  font-size: 0.8rem;
+  color: #6c757d;
+  font-style: italic;
+  margin: -6px 0 10px 0;
+}
+
+.grupo-opciones-atp {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.grupo-salsas-atp {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.opcion-atp {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px !important;
+  background: #ffffff;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid #e9ecef !important;
+}
+
+.opcion-atp:hover {
+  border-color: #ffc107;
+  background: #fffdf5;
+  transform: translateX(3px);
+}
+
+.opcion-atp input {
+  margin-right: 0 !important;
+  width: 18px !important;
+  height: 18px !important;
+  accent-color: #ff4757;
+  flex-shrink: 0;
+}
+
+.opcion-atp input:checked ~ .texto-atp {
+  color: #ff4757;
+  font-weight: 700;
+}
+
+.opcion-atp:has(input:checked) {
+  border-color: #ff4757;
+  background: #fff0f2;
+  box-shadow: 0 2px 8px rgba(255, 71, 87, 0.15);
+}
+
+.emoji-atp {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.texto-atp {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  color: #212529;
+  line-height: 1.3;
+}
+
+.texto-atp strong {
+  font-weight: 700;
+}
+
+.texto-atp small {
+  font-size: 0.8rem;
+  color: #ff4757;
+  font-weight: 700;
+}
+
+.opcion-salsa {
+  justify-content: center;
+  padding: 10px 8px !important;
+}
+
+.opcion-salsa .texto-atp {
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* RESUMEN EN VIVO */
+.resumen-atp {
+  background: #f8f9fa;
+  border: 1px dashed #ced4da;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 18px;
+}
+
+.fila-resumen {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px 0;
+  font-size: 0.88rem;
+  border-bottom: 1px dotted #dee2e6;
+  gap: 10px;
+}
+
+.fila-resumen:last-child {
+  border-bottom: none;
+}
+
+.fila-resumen span {
+  color: #6c757d;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.fila-resumen strong {
+  color: #212529;
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* BOTÓN FINAL */
+.btn-atp-final {
+  background: linear-gradient(135deg, #ffc107, #ff9800) !important;
+  color: #212529 !important;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4) !important;
+  font-size: 1.05rem !important;
+  margin-top: 5px;
+}
+
+.btn-atp-final:hover {
+  background: linear-gradient(135deg, #ff9800, #f57c00) !important;
+  color: #ffffff !important;
+}
+
+/* RESPONSIVE */
+@media (min-width: 400px) {
+  .grupo-opciones-atp {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grupo-salsas-atp {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -18,6 +18,9 @@
     </div>
     <nav class="filtros">
         <button class="btn-filtro-card" data-categoria="todos"><span>🍽️ Todos</span></button>
+<button class="btn-filtro-card" data-categoria="arma-tu-plato">
+  <span>🛠️ Arma tu Plato</span>
+</button>
         <button class="btn-filtro-card" data-categoria="salchipapas"><span>🌭 Salchipapas</span></button>
         <button class="btn-filtro-card" data-categoria="salchipicadas"><span>🍟 Salchipicadas</span></button>
         <button class="btn-filtro-card" data-categoria="desgranados"><span>🧀 Desgranados</span></button>
@@ -33,6 +36,224 @@
 </header>
 
 <main class="contenedor-menu">
+
+<!-- ============================================================
+     🛠️ ARMA TU PLATO - BUILDER INTERACTIVO
+     ============================================================ -->
+<div class="item-menu arma-tu-plato" data-categoria="arma-tu-plato" data-precio-inicial="5000">
+  
+  <span class="badge-especial">✨ NUEVO ✨</span>
+  
+  <div class="info-plato-principal">
+    <img src="https://images.unsplash.com/photo-1585238342024-78d387d3a3c1?w=400" 
+         alt="Arma tu plato" class="foto-plato">
+    <div class="detalles-basicos">
+      <h3>🛠️ Arma tu Plato</h3>
+      <p class="descripcion">
+        Crea tu combinación perfecta en 4 pasos. 
+        ¡Tú eliges base, proteína, extras y salsas!
+      </p>
+      <p class="precio precio-dinamico-atp" data-precio-base="5000">$5.000</p>
+      <p class="precio-detalle-atp">desde</p>
+    </div>
+  </div>
+
+  <details>
+    <summary>⚙️ Personaliza tu plato paso a paso</summary>
+    <div class="seccion-personalizacion builder-atp">
+
+      <!-- PASO 1: BASE -->
+      <h4 class="titulo-seccion titulo-paso">🥔 1. Elige tu BASE</h4>
+      <div class="grupo-opciones-atp">
+        <label class="opcion-atp opcion-base">
+          <input type="radio" name="base-atp" value="Papas a la francesa" 
+                 data-valor="5000" class="input-precio-atp" checked>
+          <span class="emoji-atp">🍟</span>
+          <span class="texto-atp">
+            <strong>Papas a la francesa</strong>
+            <small>Incluida</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-base">
+          <input type="radio" name="base-atp" value="Patacón crujiente" 
+                 data-valor="6000" class="input-precio-atp">
+          <span class="emoji-atp">🍌</span>
+          <span class="texto-atp">
+            <strong>Patacón crujiente</strong>
+            <small>+$1.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-base">
+          <input type="radio" name="base-atp" value="Arepa paisa frita" 
+                 data-valor="6500" class="input-precio-atp">
+          <span class="emoji-atp">🫓</span>
+          <span class="texto-atp">
+            <strong>Arepa paisa frita</strong>
+            <small>+$1.500</small>
+          </span>
+        </label>
+      </div>
+
+      <!-- PASO 2: PROTEÍNA -->
+      <h4 class="titulo-seccion titulo-paso">🥩 2. Agrega tu PROTEÍNA</h4>
+      <p class="ayuda-atp">Puedes elegir varias 🤤</p>
+      <div class="grupo-opciones-atp">
+        <label class="opcion-atp opcion-proteina">
+          <input type="checkbox" value="Carne desmechada" 
+                 data-valor="8000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🐄</span>
+          <span class="texto-atp">
+            <strong>Carne desmechada</strong>
+            <small>+$8.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-proteina">
+          <input type="checkbox" value="Pollo desmechado" 
+                 data-valor="7000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🐔</span>
+          <span class="texto-atp">
+            <strong>Pollo desmechado</strong>
+            <small>+$7.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-proteina">
+          <input type="checkbox" value="Chuleta ahumada" 
+                 data-valor="8000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🐷</span>
+          <span class="texto-atp">
+            <strong>Chuleta ahumada</strong>
+            <small>+$8.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-proteina">
+          <input type="checkbox" value="Salchicha + Tocineta" 
+                 data-valor="6000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🌭</span>
+          <span class="texto-atp">
+            <strong>Salchicha + Tocineta</strong>
+            <small>+$6.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-proteina">
+          <input type="checkbox" value="Albóndigas" 
+                 data-valor="7000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🍖</span>
+          <span class="texto-atp">
+            <strong>Albóndigas de la casa</strong>
+            <small>+$7.000</small>
+          </span>
+        </label>
+      </div>
+
+      <!-- PASO 3: EXTRAS -->
+      <h4 class="titulo-seccion titulo-paso">🧀 3. Agrega EXTRAS</h4>
+      <div class="grupo-opciones-atp">
+        <label class="opcion-atp opcion-extra">
+          <input type="checkbox" value="Queso mozzarella" 
+                 data-valor="2000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🧀</span>
+          <span class="texto-atp">
+            <strong>Queso mozzarella</strong>
+            <small>+$2.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-extra">
+          <input type="checkbox" value="Tocineta extra" 
+                 data-valor="2000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🥓</span>
+          <span class="texto-atp">
+            <strong>Tocineta extra</strong>
+            <small>+$2.000</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-extra">
+          <input type="checkbox" value="Maicitos" 
+                 data-valor="1500" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🌽</span>
+          <span class="texto-atp">
+            <strong>Maicitos</strong>
+            <small>+$1.500</small>
+          </span>
+        </label>
+        <label class="opcion-atp opcion-extra">
+          <input type="checkbox" value="Huevo frito" 
+                 data-valor="2000" class="input-precio-atp adicion-item">
+          <span class="emoji-atp">🍳</span>
+          <span class="texto-atp">
+            <strong>Huevo frito</strong>
+            <small>+$2.000</small>
+          </span>
+        </label>
+      </div>
+
+      <!-- PASO 4: SALSAS -->
+      <h4 class="titulo-seccion titulo-paso">🧴 4. Elige tus SALSAS</h4>
+      <div class="grupo-opciones-atp grupo-salsas-atp">
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Sin Salsas" class="salsa-item">
+          <span class="texto-atp">🚫 Sin salsas</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Rosada" class="salsa-item">
+          <span class="texto-atp">Rosada</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Roja" class="salsa-item">
+          <span class="texto-atp">Roja</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Piña" class="salsa-item">
+          <span class="texto-atp">Piña</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="BBQ" class="salsa-item">
+          <span class="texto-atp">BBQ</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Guacamole" class="salsa-item">
+          <span class="texto-atp">Guac.</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Ajo" class="salsa-item">
+          <span class="texto-atp">Ajo</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Maíz" class="salsa-item">
+          <span class="texto-atp">Maíz</span>
+        </label>
+        <label class="opcion-atp opcion-salsa">
+          <input type="checkbox" value="Tocineta" class="salsa-item">
+          <span class="texto-atp">Tocineta</span>
+        </label>
+      </div>
+
+      <!-- RESUMEN EN VIVO -->
+      <div class="resumen-atp">
+        <div class="fila-resumen">
+          <span>Base:</span>
+          <strong id="resumen-base-atp">Papas a la francesa</strong>
+        </div>
+        <div class="fila-resumen">
+          <span>Proteínas:</span>
+          <strong id="resumen-proteinas-atp">Ninguna</strong>
+        </div>
+        <div class="fila-resumen">
+          <span>Extras:</span>
+          <strong id="resumen-extras-atp">Ninguno</strong>
+        </div>
+      </div>
+
+    </div>
+  </details>
+
+<button class="btn-filtro-card" data-categoria="arma-tu-plato">
+  <span>🛠️ Arma tu Plato</span>
+</button>
+
+  <button class="btn-pedir-plato btn-atp-final">
+    Añadir al Carrito 🛒
+  </button>
+</div>
 
     <!-- SALCHIPAPAS NORMAL -->
     <article class="item-menu" data-categoria="salchipapas">

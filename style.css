@@ -1,0 +1,636 @@
+/* ==========================================================================
+CONFIGURACIÓN GENERAL (FONDO BLANCO Y LIMPIO)
+========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+body {
+    background-color: #ffffff;
+    color: #1a1a1a;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+HERO BANNER
+========================================================================== */
+.hero-banner {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 15px 10px 10px 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    z-index: 9000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+HERO BANNER Y TÍTULO DINÁMICO "DONDE CARMEN"
+========================================================================== */
+.titulo-principal {
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    display: inline-block;
+    animation:
+        cambioColores 6s infinite alternate,
+        efectoEscala 4s infinite ease-in-out,
+        aparicionParpadeo 8s infinite ease-in-out;
+}
+@keyframes cambioColores {
+    0%   { color: #ff4757; text-shadow: 0 0 10px rgba(255, 71, 87, 0.4); }
+    33%  { color: #ffc107; text-shadow: 0 0 15px rgba(255, 193, 7, 0.6); }
+    66%  { color: #ff6b81; text-shadow: 0 0 10px rgba(255, 107, 129, 0.5); }
+    100% { color: #212529; text-shadow: none; }
+}
+@keyframes efectoEscala {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.12); }
+}
+@keyframes aparicionParpadeo {
+    0%, 40%   { opacity: 1; }
+    45%       { opacity: 0; }
+    50%       { opacity: 1; }
+    52%       { opacity: 0.2; }
+    54%       { opacity: 1; }
+    56%       { opacity: 0.3; }
+    58%       { opacity: 1; }
+    60%       { opacity: 0.2; }
+    62%       { opacity: 1; }
+    66%, 100% { opacity: 1; }
+}
+
+.frase-contenedor-movil {
+    width: 100%;
+    padding: 6px 0;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+.marquee-comercial {
+    display: inline-block;
+    white-space: nowrap;
+    animation: correrTexto 25s linear infinite;
+}
+.frase-moderna {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.resaltado-ParriBurguer {
+    color: #ff4757;
+    background-color: #ffe0e2;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+BOTONES DE CATEGORÍAS
+========================================================================== */
+.filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 480px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+.btn-filtro-card {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background-image: none !important;
+    background-color: #f8fafc !important;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 25px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.25s ease;
+}
+.btn-filtro-card span {
+    color: #334155;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 2;
+    transition: color 0.25s ease;
+}
+.btn-filtro-card::before {
+    display: none;
+}
+.btn-filtro-card:hover {
+    background-color: #ff4757 !important;
+    border-color: #ff4757;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 71, 87, 0.25);
+}
+.btn-filtro-card:hover span {
+    color: #ffffff;
+}
+.btn-filtro-card[data-categoria="bebidas"] {
+    grid-column: auto;
+    height: 60px;
+}
+
+/* ==========================================================================
+BOTÓN VOLVER
+========================================================================== */
+.btn-volver {
+    display: block;
+    margin: 20px auto;
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    color: #856404;
+    padding: 12px 30px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-volver:hover {
+    background: #ffc107;
+    color: #fff;
+}
+
+/* ==========================================================================
+TARJETAS DE LOS PLATOS
+========================================================================== */
+.contenedor-menu {
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 110px;
+}
+.item-menu {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+.info-plato-principal {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+.foto-plato {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid #e9ecef;
+}
+.detalles-basicos {
+    flex: 1;
+}
+.detalles-basicos h3 {
+    font-size: 1.25rem;
+    color: #212529;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.descripcion {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+.precio {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ff4757;
+}
+
+/* ==========================================================================
+PERSONALIZACIÓN MODERNA
+========================================================================== */
+details {
+    width: 100%;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+summary {
+    padding: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #d39e00;
+}
+.seccion-personalizacion {
+    padding: 0 15px 15px 15px;
+    background: #ffffff;
+    border-top: 1px solid #e9ecef;
+}
+.titulo-seccion {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #ff4757;
+    margin: 15px 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.opcion-check {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 0.95rem;
+    color: #495057;
+    cursor: pointer;
+    border-bottom: 1px dashed #f1f3f5;
+}
+.opcion-check:last-of-type {
+    border-bottom: none;
+}
+.opcion-check input {
+    margin-right: 10px;
+    width: 16px;
+    height: 16px;
+    accent-color: #ff4757;
+}
+.btn-pedir-plato {
+    background: #ff4757;
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.2);
+    transition: background 0.2s ease, transform 0.1s ease;
+    text-transform: uppercase;
+}
+.btn-pedir-plato:hover {
+    background: #e03846;
+}
+.btn-pedir-plato:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+BARRA WHATSAPP FIJA (OCULTA)
+========================================================================== */
+.btn-whatsapp {
+    display: none !important;
+}
+#contador-productos {
+    background: #ffffff;
+    color: #25d366;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 900;
+}
+
+/* ==========================================================================
+ANIMACIONES Y RESPONSIVE
+========================================================================== */
+@keyframes correrTexto {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+}
+@media (max-width: 480px) {
+    .foto-plato { width: 85px; height: 85px; }
+    .detalles-basicos h3 { font-size: 1.15rem; }
+    .titulo-principal { font-size: 1.8rem; }
+    .btn-filtro-card { height: 65px; padding-left: 20px; }
+}
+
+/* ==========================================================================
+VENTANA MODAL DEL CARRITO
+========================================================================== */
+.modal-carrito {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: flex-end;
+}
+.contenido-carrito {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px 24px 0 0;
+    padding: 24px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+}
+.encabezado-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f1f3f5;
+    padding-bottom: 12px;
+}
+.encabezado-carrito h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #212529;
+}
+.btn-cerrar {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #6c757d;
+    cursor: pointer;
+}
+.items-carrito {
+    overflow-y: auto;
+    margin-top: 15px;
+    flex: 1;
+    padding-right: 5px;
+}
+.item-lista-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+}
+.info-item-car h4 {
+    font-size: 1.05rem;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+.info-item-car ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 4px 0;
+}
+.info-item-car ul li {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+.precio-item-car {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ff4757;
+    margin-top: 4px;
+}
+.btn-eliminar-item {
+    background: #ffe0e2;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+.btn-eliminar-item:active {
+    transform: scale(0.9);
+}
+.totales-carrito {
+    border-top: 2px solid #f1f3f5;
+    padding-top: 15px;
+    margin-top: 10px;
+    text-align: right;
+}
+.totales-carrito p {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #212529;
+}
+#total-carrito-precio {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ff4757;
+    margin-left: 5px;
+}
+.acciones-carrito {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+}
+.acciones-carrito button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+}
+.btn-primario {
+    background: #25d366;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+}
+.btn-secundario {
+    background: #f1f3f5;
+    color: #495057;
+    border: 1px solid #e9ecef !important;
+}
+@media (min-width: 481px) {
+    .modal-carrito {
+        align-items: center;
+    }
+    .contenido-carrito {
+        border-radius: 20px;
+        width: 90%;
+    }
+}
+
+/* ==========================================================================
+NOTIFICACIÓN FLOTANTE (TOAST)
+========================================================================== */
+.notificacion-toast {
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333333;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 10001;
+    transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.notificacion-toast.mostrar {
+    top: 25px;
+}
+.btn-pedir-plato,
+.contenedor-menu button {
+    pointer-events: auto;
+}
+.btn-pedir-plato * {
+    pointer-events: none;
+}
+
+/* ==========================================================================
+⭐ BOTÓN "VER MI PEDIDO" - ESQUINA INFERIOR DERECHA (FLOTANTE COMPACTO)
+========================================================================== */
+#btn-ver-carrito {
+    display: none !important;
+    position: fixed;
+    bottom: 25px;
+    right: 20px;
+    left: auto !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    background: #ff4757;
+    color: white;
+    text-align: center;
+    padding: 14px 22px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 50px;
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+    z-index: 9700;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, opacity 0.3s ease, box-shadow 0.2s ease;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+#btn-ver-carrito.activo {
+    display: flex !important;
+    animation: aparecerFlotante 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#btn-ver-carrito:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(255, 71, 87, 0.5);
+}
+#btn-ver-carrito:active {
+    transform: scale(0.97) !important;
+}
+@keyframes aparecerFlotante {
+    0% {
+        opacity: 0;
+        transform: translateX(30px) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* ==========================================================================
+⭐ MODAL DE CONFIRMACIÓN DE PEDIDO ENVIADO
+========================================================================== */
+.modal-confirmacion {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10002;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.contenido-confirmacion {
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 24px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+.icono-confirmacion {
+    font-size: 5rem;
+    margin-bottom: 15px;
+    animation: rebote 0.6s ease 0.3s both;
+}
+@keyframes rebote {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+.titulo-confirmacion {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #25d366;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.texto-confirmacion {
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+.texto-confirmacion strong {
+    color: #212529;
+}
+.btn-cerrar-confirmacion {
+    width: 100%;
+    padding: 14px;
+    background: #ff4757;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+    transition: transform 0.1s ease, background 0.2s ease;
+}
+.btn-cerrar-confirmacion:hover {
+    background: #e03846;
+}
+.btn-cerrar-confirmacion:active {
+    transform: scale(0.97);
+}

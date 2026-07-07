@@ -841,3 +841,97 @@ NOTIFICACIÓN FLOTANTE (TOAST)
     grid-template-columns: repeat(3, 1fr);
   }
 }
+/* ==========================================================================
+⭐ CONTROLADORES DE CANTIDAD DINÁMICOS (+ / -)
+========================================================================== */
+.contenedor-cantidad-pedir {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.control-cantidad {
+    display: flex;
+    align-items: center;
+    background: #f1f3f5;
+    border-radius: 12px;
+    padding: 3px;
+    border: 1px solid #e9ecef;
+    height: 48px; /* Altura armonizada con los botones */
+}
+
+.control-cantidad button {
+    background: #ffffff;
+    border: none;
+    color: #495057;
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.control-cantidad button:hover {
+    background: #ff4757;
+    color: #ffffff;
+}
+
+.numero-cantidad {
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 32px;
+    text-align: center;
+    color: #212529;
+}
+
+/* Forzamos al botón de pedir a ocupar el resto del espacio eficientemente */
+.contenedor-cantidad-pedir .btn-pedir-plato {
+    flex: 1;
+    margin: 0 !important;
+    height: 48px;
+    padding: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* ==========================================================================
+   🔧 CORRECCIÓN RESPONSIVE PARA "ARMA TU PLATO"
+   ========================================================================== */
+
+/* 1. Cambiamos las columnas fijas por un auto-ajuste inteligente */
+@media (min-width: 400px) {
+  .grupo-opciones-atp {
+    /* auto-fit calcula cuántas columnas caben si cada una mide mínimo 140px */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+}
+
+/* 2. Aseguramos que en pantallas menores a 360px todo se mantenga en una sola columna limpia */
+@media (max-width: 360px) {
+  .grupo-opciones-atp {
+    grid-template-columns: 1fr !important;
+  }
+  .grupo-salsas-atp {
+    grid-template-columns: repeat(2, 1fr) !important; /* Baja a 2 en salsas si el celular es muy pequeño */
+  }
+}
+
+/* 3. Evitamos que el texto largo empuje la tarjeta hacia afuera */
+.opcion-atp {
+  min-width: 0; 
+  overflow: hidden;
+}
+
+/* 4. Suavizamos el efecto hover para pantallas táctiles evitando desbordamientos */
+.opcion-atp:hover {
+  transform: none; /* Quitamos el desplazamiento en el eje X para que no rompa el layout en móviles */
+  border-color: #ffc107;
+  background: #fffdf5;
+}

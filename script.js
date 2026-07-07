@@ -99,12 +99,71 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     actualizarVisibilidadBotonCarrito();
 
-    function mostrarCategoriasPrincipales() {
+// =========================================================================
+    // 📱 CONTROL DE HISTORIAL PARA EVITAR QUE SE SALGA DE LA PÁGINA (GESTOS MÓVILES)
+    // =========================================================================
+    
+    // Función centralizada para regresar al Menú Principal de forma limpia
+    function mostrarCategoriasPrincipales(manipularHistorial = true) {
         platos.forEach(plato => plato.style.display = "none");
         if (headerFiltros) headerFiltros.style.display = "flex";
         botonVolver.style.display = "none";
         if (heroBanner) heroBanner.style.display = "block";
+        
+        // Si el regreso fue por botón físico de la web, limpiamos el estado del historial
+        if (manipularHistorial && window.history.state && window.history.state.categoria) {
+            window.history.pushState(null, "", window.location.pathname);
+        }
     }
+
+    // Evento del botón visual de la interfaz
+    botonVolver.addEventListener("click", (e) => {
+        e.stopPropagation();
+        mostrarCategoriasPrincipales(true);
+    });
+
+    // Función para activar los filtros e inyectar un estado en el historial del celular
+    function activarCategoriaFiltro(categoriaFiltrada, manipularHistorial = true) {
+        platos.forEach(plato => {
+            if (categoriaFiltrada === "todos" || plato.getAttribute("data-categoria") === categoriaFiltrada) {
+                plato.style.display = "flex";
+            } else {
+                plato.style.display = "none";
+            }
+        });
+
+        if (categoriaFiltrada === "todos") {
+            if (headerFiltros) headerFiltros.style.display = "flex";
+            botonVolver.style.display = "none";
+            if (heroBanner) heroBanner.style.display = "block";
+        } else {
+            if (headerFiltros) headerFiltros.style.display = "none";
+            botonVolver.style.display = "block";
+            if (heroBanner) heroBanner.style.display = "none";
+            
+            // Le creamos un historial artificial al celular para que "retroceda" dentro del menú
+            if (manipularHistorial) {
+                window.history.pushState({ categoria: categoriaFiltrada }, "", `#${categoriaFiltrada}`);
+            }
+        }
+    }
+
+    // Evento para capturar los clics en las categorías
+    botones.forEach(boton => {
+        boton.addEventListener("click", () => {
+            const categoriaFiltrada = boton.getAttribute("data-categoria");
+            activarCategoriaFiltro(categoriaFiltrada, true);
+        });
+    });
+
+    // Escucha cuando el usuario usa los dedos o botones del sistema para retroceder
+    window.addEventListener("popstate", (event) => {
+        if (event.state && event.state.categoria) {
+            activarCategoriaFiltro(event.state.categoria, false);
+        } else {
+            mostrarCategoriasPrincipales(false);
+        }
+    });
 
     botonVolver.addEventListener("click", (e) => {
         e.stopPropagation();

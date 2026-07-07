@@ -11,11 +11,42 @@
 
 <header class="hero-banner">
     <h1 class="titulo-principal">Donde Carmen</h1>
-    <div class="frase-contenedor-movil">
+    <!-- ============================================================
+     🔥 MARQUESINA INTERACTIVA MODERNA
+     ============================================================ -->
+<div class="frase-contenedor-movil">
+    <div class="marquee-moderna-wrapper" id="marquee-interactiva">
         <div class="marquee-comercial">
-            <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> • Desgranado de <span class="resaltado-ParriBurguer">¿Chuleta Ahumada?</span>  pídelo aquí • 🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> • Desgranado de ¿Chuleta Ahumada? pídelo aquí •</span>
+            <!-- Bloque de contenido 1 -->
+            <div class="marquee-item" data-destino="hamburguesas">
+                <span class="badge-live">¡Toca Aquí! 👆</span>
+                <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal</span>
+            </div>
+            
+            <div class="marquee-separator">•</div>
+
+            <div class="marquee-item" data-destino="desgranados">
+                <span class="badge-live">¡Ver Categoría! 🧀</span>
+                <span class="frase-moderna">🤤 Desgranado de <span class="resaltado-ParriBurguer">Chuleta Ahumada</span></span>
+            </div>
+
+            <div class="marquee-separator">•</div>
+
+            <!-- Duplicado idéntico para que el bucle infinito sea fluido sin saltos -->
+            <div class="marquee-item" data-destino="hamburguesas">
+                <span class="badge-live">¡Toca Aquí! 👆</span>
+                <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal</span>
+            </div>
+            
+            <div class="marquee-separator">•</div>
+
+            <div class="marquee-item" data-destino="desgranados">
+                <span class="badge-live">¡Ver Categoría! 🧀</span>
+                <span class="frase-moderna">🤤 Desgranado de <span class="resaltado-ParriBurguer">Chuleta Ahumada</span></span>
+            </div>
         </div>
     </div>
+</div>
     <nav class="filtros">
         <button class="btn-filtro-card" data-categoria="todos"><span>🍽️ Todos</span></button>
 <button class="btn-filtro-card" data-categoria="arma-tu-plato">

@@ -68,29 +68,100 @@ HERO BANNER Y TÍTULO DINÁMICO "DONDE CARMEN"
     66%, 100% { opacity: 1; }
 }
 
+/* ==========================================================================
+   🔥 NUEVA MARQUESINA MODERNA E INTERACTIVA
+   ========================================================================== */
 .frase-contenedor-movil {
     width: 100%;
-    padding: 6px 0;
+    padding: 10px 0;
     overflow: hidden;
     margin-bottom: 5px;
+    background: #f8fafc;
+    border-radius: 30px; /* Estilo píldora moderna */
+    border: 1px solid #f1f5f9;
 }
+
+.marquee-moderna-wrapper {
+    width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
 .marquee-comercial {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     white-space: nowrap;
-    animation: correrTexto 25s linear infinite;
+    gap: 20px;
+    animation: correrTexto 30s linear infinite;
 }
+
+/* Pausa la animación al tocar o pasar el mouse para facilitar el clic */
+.frase-contenedor-movil:hover .marquee-comercial,
+.frase-contenedor-movil:active .marquee-comercial {
+    animation-play-state: paused;
+}
+
+.marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #ffffff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    border: 1px solid #e2e8f0;
+}
+
+/* Efecto feedback táctil */
+.marquee-item:active {
+    transform: scale(0.95);
+    border-color: #ff4757;
+}
+
+.marquee-separator {
+    color: #cbd5e1;
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+
 .frase-moderna {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: #495057;
+    color: #334155;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
+
 .resaltado-ParriBurguer {
     color: #ff4757;
     background-color: #ffe0e2;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+}
+
+/* Badge dinámico que parpadea e invita a la acción */
+.badge-live {
+    background: linear-gradient(135deg, #ff4757, #ff6b81);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: pulsoEfecto 1.5s infinite ease-in-out;
+}
+
+@keyframes pulsoEfecto {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.06); opacity: 1; box-shadow: 0 0 8px rgba(255, 71, 87, 0.4); }
+}
+
+@keyframes correrTexto {
+    0%   { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); } /* Bucle continuo sin saltos */
 }
 
 /* ==========================================================================
@@ -281,6 +352,8 @@ summary {
     box-shadow: 0 4px 12px rgba(255, 71, 87, 0.2);
     transition: background 0.2s ease, transform 0.1s ease;
     text-transform: uppercase;
+    width: 100%; /* El botón se expandirá por completo cuando esté solo */
+}
 }
 .btn-pedir-plato:hover {
     background: #e03846;

@@ -13,8 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
     // ⭐ INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD EN LOS BOTONES
     // =========================================================================
+   // =========================================================================
+    // ⭐ INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD EN LOS BOTONES
+    // (Filtrado exclusivo para Butifarras y Bebidas)
+    // =========================================================================
     const botonesPedirIniciales = document.querySelectorAll(".btn-pedir-plato");
     botonesPedirIniciales.forEach(btn => {
+        // Encontramos el contenedor del plato para verificar su categoría
+        const platoContenedor = btn.closest(".item-menu");
+        if (!platoContenedor) return;
+
+        const categoria = platoContenedor.getAttribute("data-categoria");
+
+        // SI NO es butifarra ni bebida, saltamos la inyección del selector - 1 +
+        if (categoria !== "butifarras" && categoria !== "bebidas") {
+            return; 
+        }
+
+        // Si pasa el filtro anterior, se ejecuta la inyección del selector
         const contenedorCantidad = document.createElement("div");
         contenedorCantidad.className = "contenedor-cantidad-pedir";
         
@@ -455,3 +471,41 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+// =========================================================================
+    // ⭐ INTERACTIVIDAD DE LA MARQUESINA MODERNA (CORREGIDO)
+    // =========================================================================
+    const marqueeItems = document.querySelectorAll(".marquee-item");
+    
+    marqueeItems.forEach(item => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const categoriaDestino = item.getAttribute("data-destino");
+            
+            if (categoriaDestino) {
+                // Buscamos el botón de filtro exacto por su atributo data-categoria
+                const botonFiltro = document.querySelector(`.btn-filtro-card[data-categoria="${categoriaDestino}"]`);
+                
+                if (botonFiltro) {
+                    // 1. Simula el clic físico en el botón del filtro para activar su lógica nativa
+                    botonFiltro.click();
+                    
+                    // 2. Pequeño efecto visual táctil de feedback en la marquesina
+                    item.style.background = "#ffe0e2";
+                    setTimeout(() => {
+                        item.style.background = "#ffffff";
+                    }, 200);
+
+                    // 3. Scroll suave automático hacia la zona del menú para que el cliente vea los platos
+                    const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+                    if (contenedorMenu) {
+                        window.scrollTo({
+                            top: contenedorMenu.offsetTop - 140, // Espacio para que el header sticky no tape el título
+                            behavior: "smooth"
+                        });
+                    }
+                } else {
+                    console.error(`No se encontró el botón de filtro para la categoría: ${categoriaDestino}`);
+                }
+            }
+        });
+    });

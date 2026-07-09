@@ -320,7 +320,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let adiciones = [];
             let valorAdiciones = 0;
             
-            // Unificado para ambos tipos de estructuración (ATP y Platos normales)
             plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
                 adiciones.push(chk.value);
                 const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 0;
@@ -335,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (baseRadio) {
                     acompanamiento = `Base: ${baseRadio.value}`;
                     const precioRadio = parseInt(baseRadio.getAttribute("data-valor")) || 5000;
-                    valorAdiciones += (precioRadio - 5000); // Sumar excedente de base si aplica
+                    valorAdiciones += (precioRadio - 5000);
                 }
             } else {
                 const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
@@ -372,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const contadores = document.querySelectorAll("#contador-productos");
             contadores.forEach(contador => {
-                contador.innerHTML = carrito.reduce((total, item) => total + item.cantidad, 0);
+                contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
             });
 
             actualizarVisibilidadBotonCarrito();
@@ -403,12 +402,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (details) details.removeAttribute("open");
 
             plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
-            // Resetear radios excepto los de la base del ATP para evitar bugs visuales
             plato.querySelectorAll("input[type='radio']").forEach(rd => {
                 if(rd.name !== "base-atp") rd.checked = false;
             });
             
-            // Forzar primer radio activo por defecto en Arma tu Plato
             const primerRadioAtp = plato.querySelector('input[name="base-atp"][value="Papas a la francesa"]');
             if(primerRadioAtp) primerRadioAtp.checked = true;
 
@@ -416,7 +413,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 elementoPrecio.textContent = `$${(isAtp ? 5000 : precioBase).toLocaleString('es-CO')}`;
             }
             
-            // Limpiar los elementos visuales del string dinámico en Arma tu Plato
             const resumenBase = document.getElementById("resumen-base-atp");
             const resumenProteinas = document.getElementById("resumen-proteinas-atp");
             const resumenExtras = document.getElementById("resumen-extras-atp");
@@ -498,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const contadores = document.querySelectorAll("#contador-productos");
                 contadores.forEach(contador => {
-                    contador.innerHTML = carrito.reduce((total, item) => total + item.cantidad, 0);
+                    contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
                 });
 
                 actualizarVisibilidadBotonCarrito();
@@ -534,6 +530,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // =========================================================================
+    // 💬 LOGICA UNIFICADA Y CORREGIDA PARA WHATSAPP + GUARDADO EN PANEL ADMIN
+    // =========================================================================
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
             if (carrito.length === 0) return;
@@ -560,6 +559,17 @@ document.addEventListener("DOMContentLoaded", () => {
             mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
 
             window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+
+            // Guardar en LocalStorage para admin.html
+            const historialVentas = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
+            const nuevoPedido = {
+                id: Date.now(),
+                hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+                productos: [...carrito], 
+                total: granTotal
+            };
+            historialVentas.push(nuevoPedido);
+            localStorage.setItem("ventas_donde_carmen", JSON.stringify(historialVentas));
 
             carrito = [];
             const contadores = document.querySelectorAll("#contador-productos");

@@ -2,6 +2,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const contenedorMenu = document.querySelector(".contenedor-menu");
     const headerFiltros = document.querySelector(".filtros");
     const heroBanner = document.querySelector(".hero-banner");
+
+    // =========================================================================
+    // 📺 CONTROL DE PUBLICIDAD CONTINUO (SPLASH SCREEN)
+    // =========================================================================
+    const splashPromo = document.getElementById("splash-promo");
+    const cerrarSplash = document.getElementById("cerrar-splash");
+    const btnAccionSplash = document.getElementById("btn-accion-splash");
+
+    if (splashPromo) {
+        setTimeout(() => {
+            splashPromo.style.display = "flex";
+        }, 800);
+
+        const ocultarSplashConAnimacion = () => {
+            splashPromo.style.opacity = "0";
+            splashPromo.style.transition = "opacity 0.3s ease";
+            setTimeout(() => {
+                splashPromo.style.display = "none";
+                splashPromo.style.opacity = ""; 
+            }, 300);
+        };
+
+        cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
+
+        splashPromo.addEventListener("click", (e) => {
+            if (e.target === splashPromo) {
+                ocultarSplashConAnimacion();
+            }
+        });
+
+        btnAccionSplash.addEventListener("click", () => {
+            ocultarSplashConAnimacion();
+            const botonHamburguesas = document.querySelector('.btn-filtro-card[data-categoria="hamburguesas"]');
+            if (botonHamburguesas) {
+                botonHamburguesas.click();
+                const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+                if (contenedorMenu) {
+                    window.scrollTo({
+                        top: contenedorMenu.offsetTop - 140,
+                        behavior: "smooth"
+                    });
+                }
+            }
+        });
+    }
+    
     const botonVolver = document.createElement("button");
     botonVolver.className = "btn-volver";
     botonVolver.innerHTML = "⬅ Volver al Menú Principal";
@@ -11,26 +57,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // ⭐ INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD EN LOS BOTONES
-    // =========================================================================
-   // =========================================================================
-    // ⭐ INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD EN LOS BOTONES
-    // (Filtrado exclusivo para Butifarras y Bebidas)
+    // ⭐ INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD (Butifarras y Bebidas)
     // =========================================================================
     const botonesPedirIniciales = document.querySelectorAll(".btn-pedir-plato");
     botonesPedirIniciales.forEach(btn => {
-        // Encontramos el contenedor del plato para verificar su categoría
         const platoContenedor = btn.closest(".item-menu");
         if (!platoContenedor) return;
 
         const categoria = platoContenedor.getAttribute("data-categoria");
+        if (categoria !== "butifarras" && categoria !== "bebidas") return; 
 
-        // SI NO es butifarra ni bebida, saltamos la inyección del selector - 1 +
-        if (categoria !== "butifarras" && categoria !== "bebidas") {
-            return; 
-        }
-
-        // Si pasa el filtro anterior, se ejecuta la inyección del selector
         const contenedorCantidad = document.createElement("div");
         contenedorCantidad.className = "contenedor-cantidad-pedir";
         
@@ -99,30 +135,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     actualizarVisibilidadBotonCarrito();
 
-// =========================================================================
-    // 📱 CONTROL DE HISTORIAL PARA EVITAR QUE SE SALGA DE LA PÁGINA (GESTOS MÓVILES)
-    // =========================================================================
-    
-    // Función centralizada para regresar al Menú Principal de forma limpia
     function mostrarCategoriasPrincipales(manipularHistorial = true) {
         platos.forEach(plato => plato.style.display = "none");
         if (headerFiltros) headerFiltros.style.display = "flex";
         botonVolver.style.display = "none";
         if (heroBanner) heroBanner.style.display = "block";
         
-        // Si el regreso fue por botón físico de la web, limpiamos el estado del historial
         if (manipularHistorial && window.history.state && window.history.state.categoria) {
             window.history.pushState(null, "", window.location.pathname);
         }
     }
 
-    // Evento del botón visual de la interfaz
-    botonVolver.addEventListener("click", (e) => {
-        e.stopPropagation();
-        mostrarCategoriasPrincipales(true);
-    });
-
-    // Función para activar los filtros e inyectar un estado en el historial del celular
     function activarCategoriaFiltro(categoriaFiltrada, manipularHistorial = true) {
         platos.forEach(plato => {
             if (categoriaFiltrada === "todos" || plato.getAttribute("data-categoria") === categoriaFiltrada) {
@@ -133,22 +156,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (categoriaFiltrada === "todos") {
-            if (headerFiltros) headerFiltros.style.display = "flex";
-            botonVolver.style.display = "none";
-            if (heroBanner) heroBanner.style.display = "block";
+            mostrarCategoriasPrincipales(manipularHistorial);
         } else {
             if (headerFiltros) headerFiltros.style.display = "none";
             botonVolver.style.display = "block";
             if (heroBanner) heroBanner.style.display = "none";
             
-            // Le creamos un historial artificial al celular para que "retroceda" dentro del menú
             if (manipularHistorial) {
                 window.history.pushState({ categoria: categoriaFiltrada }, "", `#${categoriaFiltrada}`);
             }
         }
     }
 
-    // Evento para capturar los clics en las categorías
     botones.forEach(boton => {
         boton.addEventListener("click", () => {
             const categoriaFiltrada = boton.getAttribute("data-categoria");
@@ -156,7 +175,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Escucha cuando el usuario usa los dedos o botones del sistema para retroceder
+    botonVolver.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (window.history.state && window.history.state.categoria) {
+            window.history.back();
+        } else {
+            mostrarCategoriasPrincipales(true);
+        }
+    });
+
     window.addEventListener("popstate", (event) => {
         if (event.state && event.state.categoria) {
             activarCategoriaFiltro(event.state.categoria, false);
@@ -165,36 +192,58 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    botonVolver.addEventListener("click", (e) => {
-        e.stopPropagation();
-        mostrarCategoriasPrincipales();
-    });
+    // =========================================================================
+    // LÓGICA DINÁMICA DE ACTUALIZACIÓN EN VIVO (ARMA TU PLATO)
+    // =========================================================================
+    const cardAtp = document.querySelector('.item-menu[data-categoria="arma-tu-plato"]');
+    if (cardAtp) {
+        const actualizarResumenYPrecioATP = () => {
+            const precioElemento = cardAtp.querySelector(".precio");
+            const resumenBase = document.getElementById("resumen-base-atp");
+            const resumenProteinas = document.getElementById("resumen-proteinas-atp");
+            const resumenExtras = document.getElementById("resumen-extras-atp");
 
-    function activarCategoriaFiltro(categoriaFiltrada) {
-        platos.forEach(plato => {
-            if (categoriaFiltrada === "todos" || plato.getAttribute("data-categoria") === categoriaFiltrada) {
-                plato.style.display = "flex";
-            } else {
-                plato.style.display = "none";
+            let totalPlato = 0;
+
+            // 1. Base (Radio)
+            const baseSeleccionada = cardAtp.querySelector('input[name="base-atp"]:checked');
+            if (baseSeleccionada) {
+                totalPlato += parseInt(baseSeleccionada.getAttribute("data-valor")) || 5000;
+                if (resumenBase) resumenBase.textContent = baseSeleccionada.value;
+            }
+
+            // 2. Proteínas (Checkbox)
+            let proteinasClasificadas = [];
+            cardAtp.querySelectorAll('.opcion-proteina input:checked').forEach(chk => {
+                totalPlato += parseInt(chk.getAttribute("data-valor")) || 0;
+                proteinasClasificadas.push(chk.value);
+            });
+            if (resumenProteinas) {
+                resumenProteinas.textContent = proteinasClasificadas.length > 0 ? proteinasClasificadas.join(", ") : "Ninguna";
+            }
+
+            // 3. Extras (Checkbox)
+            let extrasClasificados = [];
+            cardAtp.querySelectorAll('.opcion-extra input:checked').forEach(chk => {
+                totalPlato += parseInt(chk.getAttribute("data-valor")) || 0;
+                extrasClasificados.push(chk.value);
+            });
+            if (resumenExtras) {
+                resumenExtras.textContent = extrasClasificados.length > 0 ? extrasClasificados.join(", ") : "Ninguno";
+            }
+
+            // Actualizar precio en pantalla
+            if (precioElemento) {
+                precioElemento.textContent = `$${totalPlato.toLocaleString('es-CO')}`;
+            }
+        };
+
+        cardAtp.addEventListener("change", (e) => {
+            if (e.target.classList.contains("input-precio-atp") || e.target.classList.contains("adicion-item") || e.target.name === "base-atp") {
+                actualizarResumenYPrecioATP();
             }
         });
-        if (categoriaFiltrada === "todos") {
-            if (headerFiltros) headerFiltros.style.display = "flex";
-            botonVolver.style.display = "none";
-            if (heroBanner) heroBanner.style.display = "block";
-        } else {
-            if (headerFiltros) headerFiltros.style.display = "none";
-            botonVolver.style.display = "block";
-            if (heroBanner) heroBanner.style.display = "none";
-        }
     }
-
-    botones.forEach(boton => {
-        boton.addEventListener("click", () => {
-            const categoriaFiltrada = boton.getAttribute("data-categoria");
-            activarCategoriaFiltro(categoriaFiltrada);
-        });
-    });
 
     // =========================================================================
     // ⭐ LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
@@ -228,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const plato = btnPedir.closest(".item-menu");
 
-            // ⭐ VALIDACIÓN DE SALSAS OBLIGATORIAS
             let salsas = [];
             plato.querySelectorAll(".salsa-item:checked").forEach(chk => {
                 salsas.push(chk.value);
@@ -259,7 +307,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         }, 2500);
                     }
                 });
-
                 return;
             }
 
@@ -272,29 +319,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let adiciones = [];
             let valorAdiciones = 0;
+            
+            // Unificado para ambos tipos de estructuración (ATP y Platos normales)
             plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
                 adiciones.push(chk.value);
-                const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 2000;
+                const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 0;
                 valorAdiciones += valorAdicion;
             });
 
             let acompanamiento = "";
-            const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
-            if (radioSeleccionado) {
-                acompanamiento = radioSeleccionado.value;
+            const isAtp = plato.getAttribute("data-categoria") === "arma-tu-plato";
+            
+            if (isAtp) {
+                const baseRadio = plato.querySelector('input[name="base-atp"]:checked');
+                if (baseRadio) {
+                    acompanamiento = `Base: ${baseRadio.value}`;
+                    const precioRadio = parseInt(baseRadio.getAttribute("data-valor")) || 5000;
+                    valorAdiciones += (precioRadio - 5000); // Sumar excedente de base si aplica
+                }
+            } else {
+                const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
+                if (radioSeleccionado) {
+                    acompanamiento = radioSeleccionado.value;
+                }
             }
 
             const elementoPrecio = plato.querySelector(".precio");
-            const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
+            const precioBase = isAtp ? 5000 : (parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0);
             const precioFinalItem = precioBase + valorAdiciones;
 
-            // Obtener la cantidad seleccionada desde el indicador visual
             const indicadorCantidad = plato.querySelector(".numero-cantidad");
             const cantidadA_Anadir = indicadorCantidad ? parseInt(indicadorCantidad.textContent) : 1;
 
-            // Generar clave única para identificar platos exactamente idénticos
             const configuracionId = `${nombrePlato}-${quitados.join(",")}-${adiciones.join(",")}-${salsas.join(",")}-${acompanamiento}`;
-
             const itemExistente = carrito.find(item => item.configId === configuracionId);
 
             if (itemExistente) {
@@ -346,18 +403,34 @@ document.addEventListener("DOMContentLoaded", () => {
             if (details) details.removeAttribute("open");
 
             plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
-            plato.querySelectorAll("input[type='radio']").forEach(rd => rd.checked = false);
+            // Resetear radios excepto los de la base del ATP para evitar bugs visuales
+            plato.querySelectorAll("input[type='radio']").forEach(rd => {
+                if(rd.name !== "base-atp") rd.checked = false;
+            });
+            
+            // Forzar primer radio activo por defecto en Arma tu Plato
+            const primerRadioAtp = plato.querySelector('input[name="base-atp"][value="Papas a la francesa"]');
+            if(primerRadioAtp) primerRadioAtp.checked = true;
 
             if (elementoPrecio) {
-                elementoPrecio.textContent = `$${precioBase.toLocaleString('es-CO')}`;
+                elementoPrecio.textContent = `$${(isAtp ? 5000 : precioBase).toLocaleString('es-CO')}`;
             }
+            
+            // Limpiar los elementos visuales del string dinámico en Arma tu Plato
+            const resumenBase = document.getElementById("resumen-base-atp");
+            const resumenProteinas = document.getElementById("resumen-proteinas-atp");
+            const resumenExtras = document.getElementById("resumen-extras-atp");
+            if (resumenBase) resumenBase.textContent = "Papas a la francesa";
+            if (resumenProteinas) resumenProteinas.textContent = "Ninguna";
+            if (resumenExtras) resumenExtras.textContent = "Ninguno";
         }
     });
 
-    // EVENTO: CAMBIO EN ADICIONES (ACTUALIZAR PRECIO EN TIEMPO REAL)
+    // EVENTO: CAMBIO EN ADICIONES (PLATOS REGULARES)
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("adicion-item")) {
             const plato = e.target.closest(".item-menu");
+            if (!plato || plato.getAttribute("data-categoria") === "arma-tu-plato") return;
             const elementoPrecio = plato.querySelector(".precio");
             const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
 
@@ -371,7 +444,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // EVENTO: CLICK EN VER CARRITO
     if (btnVerCarrito) {
         btnVerCarrito.addEventListener("click", (e) => {
             e.preventDefault();
@@ -384,7 +456,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cerrarCarrito) cerrarCarrito.addEventListener("click", () => modalCarrito.style.display = "none");
     if (btnSeguirComiendo) btnSeguirComiendo.addEventListener("click", () => modalCarrito.style.display = "none");
 
-    // FUNCIÓN: RENDERIZAR CARRITO (MODIFICADA PARA AGRUPAR EN LÍNEA)
     function renderizarCarrito() {
         if (!itemsCarritoContenedor) return;
 
@@ -399,7 +470,7 @@ document.addEventListener("DOMContentLoaded", () => {
             itemDiv.className = "item-lista-carrito";
 
             let detallesHTML = "";
-            if (producto.acompanamiento) detallesHTML += `<li>Acompañamiento: ${producto.acompanamiento}</li>`;
+            if (producto.acompanamiento) detallesHTML += `<li>${producto.acompanamiento}</li>`;
             if (producto.quitados.length > 0) detallesHTML += `<li>Sin: ${producto.quitados.join(", ")}</li>`;
             if (producto.adiciones.length > 0) detallesHTML += `<li>Extras: ${producto.adiciones.join(", ")}</li>`;
             if (producto.salsas.length > 0) detallesHTML += `<li>Salsas: ${producto.salsas.join(", ")}</li>`;
@@ -423,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".btn-eliminar-item").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const idEliminar = parseFloat(e.target.getAttribute("data-id"));
-                carrito = Float64Array ? carrito.filter(item => item.id !== idEliminar) : carrito;
+                carrito = carrito.filter(item => item.id !== idEliminar);
 
                 const contadores = document.querySelectorAll("#contador-productos");
                 contadores.forEach(contador => {
@@ -441,9 +512,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // =========================================================================
-    // ⭐ FUNCIÓN: MOSTRAR MODAL DE CONFIRMACIÓN DE PEDIDO ENVIADO
-    // =========================================================================
     function mostrarConfirmacionPedido() {
         const modalConfirmacion = document.createElement("div");
         modalConfirmacion.className = "modal-confirmacion";
@@ -464,17 +532,8 @@ document.addEventListener("DOMContentLoaded", () => {
         btnCerrarConf.addEventListener("click", () => {
             modalConfirmacion.remove();
         });
-
-        modalConfirmacion.addEventListener("click", (e) => {
-            if (e.target === modalConfirmacion) {
-                modalConfirmacion.remove();
-            }
-        });
     }
 
-    // =========================================================================
-    // ⭐ EVENTO: CONFIRMAR PEDIDO POR WHATSAPP + LIMPIEZA + CONFIRMACIÓN (MODIFICADO PARA AGRUPAR EN LÍNEA)
-    // =========================================================================
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
             if (carrito.length === 0) return;
@@ -500,10 +559,8 @@ document.addEventListener("DOMContentLoaded", () => {
             mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
             mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
 
-            // Abrir WhatsApp
             window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
 
-            // ⭐ PASO 1: Limpiar el carrito
             carrito = [];
             const contadores = document.querySelectorAll("#contador-productos");
             contadores.forEach(contador => {
@@ -511,27 +568,13 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             actualizarVisibilidadBotonCarrito();
 
-            // ⭐ PASO 2: Cerrar el modal del carrito
             if (modalCarrito) modalCarrito.style.display = "none";
-
-            // ⭐ PASO 3: Mostrar pantalla de confirmación
             mostrarConfirmacionPedido();
-
-            // ⭐ PASO 4: Mostrar toast adicional (por si acaso)
-            const toast = document.getElementById("notificacion-toast");
-            if (toast) {
-                toast.innerHTML = "✅ ¡Pedido enviado con éxito!";
-                toast.classList.add("mostrar");
-                setTimeout(() => {
-                    toast.classList.remove("mostrar");
-                    toast.innerHTML = "✨ ¡Plato añadido al carrito!";
-                }, 3000);
-            }
         });
     }
-});
-// =========================================================================
-    // ⭐ INTERACTIVIDAD DE LA MARQUESINA MODERNA (CORREGIDO)
+
+    // =========================================================================
+    // ⭐ INTERACTIVIDAD DE LA MARQUESINA MODERNA
     // =========================================================================
     const marqueeItems = document.querySelectorAll(".marquee-item");
     
@@ -541,30 +584,23 @@ document.addEventListener("DOMContentLoaded", () => {
             const categoriaDestino = item.getAttribute("data-destino");
             
             if (categoriaDestino) {
-                // Buscamos el botón de filtro exacto por su atributo data-categoria
                 const botonFiltro = document.querySelector(`.btn-filtro-card[data-categoria="${categoriaDestino}"]`);
-                
                 if (botonFiltro) {
-                    // 1. Simula el clic físico en el botón del filtro para activar su lógica nativa
                     botonFiltro.click();
-                    
-                    // 2. Pequeño efecto visual táctil de feedback en la marquesina
                     item.style.background = "#ffe0e2";
                     setTimeout(() => {
                         item.style.background = "#ffffff";
                     }, 200);
 
-                    // 3. Scroll suave automático hacia la zona del menú para que el cliente vea los platos
                     const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
                     if (contenedorMenu) {
                         window.scrollTo({
-                            top: contenedorMenu.offsetTop - 140, // Espacio para que el header sticky no tape el título
+                            top: contenedorMenu.offsetTop - 140,
                             behavior: "smooth"
                         });
                     }
-                } else {
-                    console.error(`No se encontró el botón de filtro para la categoría: ${categoriaDestino}`);
                 }
             }
         });
     });
+});

@@ -113,36 +113,79 @@
 
         <div id="contenedor-historial"></div>
     </main>
+<!-- Cargar Firebase desde la nube (SDK oficial de Google) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+   <script>
+        // =========================================================================
+        // 🔥 CONEXIÓN OFICIAL CON FIREBASE (PANEL ADMIN)
+        // =========================================================================
+        const firebaseConfig = {
+          apiKey: "AIzaSyA8I3ybJNfXLYvx6quNcgYv9mDpOMyWhjc",
+          authDomain: "donde-carmen.firebaseapp.com",
+          projectId: "donde-carmen",
+          storageBucket: "donde-carmen.firebasestorage.app",
+          messagingSenderId: "432685338703",
+          appId: "1:432685338703:web:81967270e483e477ed5a3a",
+          measurementId: "G-TR69YF2SSC"
+        };
 
-    <script>
-// =========================================================================
-// 🔐 PROTECCIÓN DEL PANEL DE ADMINISTRACIÓN
-// =========================================================================
-(function verificarAcceso() {
-    // Si ya pusiste la clave en esta sesión, no te la vuelve a pedir al actualizar
-    if (sessionStorage.getItem("admin_autenticado") === "true") {
-        return;
-    }
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    // Pide la contraseña al entrar
-    const claveCorrecta = "Carmen2026"; // <-- ¡Cambia esta clave por la que tú quieras!
-    const intentoClave = prompt("🔑 Introduce la contraseña de administrador para ver las ventas:");
+        let sistemaDesbloqueado = false;
+        let primerCargaCompleta = false; // Evita que se impriman todos los pedidos viejos al abrir la página
 
-    if (intentoClave === claveCorrecta) {
-        // Guarda el acceso autorizado solo mientras la pestaña esté abierta
-        sessionStorage.setItem("admin_autenticado", "true");
-    } else {
-        alert("❌ Clave incorrecta. Acceso denegado.");
-        // Lo saca corriendo hacia el menú principal afuera de la carpeta admin
-        window.location.href = "../index.html"; 
-    }
-})();      
-  let sistemaDesbloqueado = false;
+        // =========================================================================
+        // 🛰️ ESCUCHAR LA NUBE EN TIEMPO REAL (FIRESTORE)
+        // =========================================================================
+        function activarEscuchaEnTiempoReal() {
+            // Escuchamos la colección ordenando por fecha para tener las estadísticas correctas
+            db.collection("pedidos_donde_carmen")
+              .orderBy("fecha_raw", "asc")
+              .onSnapshot((snapshot) => {
+                let historialCompleto = [];
+                let cambiosNuevos = snapshot.docChanges();
 
-        function cargarPanel() {
-            const historial = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
+                snapshot.forEach((doc) => {
+                    historialCompleto.push({
+                        id_documento: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Renderizar los indicadores del día y las tarjetas
+                actualizarPantallaYMetricas(historialCompleto);
+
+                // CONTROL DE ALERTA Y AUTO-IMPRESIÓN (Solo si no es la carga inicial de la página)
+                if (primerCargaCompleta) {
+                    cambiosNuevos.forEach((cambio) => {
+                        // Si entró un documento nuevo a la nube
+                        if (cambio.type === "added") {
+                            const numeroNuevoPedido = historialCompleto.length;
+                            
+                            if (sistemaDesbloqueado) {
+                                ejecutarTimbreRestaurante();
+                                setTimeout(() => {
+                                    imprimirComanda(numeroNuevoPedido);
+                                }, 600);
+                            }
+                        }
+                    });
+                } else {
+                    primerCargaCompleta = true; // El sistema ya cargó el histórico, los próximos sí timbrarán
+                }
+            }, (error) => {
+                console.error("Error al conectar con la nube en tiempo real: ", error);
+            });
+        }
+
+        // =========================================================================
+        // 📺 DIBUJAR LOS PEDIDOS Y MÉTRICAS EN PANTALLA
+        // =========================================================================
+        function actualizarPantallaYMetricas(historial) {
             const contenedor = document.getElementById("contenedor-historial");
-            
             let totalVentas = 0;
             contenedor.innerHTML = "";
 
@@ -154,6 +197,7 @@
                 return;
             }
 
+            // Renderizamos al revés (slice().reverse()) para ver los más recientes arriba del todo
             historial.slice().reverse().forEach((pedido, index) => {
                 totalVentas += pedido.total;
                 const numeroPedidoReal = historial.length - index;
@@ -161,7 +205,6 @@
                 
                 let itemsHTML = "";
                 pedido.productos.forEach((prod, prodIndex) => {
-                    // Si el producto fue modificado de forma manual, usamos su texto guardado personalizado
                     let detallesTexto = "";
                     if (prod.customDetails !== undefined) {
                         detallesTexto = prod.customDetails;
@@ -178,11 +221,11 @@
                         <li>
                             <div style="flex: 1;">
                                 <strong>${prod.cantidad}x</strong> ${prod.nombre} - $${(prod.precio * prod.cantidad).toLocaleString('es-CO')}
-                                <div class="detalles-item" title="Haz doble clic para modificar ingredientes" ondblclick="modificarIngredientesTexto(${indexOriginal}, ${prodIndex})">📝 ${detallesTexto || 'Sin especificaciones (Doble clic para añadir)'}</div>
+                                <div class="detalles-item" title="Haz doble clic para modificar ingredientes" ondblclick="modificarIngredientesTexto('${pedido.id_documento}', ${prodIndex})">📝 ${detallesTexto || 'Sin especificaciones (Doble clic para añadir)'}</div>
                             </div>
                             <div class="controles-item-derecha" style="display:flex; gap:5px; align-items:center;">
-                                <button class="btn-accion-item" onclick="cambiarCantidadProducto(${indexOriginal}, ${prodIndex}, 1)">＋</button>
-                                <button class="btn-accion-item" onclick="cambiarCantidadProducto(${indexOriginal}, ${prodIndex}, -1)">－</button>
+                                <button class="btn-accion-item" onclick="cambiarCantidadProducto('${pedido.id_documento}', ${prodIndex}, 1)">＋</button>
+                                <button class="btn-accion-item" onclick="cambiarCantidadProducto('${pedido.id_documento}', ${prodIndex}, -1)">－</button>
                             </div>
                         </li>
                     `;
@@ -194,7 +237,7 @@
                 div.innerHTML = `
                     <div class="pedido-header">
                         <span>📋 Pedido #${numeroPedidoReal}</span>
-                        <button class="btn-cancelar-pedido" onclick="eliminarPedidoCompleto(${indexOriginal})">Anular Pedido 🗑️</button>
+                        <button class="btn-cancelar-pedido" onclick="eliminarPedidoCompleto('${pedido.id_documento}')">Anular Pedido 🗑️</button>
                     </div>
                     <div class="pedido-items">
                         <ul>${itemsHTML}</ul>
@@ -215,65 +258,89 @@
             document.getElementById("ticket-promedio").textContent = `$${Math.round(totalVentas / historial.length).toLocaleString('es-CO')}`;
         }
 
-        function cambiarCantidadProducto(pedidoIndex, prodIndex, cambio) {
-            let historial = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
-            let pedido = historial[pedidoIndex];
-            let producto = pedido.productos[prodIndex];
-
-            producto.cantidad += cambio;
-
-            if (producto.cantidad <= 0) {
-                pedido.productos.splice(prodIndex, 1);
-            }
-
-            pedido.total = pedido.productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
-
-            if (pedido.productos.length === 0) {
-                historial.splice(pedidoIndex, 1);
-            } else {
-                historial[pedidoIndex] = pedido;
-            }
-
-            localStorage.setItem("ventas_donde_carmen", JSON.stringify(historial));
-            cargarPanel();
-        }
-
-        function modificarIngredientesTexto(pedidoIndex, prodIndex) {
-            let historial = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
-            let producto = historial[pedidoIndex].productos[prodIndex];
+        // =========================================================================
+        // 🛠️ ACCIONES EN VIVO DIRECTO A LA NUBE DE FIREBASE
+        // =========================================================================
+        function cambiarCantidadProducto(docId, prodIndex, cambio) {
+            const docRef = db.collection("pedidos_donde_carmen").doc(docId);
             
-            // Obtener el texto actual para mostrarlo en el cuadro de edición
-            let textoActual = "";
-            if (producto.customDetails !== undefined) {
-                textoActual = producto.customDetails;
-            } else {
-                let agregados = [];
-                if(producto.acompanamiento) agregados.push(producto.acompanamiento);
-                if(producto.adiciones && producto.adiciones.length > 0) agregados.push(`Extras: ${producto.adiciones.join(', ')}`);
-                if(producto.salsas && producto.salsas.length > 0) agregados.push(`Salsas: ${producto.salsas.join(', ')}`);
-                if(producto.quitados && producto.quitados.length > 0) agregados.push(`Sin: ${producto.quitados.join(', ')}`);
-                textoActual = agregados.join(' | ');
-            }
+            docRef.get().then((doc) => {
+                if (doc.exists) {
+                    let pedido = doc.data();
+                    let producto = pedido.productos[prodIndex];
+                    
+                    producto.cantidad += cambio;
+                    
+                    if (producto.cantidad <= 0) {
+                        pedido.productos.splice(prodIndex, 1);
+                    }
+                    
+                    // Si se borraron todos los productos, anulamos la orden entera
+                    if (pedido.productos.length === 0) {
+                        docRef.delete();
+                    } else {
+                        // Recalcular total del documento
+                        pedido.total = pedido.productos.reduce((sum, p) => sum + (p.precio * p.cantidad), 0);
+                        docRef.update(pedido);
+                    }
+                }
+            });
+        }
 
-            const nuevoTexto = prompt("Modifica los ingredientes/especificaciones de este plato:", textoActual);
+        function modificarIngredientesTexto(docId, prodIndex) {
+            const docRef = db.collection("pedidos_donde_carmen").doc(docId);
             
-            // Si el usuario no cancela el prompt, guardamos la modificación
-            if (nuevoTexto !== null) {
-                producto.customDetails = nuevoTexto.trim();
-                localStorage.setItem("ventas_donde_carmen", JSON.stringify(historial));
-                cargarPanel();
+            docRef.get().then((doc) => {
+                if (doc.exists) {
+                    let pedido = doc.data();
+                    let producto = pedido.productos[prodIndex];
+                    
+                    let textoActual = "";
+                    if (producto.customDetails !== undefined) {
+                        textoActual = producto.customDetails;
+                    } else {
+                        let agregados = [];
+                        if(producto.acompanamiento) agregados.push(producto.acompanamiento);
+                        if(producto.adiciones && producto.adiciones.length > 0) agregados.push(`Extras: ${producto.adiciones.join(', ')}`);
+                        if(producto.salsas && producto.salsas.length > 0) agregados.push(`Salsas: ${producto.salsas.join(', ')}`);
+                        if(producto.quitados && producto.quitados.length > 0) agregados.push(`Sin: ${producto.quitados.join(', ')}`);
+                        textoActual = agregados.join(' | ');
+                    }
+
+                    const nuevoTexto = prompt("Modifica los ingredientes de la comanda en la nube:", textoActual);
+                    if (nuevoTexto !== null) {
+                        producto.customDetails = nuevoTexto.trim();
+                        docRef.update(pedido);
+                    }
+                }
+            });
+        }
+
+        function eliminarPedidoCompleto(docId) {
+            if (confirm("⚠️ ¿Deseas ANULAR y eliminar permanentemente este pedido de la nube?")) {
+                db.collection("pedidos_donde_carmen").doc(docId).delete()
+                  .then(() => console.log("Pedido eliminado de Firebase"))
+                  .catch((err) => console.error("Error al borrar: ", err));
             }
         }
 
-        function eliminarPedidoCompleto(pedidoIndex) {
-            if (confirm("⚠️ ¿Estás seguro de que deseas ANULAR por completo este pedido? Se restará de las ventas diarias.")) {
-                let historial = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
-                historial.splice(pedidoIndex, 1);
-                localStorage.setItem("ventas_donde_carmen", JSON.stringify(historial));
-                cargarPanel();
+        function limpiarBaseDatos() {
+            if (confirm("🚨 ¿Estás seguro de cerrar caja? Esto ELIMINARÁ TODOS los pedidos de la nube para comenzar un nuevo día.")) {
+                db.collection("pedidos_donde_carmen").get().then((snapshot) => {
+                    let batch = db.batch();
+                    snapshot.forEach((doc) => {
+                        batch.delete(doc.ref);
+                    });
+                    batch.commit().then(() => {
+                        console.log("Caja cerrada. Nube limpia.");
+                    });
+                });
             }
         }
 
+        // =========================================================================
+        // HERRAMIENTAS DE AUDIO, IMPRESIÓN Y EXPORTACIÓN
+        // =========================================================================
         function desbloquearAudio() {
             sistemaDesbloqueado = true;
             const btn = document.getElementById("btn-audio");
@@ -314,47 +381,30 @@
             }
         }
 
-        function limpiarBaseDatos() {
-            if (confirm("🚨 ¿Estás seguro de que quieres cerrar caja y limpiar las ventas del día? Esto borrará el historial del panel.")) {
-                localStorage.removeItem("ventas_donde_carmen");
-                cargarPanel();
-            }
-        }
-
         function exportarReporte() {
-            const historial = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
-            if(historial.length === 0) return alert("No hay datos para exportar.");
+            db.collection("pedidos_donde_carmen").orderBy("fecha_raw", "asc").get().then((snapshot) => {
+                if(snapshot.empty) return alert("No hay datos para exportar.");
+                
+                let csvContent = "data:text/csv;charset=utf-8,ID Pedido,Hora,Total Venta\n";
+                let index = 1;
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    csvContent += `${index},${data.hora},${data.total}\n`;
+                    index++;
+                });
 
-            let csvContent = "data:text/csv;charset=utf-8,ID Pedido,Hora,Total Venta\n";
-            historial.forEach((p, i) => {
-                csvContent += `${i + 1},${p.hora},${p.total}\n`;
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `Ventas_Donde_Carmen_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Ventas_Donde_Carmen_${new Date().toLocaleDateString().replace(/\//g, '-')}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         }
 
-        window.addEventListener('storage', (event) => {
-            if (event.key === 'ventas_donde_carmen') {
-                cargarPanel();
-                const nuevoHistorial = JSON.parse(event.newValue) || [];
-                const numeroNuevoPedido = nuevoHistorial.length;
-
-                if (sistemaDesbloqueado && numeroNuevoPedido > 0) {
-                    ejecutarTimbreRestaurante();
-                    setTimeout(() => {
-                        imprimirComanda(numeroNuevoPedido);
-                    }, 500);
-                }
-            }
-        });
-
-        document.addEventListener("DOMContentLoaded", cargarPanel);
+        // Inicializar la conexión en tiempo real al arrancar
+        activarEscuchaEnTiempoReal();
     </script>
 </body>
 </html>

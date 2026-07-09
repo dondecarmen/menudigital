@@ -8,38 +8,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-
+<div id="splash-promo" class="splash-overlay">
+    <div class="splash-contenido animate-popup">
+        <button id="cerrar-splash" class="btn-cerrar-splash" aria-label="Cerrar publicidad">×</button>
+        
+        <div class="splash-imagen-contenedor">
+            <span class="badge-promo-tag">🔥 ¡OFERTA DE HOY!</span>
+            <img src="https://i.ibb.co/8LTKqws9/Whats-App-Image-2026-07-08-at-8-12-42-PM.jpg" alt="Promoción Especial del Día" class="img-splash-promo">
+        </div>
+        
+        <div class="splash-pie">
+            <h3>🍔 La ParriLoca</h3>
+            <p>Solo por hoy, tres carnes, Pollo, Chuleta y Solomo al precio de la Doble, nos volvimos locos y no avisamos.</p>
+            <button id="btn-accion-splash" class="btn-accion-splash">¡Aprovechar Oferta! 🚀</button>
+        </div>
+    </div>
+</div>
 <header class="hero-banner">
     <h1 class="titulo-principal">Donde Carmen</h1>
-    <!-- ============================================================
-     🔥 MARQUESINA INTERACTIVA MODERNA
-     ============================================================ -->
 <div class="frase-contenedor-movil">
     <div class="marquee-moderna-wrapper" id="marquee-interactiva">
         <div class="marquee-comercial">
-            <!-- Bloque de contenido 1 -->
             <div class="marquee-item" data-destino="hamburguesas">
                 <span class="badge-live">¡Toca Aquí! 👆</span>
                 <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal</span>
             </div>
-            
             <div class="marquee-separator">•</div>
-
             <div class="marquee-item" data-destino="desgranados">
                 <span class="badge-live">¡Ver Categoría! 🧀</span>
                 <span class="frase-moderna">🤤 Desgranado de <span class="resaltado-ParriBurguer">Chuleta Ahumada</span></span>
             </div>
-
             <div class="marquee-separator">•</div>
-
-            <!-- Duplicado idéntico para que el bucle infinito sea fluido sin saltos -->
             <div class="marquee-item" data-destino="hamburguesas">
                 <span class="badge-live">¡Toca Aquí! 👆</span>
                 <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal</span>
             </div>
-            
             <div class="marquee-separator">•</div>
-
             <div class="marquee-item" data-destino="desgranados">
                 <span class="badge-live">¡Ver Categoría! 🧀</span>
                 <span class="frase-moderna">🤤 Desgranado de <span class="resaltado-ParriBurguer">Chuleta Ahumada</span></span>
@@ -49,9 +53,7 @@
 </div>
     <nav class="filtros">
         <button class="btn-filtro-card" data-categoria="todos"><span>🍽️ Todos</span></button>
-<button class="btn-filtro-card" data-categoria="arma-tu-plato">
-  <span>🛠️ Arma tu Plato</span>
-</button>
+        <button class="btn-filtro-card" data-categoria="arma-tu-plato"><span>🛠️ Arma tu Plato</span></button>
         <button class="btn-filtro-card" data-categoria="salchipapas"><span>🌭 Salchipapas</span></button>
         <button class="btn-filtro-card" data-categoria="salchipicadas"><span>🍟 Salchipicadas</span></button>
         <button class="btn-filtro-card" data-categoria="desgranados"><span>🧀 Desgranados</span></button>
@@ -68,23 +70,18 @@
 
 <main class="contenedor-menu">
 
-<!-- ============================================================
-     🛠️ ARMA TU PLATO - BUILDER INTERACTIVO
-     ============================================================ -->
-<div class="item-menu arma-tu-plato" data-categoria="arma-tu-plato" data-precio-inicial="5000">
-  
+<article class="item-menu" data-categoria="arma-tu-plato">
   <span class="badge-especial">✨ NUEVO ✨</span>
   
   <div class="info-plato-principal">
-    <img src="https://images.unsplash.com/photo-1585238342024-78d387d3a3c1?w=400" 
-         alt="Arma tu plato" class="foto-plato">
+    <img src="https://images.unsplash.com/photo-1585238342024-78d387d3a3c1?w=400" alt="Arma tu plato" class="foto-plato">
     <div class="detalles-basicos">
       <h3>🛠️ Arma tu Plato</h3>
       <p class="descripcion">
         Crea tu combinación perfecta en 4 pasos. 
         ¡Tú eliges base, proteína, extras y salsas!
       </p>
-      <p class="precio precio-dinamico-atp" data-precio-base="5000">$5.000</p>
+      <p class="precio" data-precio-base="5000">$5.000</p>
       <p class="precio-detalle-atp">desde</p>
     </div>
   </div>
@@ -93,12 +90,10 @@
     <summary>⚙️ Personaliza tu plato paso a paso</summary>
     <div class="seccion-personalizacion builder-atp">
 
-      <!-- PASO 1: BASE -->
       <h4 class="titulo-seccion titulo-paso">🥔 1. Elige tu BASE</h4>
       <div class="grupo-opciones-atp">
         <label class="opcion-atp opcion-base">
-          <input type="radio" name="base-atp" value="Papas a la francesa" 
-                 data-valor="5000" class="input-precio-atp" checked>
+          <input type="radio" name="base-atp" value="Papas a la francesa" data-valor="5000" class="input-precio-atp" checked>
           <span class="emoji-atp">🍟</span>
           <span class="texto-atp">
             <strong>Papas a la francesa</strong>
@@ -106,8 +101,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-base">
-          <input type="radio" name="base-atp" value="Patacón crujiente" 
-                 data-valor="6000" class="input-precio-atp">
+          <input type="radio" name="base-atp" value="Patacón crujiente" data-valor="6000" class="input-precio-atp">
           <span class="emoji-atp">🍌</span>
           <span class="texto-atp">
             <strong>Patacón crujiente</strong>
@@ -115,8 +109,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-base">
-          <input type="radio" name="base-atp" value="Arepa paisa frita" 
-                 data-valor="6500" class="input-precio-atp">
+          <input type="radio" name="base-atp" value="Arepa paisa frita" data-valor="6500" class="input-precio-atp">
           <span class="emoji-atp">🫓</span>
           <span class="texto-atp">
             <strong>Arepa paisa frita</strong>
@@ -125,13 +118,11 @@
         </label>
       </div>
 
-      <!-- PASO 2: PROTEÍNA -->
       <h4 class="titulo-seccion titulo-paso">🥩 2. Agrega tu PROTEÍNA</h4>
       <p class="ayuda-atp">Puedes elegir varias 🤤</p>
       <div class="grupo-opciones-atp">
         <label class="opcion-atp opcion-proteina">
-          <input type="checkbox" value="Carne desmechada" 
-                 data-valor="8000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Carne desmechada" data-valor="8000" class="adicion-item">
           <span class="emoji-atp">🐄</span>
           <span class="texto-atp">
             <strong>Carne desmechada</strong>
@@ -139,8 +130,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-proteina">
-          <input type="checkbox" value="Pollo desmechado" 
-                 data-valor="7000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Pollo desmechado" data-valor="7000" class="adicion-item">
           <span class="emoji-atp">🐔</span>
           <span class="texto-atp">
             <strong>Pollo desmechado</strong>
@@ -148,8 +138,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-proteina">
-          <input type="checkbox" value="Chuleta ahumada" 
-                 data-valor="8000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Chuleta ahumada" data-valor="8000" class="adicion-item">
           <span class="emoji-atp">🐷</span>
           <span class="texto-atp">
             <strong>Chuleta ahumada</strong>
@@ -157,8 +146,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-proteina">
-          <input type="checkbox" value="Salchicha + Tocineta" 
-                 data-valor="6000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Salchicha + Tocineta" data-valor="6000" class="adicion-item">
           <span class="emoji-atp">🌭</span>
           <span class="texto-atp">
             <strong>Salchicha + Tocineta</strong>
@@ -166,8 +154,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-proteina">
-          <input type="checkbox" value="Albóndigas" 
-                 data-valor="7000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Albóndigas" data-valor="7000" class="adicion-item">
           <span class="emoji-atp">🍖</span>
           <span class="texto-atp">
             <strong>Albóndigas de la casa</strong>
@@ -176,12 +163,10 @@
         </label>
       </div>
 
-      <!-- PASO 3: EXTRAS -->
       <h4 class="titulo-seccion titulo-paso">🧀 3. Agrega EXTRAS</h4>
       <div class="grupo-opciones-atp">
         <label class="opcion-atp opcion-extra">
-          <input type="checkbox" value="Queso mozzarella" 
-                 data-valor="2000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Queso mozzarella" data-valor="2000" class="adicion-item">
           <span class="emoji-atp">🧀</span>
           <span class="texto-atp">
             <strong>Queso mozzarella</strong>
@@ -189,8 +174,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-extra">
-          <input type="checkbox" value="Tocineta extra" 
-                 data-valor="2000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Tocineta extra" data-valor="2000" class="adicion-item">
           <span class="emoji-atp">🥓</span>
           <span class="texto-atp">
             <strong>Tocineta extra</strong>
@@ -198,8 +182,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-extra">
-          <input type="checkbox" value="Maicitos" 
-                 data-valor="1500" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Maicitos" data-valor="1500" class="adicion-item">
           <span class="emoji-atp">🌽</span>
           <span class="texto-atp">
             <strong>Maicitos</strong>
@@ -207,8 +190,7 @@
           </span>
         </label>
         <label class="opcion-atp opcion-extra">
-          <input type="checkbox" value="Huevo frito" 
-                 data-valor="2000" class="input-precio-atp adicion-item">
+          <input type="checkbox" value="Huevo frito" data-valor="2000" class="adicion-item">
           <span class="emoji-atp">🍳</span>
           <span class="texto-atp">
             <strong>Huevo frito</strong>
@@ -217,7 +199,6 @@
         </label>
       </div>
 
-      <!-- PASO 4: SALSAS -->
       <h4 class="titulo-seccion titulo-paso">🧴 4. Elige tus SALSAS</h4>
       <div class="grupo-opciones-atp grupo-salsas-atp">
         <label class="opcion-atp opcion-salsa">
@@ -258,7 +239,6 @@
         </label>
       </div>
 
-      <!-- RESUMEN EN VIVO -->
       <div class="resumen-atp">
         <div class="fila-resumen">
           <span>Base:</span>
@@ -277,19 +257,15 @@
     </div>
   </details>
 
-<button class="btn-filtro-card" data-categoria="arma-tu-plato">
-  <span>🛠️ Arma tu Plato</span>
-</button>
-
   <button class="btn-pedir-plato btn-atp-final">
     Añadir al Carrito 🛒
   </button>
-</div>
+</article>
 
     <!-- SALCHIPAPAS NORMAL -->
     <article class="item-menu" data-categoria="salchipapas">
         <div class="info-plato-principal">
-            <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400" alt="Salchipapas Normal" class="foto-plato">
+            <img src="https://i.ibb.co/ycywjhr7/OIP.jpg" alt="Salchipapas Normal" class="foto-plato">
             <div class="detalles-basicos">
                 <h3>Salchipapas Normal</h3>
                 <p class="descripcion">Papas a la francesa, salchichas y salsas de la casa.</p>
@@ -322,7 +298,7 @@
     <!-- SALCHIPAPAS SENCILLA -->
     <article class="item-menu" data-categoria="salchipapas">
         <div class="info-plato-principal">
-            <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400" alt="Salchipapas Sencilla" class="foto-plato">
+            <img src="https://i.ibb.co/gbPzMrd4/images.jpg" alt="Salchipapas Sencilla" class="foto-plato">
             <div class="detalles-basicos">
                 <h3>Salchipapas Sencilla</h3>
                 <p class="descripcion">Papas a la francesa, salchichas, tocineta y salsas de la casa.</p>

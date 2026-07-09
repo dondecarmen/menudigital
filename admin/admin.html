@@ -404,7 +404,9 @@
         }
 
         // Inicializar la conexión en tiempo real al arrancar
-        activarEscuchaEnTiempoReal();
+        setTimeout(() => {
+            activarEscuchaEnTiempoReal();
+        }, 500);
     </script>
 </body>
 </html>

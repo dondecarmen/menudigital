@@ -115,7 +115,29 @@
     </main>
 
     <script>
-        let sistemaDesbloqueado = false;
+// =========================================================================
+// 🔐 PROTECCIÓN DEL PANEL DE ADMINISTRACIÓN
+// =========================================================================
+(function verificarAcceso() {
+    // Si ya pusiste la clave en esta sesión, no te la vuelve a pedir al actualizar
+    if (sessionStorage.getItem("admin_autenticado") === "true") {
+        return;
+    }
+
+    // Pide la contraseña al entrar
+    const claveCorrecta = "Carmen2026"; // <-- ¡Cambia esta clave por la que tú quieras!
+    const intentoClave = prompt("🔑 Introduce la contraseña de administrador para ver las ventas:");
+
+    if (intentoClave === claveCorrecta) {
+        // Guarda el acceso autorizado solo mientras la pestaña esté abierta
+        sessionStorage.setItem("admin_autenticado", "true");
+    } else {
+        alert("❌ Clave incorrecta. Acceso denegado.");
+        // Lo saca corriendo hacia el menú principal afuera de la carpeta admin
+        window.location.href = "../index.html"; 
+    }
+})();      
+  let sistemaDesbloqueado = false;
 
         function cargarPanel() {
             const historial = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];

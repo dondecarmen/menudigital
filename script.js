@@ -1,3 +1,19 @@
+// =========================================================================
+// 🔥 CONEXIÓN OFICIAL CON FIREBASE (DONDE CARMEN)
+// =========================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyA8I3ybJNfXLYvx6quNcgYv9mDpOMyWhjc",
+  authDomain: "donde-carmen.firebaseapp.com",
+  projectId: "donde-carmen",
+  storageBucket: "donde-carmen.firebasestorage.app",
+  messagingSenderId: "432685338703",
+  appId: "1:432685338703:web:81967270e483e477ed5a3a",
+  measurementId: "G-TR69YF2SSC"
+};
+
+// Inicializar Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 document.addEventListener("DOMContentLoaded", () => {
     const contenedorMenu = document.querySelector(".contenedor-menu");
     const headerFiltros = document.querySelector(".filtros");
@@ -533,6 +549,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
     // 💬 LOGICA UNIFICADA Y CORREGIDA PARA WHATSAPP + GUARDADO EN PANEL ADMIN
     // =========================================================================
+   // =========================================================================
+    // 💬 LOGICA UNIFICADA: WHATSAPP + GUARDADO EN LA NUBE DE FIREBASE
+    // =========================================================================
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
             if (carrito.length === 0) return;
@@ -558,19 +577,25 @@ document.addEventListener("DOMContentLoaded", () => {
             mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
             mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
 
+            // ☁️ GUARDAR PEDIDO EN LA NUBE DE FIREBASE (Firestore)
+            db.collection("pedidos_donde_carmen").add({
+                fecha_raw: new Date(), // Para ordenar internamente
+                hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+                productos: carrito, // Toda la lista con salsas y adiciones
+                total: granTotal,
+                estado: "Pendiente" // Estado inicial para controlar en cocina
+            })
+            .then(() => {
+                console.log("¡Pedido guardado con éxito en la nube!");
+            })
+            .catch((error) => {
+                console.error("Error al guardar en Firebase: ", error);
+            });
+
+            // Abre WhatsApp en una pestaña nueva normalmente
             window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
 
-            // Guardar en LocalStorage para admin.html
-            const historialVentas = JSON.parse(localStorage.getItem("ventas_donde_carmen")) || [];
-            const nuevoPedido = {
-                id: Date.now(),
-                hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
-                productos: [...carrito], 
-                total: granTotal
-            };
-            historialVentas.push(nuevoPedido);
-            localStorage.setItem("ventas_donde_carmen", JSON.stringify(historialVentas));
-
+            // Limpiar carrito y resetear la interfaz del cliente
             carrito = [];
             const contadores = document.querySelectorAll("#contador-productos");
             contadores.forEach(contador => {

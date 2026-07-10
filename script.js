@@ -2,18 +2,20 @@
 // 🔥 CONEXIÓN OFICIAL CON FIREBASE (DONDE CARMEN)
 // =========================================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyA8I3ybJNfXLYvx6quNcgYv9mDpOMyWhjc",
-  authDomain: "donde-carmen.firebaseapp.com",
-  projectId: "donde-carmen",
-  storageBucket: "donde-carmen.firebasestorage.app",
-  messagingSenderId: "432685338703",
-  appId: "1:432685338703:web:81967270e483e477ed5a3a",
-  measurementId: "G-TR69YF2SSC"
+    apiKey: "AIzaSyA8I3ybJNfXLYvx6quNcgYv9mDpOMyWhjc",
+    authDomain: "donde-carmen.firebaseapp.com",
+    projectId: "donde-carmen",
+    storageBucket: "donde-carmen.firebasestorage.app",
+    messagingSenderId: "432685338703",
+    appId: "1:432685338703:web:81967270e483e477ed5a3a",
+    measurementId: "G-TR69YF2SSC"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+let linkGoogleMaps = "";
+
 document.addEventListener("DOMContentLoaded", () => {
     const contenedorMenu = document.querySelector(".contenedor-menu");
     const headerFiltros = document.querySelector(".filtros");
@@ -36,12 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
             splashPromo.style.transition = "opacity 0.3s ease";
             setTimeout(() => {
                 splashPromo.style.display = "none";
-                splashPromo.style.opacity = ""; 
+                splashPromo.style.opacity = "";
             }, 300);
         };
 
         cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
-
         splashPromo.addEventListener("click", (e) => {
             if (e.target === splashPromo) {
                 ocultarSplashConAnimacion();
@@ -63,11 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    
+
     const botonVolver = document.createElement("button");
     botonVolver.className = "btn-volver";
     botonVolver.innerHTML = "⬅ Volver al Menú Principal";
     botonVolver.style.display = "none";
+
     if (contenedorMenu) {
         contenedorMenu.parentNode.insertBefore(botonVolver, contenedorMenu);
     }
@@ -79,15 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
     botonesPedirIniciales.forEach(btn => {
         const platoContenedor = btn.closest(".item-menu");
         if (!platoContenedor) return;
-
         const categoria = platoContenedor.getAttribute("data-categoria");
-        if (categoria !== "butifarras" && categoria !== "bebidas") return; 
+        if (categoria !== "butifarras" && categoria !== "bebidas") return;
 
         const contenedorCantidad = document.createElement("div");
         contenedorCantidad.className = "contenedor-cantidad-pedir";
-        
         btn.parentNode.insertBefore(contenedorCantidad, btn);
-        
         contenedorCantidad.innerHTML = `
             <div class="control-cantidad">
                 <button class="btn-menos" type="button">−</button>
@@ -126,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemsCarritoContenedor = document.getElementById("items-carrito");
     const totalCarritoPrecio = document.getElementById("total-carrito-precio");
     const numeroTelefono = "573028549426";
-
     let carrito = [];
 
     platos.forEach(plato => plato.style.display = "none");
@@ -134,12 +132,18 @@ document.addEventListener("DOMContentLoaded", () => {
     if (heroBanner) heroBanner.style.display = "block";
     botonVolver.style.display = "none";
 
-    const botonTodos = document.querySelector('[data-categoria="todos"]');
-    if (botonTodos) botonTodos.style.display = "none";
-
+    // =========================================================================
+    // ✅ FUNCIÓN CORREGIDA: ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
+    // =========================================================================
     function actualizarVisibilidadBotonCarrito() {
         if (btnVerCarrito) {
             const totalProductos = carrito.reduce((total, item) => total + item.cantidad, 0);
+            
+            const contadores = document.querySelectorAll(".contador-productos");
+            contadores.forEach(contador => {
+                contador.innerHTML = totalProductos;
+            });
+            
             if (totalProductos > 0) {
                 btnVerCarrito.classList.add("activo");
                 btnVerCarrito.style.display = "flex";
@@ -149,14 +153,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+
     actualizarVisibilidadBotonCarrito();
 
+    // =========================================================================
+    //  FUNCIONES DE CATEGORÍAS
+    // =========================================================================
     function mostrarCategoriasPrincipales(manipularHistorial = true) {
         platos.forEach(plato => plato.style.display = "none");
         if (headerFiltros) headerFiltros.style.display = "flex";
         botonVolver.style.display = "none";
         if (heroBanner) heroBanner.style.display = "block";
-        
         if (manipularHistorial && window.history.state && window.history.state.categoria) {
             window.history.pushState(null, "", window.location.pathname);
         }
@@ -177,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (headerFiltros) headerFiltros.style.display = "none";
             botonVolver.style.display = "block";
             if (heroBanner) heroBanner.style.display = "none";
-            
             if (manipularHistorial) {
                 window.history.pushState({ categoria: categoriaFiltrada }, "", `#${categoriaFiltrada}`);
             }
@@ -218,17 +224,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const resumenBase = document.getElementById("resumen-base-atp");
             const resumenProteinas = document.getElementById("resumen-proteinas-atp");
             const resumenExtras = document.getElementById("resumen-extras-atp");
-
             let totalPlato = 0;
 
-            // 1. Base (Radio)
             const baseSeleccionada = cardAtp.querySelector('input[name="base-atp"]:checked');
             if (baseSeleccionada) {
                 totalPlato += parseInt(baseSeleccionada.getAttribute("data-valor")) || 5000;
                 if (resumenBase) resumenBase.textContent = baseSeleccionada.value;
             }
 
-            // 2. Proteínas (Checkbox)
             let proteinasClasificadas = [];
             cardAtp.querySelectorAll('.opcion-proteina input:checked').forEach(chk => {
                 totalPlato += parseInt(chk.getAttribute("data-valor")) || 0;
@@ -238,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 resumenProteinas.textContent = proteinasClasificadas.length > 0 ? proteinasClasificadas.join(", ") : "Ninguna";
             }
 
-            // 3. Extras (Checkbox)
             let extrasClasificados = [];
             cardAtp.querySelectorAll('.opcion-extra input:checked').forEach(chk => {
                 totalPlato += parseInt(chk.getAttribute("data-valor")) || 0;
@@ -248,7 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 resumenExtras.textContent = extrasClasificados.length > 0 ? extrasClasificados.join(", ") : "Ninguno";
             }
 
-            // Actualizar precio en pantalla
             if (precioElemento) {
                 precioElemento.textContent = `$${totalPlato.toLocaleString('es-CO')}`;
             }
@@ -262,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // ⭐ LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
+    //  LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
     // =========================================================================
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("salsa-item")) {
@@ -281,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================================================
-    // EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO (AGRUPADO)
+    // EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
     // =========================================================================
     document.addEventListener("click", (e) => {
         if (e.target.tagName === "BUTTON" && e.target.closest(".item-menu")) {
@@ -335,7 +336,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let adiciones = [];
             let valorAdiciones = 0;
-            
             plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
                 adiciones.push(chk.value);
                 const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 0;
@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let acompanamiento = "";
             const isAtp = plato.getAttribute("data-categoria") === "arma-tu-plato";
-            
+
             if (isAtp) {
                 const baseRadio = plato.querySelector('input[name="base-atp"]:checked');
                 if (baseRadio) {
@@ -360,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const elementoPrecio = plato.querySelector(".precio");
-            const precioBase = isAtp ? 5000 : (parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0);
+            const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
             const precioFinalItem = precioBase + valorAdiciones;
 
             const indicadorCantidad = plato.querySelector(".numero-cantidad");
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            const contadores = document.querySelectorAll("#contador-productos");
+            const contadores = document.querySelectorAll(".contador-productos");
             contadores.forEach(contador => {
                 contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
             });
@@ -396,8 +396,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (toast) {
                 toast.innerHTML = `✨ ¡${cantidadA_Anadir} producto(s) añadido(s) al carrito!`;
                 toast.classList.add("mostrar");
-                setTimeout(() => { 
-                    toast.classList.remove("mostrar"); 
+                setTimeout(() => {
+                    toast.classList.remove("mostrar");
                     toast.innerHTML = "✨ ¡Plato añadido al carrito!";
                 }, 2000);
             }
@@ -419,19 +419,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
             plato.querySelectorAll("input[type='radio']").forEach(rd => {
-                if(rd.name !== "base-atp") rd.checked = false;
+                if (rd.name !== "base-atp") rd.checked = false;
             });
-            
+
             const primerRadioAtp = plato.querySelector('input[name="base-atp"][value="Papas a la francesa"]');
-            if(primerRadioAtp) primerRadioAtp.checked = true;
+            if (primerRadioAtp) primerRadioAtp.checked = true;
 
             if (elementoPrecio) {
-                elementoPrecio.textContent = `$${(isAtp ? 5000 : precioBase).toLocaleString('es-CO')}`;
+                elementoPrecio.textContent = `$${precioBase.toLocaleString('es-CO')}`;
             }
-            
+
             const resumenBase = document.getElementById("resumen-base-atp");
             const resumenProteinas = document.getElementById("resumen-proteinas-atp");
             const resumenExtras = document.getElementById("resumen-extras-atp");
+
             if (resumenBase) resumenBase.textContent = "Papas a la francesa";
             if (resumenProteinas) resumenProteinas.textContent = "Ninguna";
             if (resumenExtras) resumenExtras.textContent = "Ninguno";
@@ -443,10 +444,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.classList.contains("adicion-item")) {
             const plato = e.target.closest(".item-menu");
             if (!plato || plato.getAttribute("data-categoria") === "arma-tu-plato") return;
+
             const elementoPrecio = plato.querySelector(".precio");
             const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
-
             let extra = 0;
+
             plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
                 const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 2000;
                 extra += valorAdicion;
@@ -456,21 +458,39 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // =========================================================================
+    // ✅ EVENTO DEL BOTÓN VER CARRITO (CORREGIDO)
+    // =========================================================================
     if (btnVerCarrito) {
         btnVerCarrito.addEventListener("click", (e) => {
             e.preventDefault();
             if (carrito.length === 0) return;
+            
             renderizarCarrito();
             if (modalCarrito) modalCarrito.style.display = "flex";
+
+            // VERIFICAR ESTADO INICIAL DE TIPO DE ENTREGA AL ABRIR MODAL
+            const camposDomicilio = document.getElementById("campos-domicilio");
+            const entregaInicial = document.querySelector('input[name="tipo-entrega"]:checked');
+            
+            if (entregaInicial && camposDomicilio) {
+    if (entregaInicial.value === "Domicilio") {
+        camposDomicilio.style.display = "flex";
+    } else {
+        camposDomicilio.style.display = "none";
+    }
+}
         });
     }
 
     if (cerrarCarrito) cerrarCarrito.addEventListener("click", () => modalCarrito.style.display = "none");
     if (btnSeguirComiendo) btnSeguirComiendo.addEventListener("click", () => modalCarrito.style.display = "none");
 
+    // =========================================================================
+    //  RENDERIZAR CARRITO
+    // =========================================================================
     function renderizarCarrito() {
         if (!itemsCarritoContenedor) return;
-
         itemsCarritoContenedor.innerHTML = "";
         let granTotal = 0;
 
@@ -495,7 +515,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 <button class="btn-eliminar-item" data-id="${producto.id}">❌</button>
             `;
-
             itemsCarritoContenedor.appendChild(itemDiv);
         });
 
@@ -508,7 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const idEliminar = parseFloat(e.target.getAttribute("data-id"));
                 carrito = carrito.filter(item => item.id !== idEliminar);
 
-                const contadores = document.querySelectorAll("#contador-productos");
+                const contadores = document.querySelectorAll(".contador-productos");
                 contadores.forEach(contador => {
                     contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
                 });
@@ -547,10 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 💬 LOGICA UNIFICADA Y CORREGIDA PARA WHATSAPP + GUARDADO EN PANEL ADMIN
-    // =========================================================================
-   // =========================================================================
-    // 💬 LOGICA UNIFICADA: WHATSAPP + GUARDADO EN LA NUBE DE FIREBASE
+    // 💬 LOGICA UNIFICADA PARA WHATSAPP + GUARDADO EN PANEL ADMIN
     // =========================================================================
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
@@ -564,47 +580,129 @@ document.addEventListener("DOMContentLoaded", () => {
                 let textProducto = `${index + 1}. *${producto.cantidad}x ${producto.nombre}*`;
                 if (producto.acompanamiento) textProducto += ` _(${producto.acompanamiento})_`;
                 mensaje += textProducto + `\n`;
-
                 if (producto.quitados.length > 0) mensaje += `    ❌ Sin: ${producto.quitados.join(", ")}\n`;
                 if (producto.adiciones.length > 0) mensaje += `    ➕ Extra: ${producto.adiciones.join(", ")}\n`;
-                if (producto.salsas.length > 0) mensaje += `    🧴 Salsas: ${producto.salsas.join(", ")}\n`;
+                if (producto.salsas.length > 0) mensaje += `     Salsas: ${producto.salsas.join(", ")}\n`;
                 mensaje += `    _Subtotal: $${subtotalItem.toLocaleString('es-CO')}_\n\n`;
-
                 granTotal += subtotalItem;
             });
 
+            const entregaSeleccionada = document.querySelector('input[name="tipo-entrega"]:checked').value;
+            let datosEnvioText = "";
+            let clienteNombre = "Cliente Web";
+            let clienteDireccion = "Ubicación GPS";
+
+            if (entregaSeleccionada === "Domicilio") {
+                clienteNombre = document.getElementById("dom-nombre").value.trim() || "No especificado";
+                if (!linkGoogleMaps) {
+                    alert("⚠️ Por favor, comparte tu ubicación GPS para poder realizar el domicilio.");
+                    return;
+                }
+                datosEnvioText += ` *Cliente:* ${clienteNombre}\n`;
+                datosEnvioText += `📍 *Mapa GPS:* ${linkGoogleMaps}\n`;
+            } else if (entregaSeleccionada === "Recoger") {
+                datosEnvioText += `🥡 *Entrega:* Pasar a recoger al local.\n`;
+                clienteDireccion = "No aplica";
+            } else {
+                datosEnvioText += `️ *Entrega:* Comer en el establecimiento.\n`;
+                clienteDireccion = "No aplica";
+            }
+
             mensaje += `---------------------------\n`;
+            mensaje += datosEnvioText;
             mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
             mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
 
-            // ☁️ GUARDAR PEDIDO EN LA NUBE DE FIREBASE (Firestore)
-            db.collection("pedidos_donde_carmen").add({
-                fecha_raw: new Date(), // Para ordenar internamente
-                hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
-                productos: carrito, // Toda la lista con salsas y adiciones
-                total: granTotal,
-                estado: "Pendiente" // Estado inicial para controlar en cocina
-            })
-            .then(() => {
-                console.log("¡Pedido guardado con éxito en la nube!");
-            })
-            .catch((error) => {
-                console.error("Error al guardar en Firebase: ", error);
-            });
-
-            // Abre WhatsApp en una pestaña nueva normalmente
             window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
 
-            // Limpiar carrito y resetear la interfaz del cliente
+            db.collection("pedidos_donde_carmen").add({
+                fecha_raw: new Date(),
+                hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+                productos: carrito,
+                total: granTotal,
+                estado: "Pendiente",
+                tipo_entrega: entregaSeleccionada,
+                cliente: clienteNombre,
+                direccion: clienteDireccion,
+                gps: linkGoogleMaps || "No enviado"
+            })
+            .then(() => console.log("¡Pedido en la nube con despacho guardado!"))
+            .catch((err) => console.error(err));
+
+            linkGoogleMaps = "";
+            const btnGps = document.getElementById("btn-gps");
+            if (btnGps) {
+                btnGps.disabled = false;
+                btnGps.style.background = "#e0f2fe";
+                btnGps.style.color = "#0369a1";
+                btnGps.textContent = "📍 Compartir mi ubicación GPS actual";
+                document.getElementById("status-gps").textContent = "";
+            }
+
             carrito = [];
-            const contadores = document.querySelectorAll("#contador-productos");
+            const contadores = document.querySelectorAll(".contador-productos");
             contadores.forEach(contador => {
                 contador.innerHTML = "0";
             });
-            actualizarVisibilidadBotonCarrito();
 
+            actualizarVisibilidadBotonCarrito();
             if (modalCarrito) modalCarrito.style.display = "none";
             mostrarConfirmacionPedido();
+        });
+    }
+
+    // =========================================================================
+    // 🌍 CONTROL DE TIPOS DE ENTREGA Y GPS
+    // =========================================================================
+    window.obtenerUbicacionGPS = function() {
+        const status = document.getElementById("status-gps");
+        const btn = document.getElementById("btn-gps");
+
+        if (!navigator.geolocation) {
+            status.textContent = "❌ Tu teléfono no soporta geolocalización.";
+            return;
+        }
+
+        status.textContent = "🛰️ Localizando...";
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                linkGoogleMaps = `https://www.google.com/maps?q=${lat},${lon}`;
+                status.textContent = "✅ ¡Ubicación GPS agregada con éxito!";
+                btn.style.background = "#d4edda";
+                btn.style.color = "#155724";
+                btn.textContent = "📍 Ubicación Guardada ✔️";
+            },
+            (error) => {
+                btn.disabled = false;
+                status.textContent = " No se pudo acceder al GPS. Activa tu ubicación.";
+                console.log(error);
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    };
+
+    // =========================================================================
+    // 🛵 CONTROL DINÁMICO DE VISIBILIDAD DE ENTREGA
+    // =========================================================================
+    const radiosEntrega = document.querySelectorAll('input[name="tipo-entrega"]');
+    const camposDomicilio = document.getElementById("campos-domicilio");
+
+    if (radiosEntrega && camposDomicilio) {
+        radiosEntrega.forEach(radio => {
+            radio.addEventListener("change", (e) => {
+                if (e.target.value === "Domicilio") {
+                    camposDomicilio.style.display = "flex";
+                } else {
+                    camposDomicilio.style.display = "none";
+                    linkGoogleMaps = "";
+                    const statusGps = document.getElementById("status-gps");
+                    if (statusGps) statusGps.textContent = "";
+                }
+            });
         });
     }
 
@@ -612,12 +710,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // ⭐ INTERACTIVIDAD DE LA MARQUESINA MODERNA
     // =========================================================================
     const marqueeItems = document.querySelectorAll(".marquee-item");
-    
     marqueeItems.forEach(item => {
         item.addEventListener("click", (e) => {
             e.preventDefault();
             const categoriaDestino = item.getAttribute("data-destino");
-            
             if (categoriaDestino) {
                 const botonFiltro = document.querySelector(`.btn-filtro-card[data-categoria="${categoriaDestino}"]`);
                 if (botonFiltro) {
@@ -627,10 +723,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         item.style.background = "#ffffff";
                     }, 200);
 
-                    const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
-                    if (contenedorMenu) {
+                    const conMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+                    if (conMenu) {
                         window.scrollTo({
-                            top: contenedorMenu.offsetTop - 140,
+                            top: conMenu.offsetTop - 140,
                             behavior: "smooth"
                         });
                     }

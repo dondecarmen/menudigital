@@ -127,13 +127,73 @@ document.addEventListener("DOMContentLoaded", () => {
     const numeroTelefono = "573028549426";
     let carrito = [];
 
+    // Ocultar platos por defecto e inicializar menú
     platos.forEach(plato => plato.style.display = "none");
     if (headerFiltros) headerFiltros.style.display = "flex";
     if (heroBanner) heroBanner.style.display = "block";
     botonVolver.style.display = "none";
 
     // =========================================================================
-    // ✅ FUNCIÓN CORREGIDA: ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
+    // 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN
+    // =========================================================================
+    function verificarHorarioAtencion() {
+        const ahora = new Date();
+        const dia = ahora.getDay(); // 0: Domingo, 1: Lunes, 2: Martes, 3: Miércoles, 4: Jueves, 5: Viernes, 6: Sábado
+        const hora = ahora.getHours();
+        const minutos = ahora.getMinutes();
+        const tiempoEnMinutos = hora * 60 + minutos;
+
+        const inicioServicio = 17 * 60;      // 5:00 PM
+        const finServicio = 23 * 60 + 59;   // 11:59 PM
+
+        const esDiaPermitido = (dia === 4 || dia === 5); // Jueves (4) y Viernes (5)
+        const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
+
+        const abierto = esDiaPermitido && esHoraPermitida;
+
+        const botonesPedir = document.querySelectorAll(".btn-pedir-plato");
+        botonesPedir.forEach(btn => {
+            if (!abierto) {
+                btn.disabled = true;
+                btn.textContent = "🔒 Cerrado por el momento";
+                btn.classList.add("btn-deshabilitado");
+            } else {
+                btn.disabled = false;
+                btn.textContent = "Añadir al Carrito 🛒";
+                btn.classList.remove("btn-deshabilitado");
+            }
+        });
+
+        let bannerEstado = document.getElementById("banner-estado-local");
+        if (!bannerEstado) {
+            bannerEstado = document.createElement("div");
+            bannerEstado.id = "banner-estado-local";
+            if (heroBanner) heroBanner.appendChild(bannerEstado);
+        }
+
+        if (!abierto) {
+            let mensaje = "🕒 <strong>Actualmente estamos cerrados.</strong>";
+            if (dia === 2 || dia === 3) {
+                mensaje = "🔒 <strong>Martes y Miércoles no tenemos servicio.</strong> ¡Te esperamos de Jueves a Viernes desde las 5:00 PM!";
+            } else if (esDiaPermitido && !esHoraPermitida) {
+                mensaje = "⏳ <strong>Hoy abrimos a las 5:00 PM.</strong> ¡Prepara tu pedido!";
+            } else {
+                mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves y Viernes de 5:00 PM a 11:59 PM.";
+            }
+            
+            bannerEstado.className = "banner-cerrado";
+            bannerEstado.innerHTML = mensaje;
+        } else {
+            bannerEstado.className = "banner-abierto";
+            bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:00 PM - 11:59 PM)";
+        }
+    }
+
+    // Ejecutar verificación de horario
+    verificarHorarioAtencion();
+
+    // =========================================================================
+    // ✅ ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
     // =========================================================================
     function actualizarVisibilidadBotonCarrito() {
         if (btnVerCarrito) {
@@ -157,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     actualizarVisibilidadBotonCarrito();
 
     // =========================================================================
-    //  FUNCIONES DE CATEGORÍAS
+    // 📂 FUNCIONES DE CATEGORÍAS
     // =========================================================================
     function mostrarCategoriasPrincipales(manipularHistorial = true) {
         platos.forEach(plato => plato.style.display = "none");
@@ -287,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         if (e.target.tagName === "BUTTON" && e.target.closest(".item-menu")) {
             const btnPedir = e.target;
-            if (btnPedir.classList.contains("btn-volver") || btnPedir.id === "cerrar-carrito" || btnPedir.classList.contains("btn-mas") || btnPedir.classList.contains("btn-menos")) return;
+            if (btnPedir.classList.contains("btn-volver") || btnPedir.id === "cerrar-carrito" || btnPedir.classList.contains("btn-mas") || btnPedir.classList.contains("btn-menos") || btnPedir.disabled) return;
 
             e.preventDefault();
             e.stopPropagation();
@@ -459,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================================================
-    // ✅ EVENTO DEL BOTÓN VER CARRITO (CORREGIDO)
+    // EVENTO DEL BOTÓN VER CARRITO
     // =========================================================================
     if (btnVerCarrito) {
         btnVerCarrito.addEventListener("click", (e) => {
@@ -469,17 +529,16 @@ document.addEventListener("DOMContentLoaded", () => {
             renderizarCarrito();
             if (modalCarrito) modalCarrito.style.display = "flex";
 
-            // VERIFICAR ESTADO INICIAL DE TIPO DE ENTREGA AL ABRIR MODAL
             const camposDomicilio = document.getElementById("campos-domicilio");
             const entregaInicial = document.querySelector('input[name="tipo-entrega"]:checked');
             
             if (entregaInicial && camposDomicilio) {
-    if (entregaInicial.value === "Domicilio") {
-        camposDomicilio.style.display = "flex";
-    } else {
-        camposDomicilio.style.display = "none";
-    }
-}
+                if (entregaInicial.value === "Domicilio") {
+                    camposDomicilio.style.display = "flex";
+                } else {
+                    camposDomicilio.style.display = "none";
+                }
+            }
         });
     }
 
@@ -487,7 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnSeguirComiendo) btnSeguirComiendo.addEventListener("click", () => modalCarrito.style.display = "none");
 
     // =========================================================================
-    //  RENDERIZAR CARRITO
+    // RENDERIZAR CARRITO
     // =========================================================================
     function renderizarCarrito() {
         if (!itemsCarritoContenedor) return;
@@ -566,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 💬 LOGICA UNIFICADA PARA WHATSAPP + GUARDADO EN PANEL ADMIN
+    // 💬 WHATSAPP + GUARDADO
     // =========================================================================
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
@@ -626,7 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 direccion: clienteDireccion,
                 gps: linkGoogleMaps || "No enviado"
             })
-            .then(() => console.log("¡Pedido en la nube con despacho guardado!"))
+            .then(() => console.log("¡Pedido guardado!"))
             .catch((err) => console.error(err));
 
             linkGoogleMaps = "";
@@ -652,7 +711,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 🌍 CONTROL DE TIPOS DE ENTREGA Y GPS
+    // 🌍 UBICACIÓN GPS
     // =========================================================================
     window.obtenerUbicacionGPS = function() {
         const status = document.getElementById("status-gps");
@@ -686,7 +745,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // =========================================================================
-    // 🛵 CONTROL DINÁMICO DE VISIBILIDAD DE ENTREGA
+    // 🛵 CONTROL TIPO DE ENTREGA
     // =========================================================================
     const radiosEntrega = document.querySelectorAll('input[name="tipo-entrega"]');
     const camposDomicilio = document.getElementById("campos-domicilio");
@@ -707,7 +766,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // ⭐ INTERACTIVIDAD DE LA MARQUESINA MODERNA
+    // ⭐ MARQUESINA
     // =========================================================================
     const marqueeItems = document.querySelectorAll(".marquee-item");
     marqueeItems.forEach(item => {

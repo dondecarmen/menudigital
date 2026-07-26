@@ -11,7 +11,9 @@ const firebaseConfig = {
     measurementId: "G-TR69YF2SSC"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
 
 let linkGoogleMaps = "";
@@ -20,9 +22,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const contenedorMenu = document.querySelector(".contenedor-menu");
     const headerFiltros = document.querySelector(".filtros");
     const heroBanner = document.querySelector(".hero-banner");
+    const botones = document.querySelectorAll(".btn-filtro-card");
+    const platos = document.querySelectorAll(".item-menu");
+    const btnVerCarrito = document.getElementById("btn-ver-carrito");
+    const modalCarrito = document.getElementById("modal-carrito");
+    const cerrarCarrito = document.getElementById("cerrar-carrito");
+    const btnSeguirComiendo = document.getElementById("btn-seguir-comiendo");
+    const btnConfirmarWhatsapp = document.getElementById("btn-confirmar-whatsapp");
+    const itemsCarritoContenedor = document.getElementById("items-carrito");
+    const totalCarritoPrecio = document.getElementById("total-carrito-precio");
+    const numeroTelefono = "573028549426";
+    let carrito = [];
 
     // =========================================================================
-    // 📺 CONTROL DE PUBLICIDAD CONTINUO (SPLASH SCREEN)
+    // 1. ESTADO INICIAL DEL MENÚ (Ocultar platos al entrar)
+    // =========================================================================
+    platos.forEach(plato => plato.style.display = "none");
+    if (headerFiltros) headerFiltros.style.display = "flex";
+    if (heroBanner) heroBanner.style.display = "block";
+
+    const botonVolver = document.createElement("button");
+    botonVolver.className = "btn-volver";
+    botonVolver.innerHTML = "⬅ Volver al Menú Principal";
+    botonVolver.style.display = "none";
+
+    if (contenedorMenu) {
+        contenedorMenu.parentNode.insertBefore(botonVolver, contenedorMenu);
+    }
+
+    // =========================================================================
+    // 2. CONTROL DE PUBLICIDAD CONTINUO (SPLASH SCREEN)
     // =========================================================================
     const splashPromo = document.getElementById("splash-promo");
     const cerrarSplash = document.getElementById("cerrar-splash");
@@ -42,40 +71,31 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 300);
         };
 
-        cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
+        if (cerrarSplash) cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
         splashPromo.addEventListener("click", (e) => {
-            if (e.target === splashPromo) {
+            if (e.target === splashPromo) ocultarSplashConAnimacion();
+        });
+
+        if (btnAccionSplash) {
+            btnAccionSplash.addEventListener("click", () => {
                 ocultarSplashConAnimacion();
-            }
-        });
-
-        btnAccionSplash.addEventListener("click", () => {
-            ocultarSplashConAnimacion();
-            const botonHamburguesas = document.querySelector('.btn-filtro-card[data-categoria="hamburguesas"]');
-            if (botonHamburguesas) {
-                botonHamburguesas.click();
-                const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
-                if (contenedorMenu) {
-                    window.scrollTo({
-                        top: contenedorMenu.offsetTop - 140,
-                        behavior: "smooth"
-                    });
+                const botonHamburguesas = document.querySelector('.btn-filtro-card[data-categoria="hamburguesas"]');
+                if (botonHamburguesas) {
+                    botonHamburguesas.click();
+                    const targetScroll = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+                    if (targetScroll) {
+                        window.scrollTo({
+                            top: targetScroll.offsetTop - 140,
+                            behavior: "smooth"
+                        });
+                    }
                 }
-            }
-        });
-    }
-
-    const botonVolver = document.createElement("button");
-    botonVolver.className = "btn-volver";
-    botonVolver.innerHTML = "⬅ Volver al Menú Principal";
-    botonVolver.style.display = "none";
-
-    if (contenedorMenu) {
-        contenedorMenu.parentNode.insertBefore(botonVolver, contenedorMenu);
+            });
+        }
     }
 
     // =========================================================================
-    // ⭐ INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD (Butifarras y Bebidas)
+    // 3. INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD (Butifarras y Bebidas)
     // =========================================================================
     const botonesPedirIniciales = document.querySelectorAll(".btn-pedir-plato");
     botonesPedirIniciales.forEach(btn => {
@@ -115,38 +135,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    const botones = document.querySelectorAll(".btn-filtro-card");
-    const platos = document.querySelectorAll(".item-menu");
-    const btnVerCarrito = document.getElementById("btn-ver-carrito");
-    const modalCarrito = document.getElementById("modal-carrito");
-    const cerrarCarrito = document.getElementById("cerrar-carrito");
-    const btnSeguirComiendo = document.getElementById("btn-seguir-comiendo");
-    const btnConfirmarWhatsapp = document.getElementById("btn-confirmar-whatsapp");
-    const itemsCarritoContenedor = document.getElementById("items-carrito");
-    const totalCarritoPrecio = document.getElementById("total-carrito-precio");
-    const numeroTelefono = "573028549426";
-    let carrito = [];
-
-    // Ocultar platos por defecto e inicializar menú
-    platos.forEach(plato => plato.style.display = "none");
-    if (headerFiltros) headerFiltros.style.display = "flex";
-    if (heroBanner) heroBanner.style.display = "block";
-    botonVolver.style.display = "none";
-
     // =========================================================================
-    // 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN
+    // 4. 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN (Jueves a Lunes, 5pm - 11:59pm)
     // =========================================================================
     function verificarHorarioAtencion() {
         const ahora = new Date();
-        const dia = ahora.getDay(); // 0: Domingo, 1: Lunes, 2: Martes, 3: Miércoles, 4: Jueves, 5: Viernes, 6: Sábado
+        const dia = ahora.getDay(); // 0: Dom, 1: Lun, 2: Mar (Cerrado), 3: Mié (Cerrado), 4: Jue, 5: Vie, 6: Sáb
         const hora = ahora.getHours();
         const minutos = ahora.getMinutes();
         const tiempoEnMinutos = hora * 60 + minutos;
 
-        const inicioServicio = 17 * 60;      // 5:00 PM
-        const finServicio = 23 * 60 + 59;   // 11:59 PM
+        const inicioServicio = 17 * 60;      // 5:00 PM (1020 min)
+        const finServicio = 23 * 60 + 59;   // 11:59 PM (1439 min)
 
-        const esDiaPermitido = (dia === 4 || dia === 5); // Jueves (4) y Viernes (5)
+        const esDiaPermitido = (dia !== 2 && dia !== 3); // Jueves a Lunes
         const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
 
         const abierto = esDiaPermitido && esHoraPermitida;
@@ -174,11 +176,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!abierto) {
             let mensaje = "🕒 <strong>Actualmente estamos cerrados.</strong>";
             if (dia === 2 || dia === 3) {
-                mensaje = "🔒 <strong>Martes y Miércoles no tenemos servicio.</strong> ¡Te esperamos de Jueves a Viernes desde las 5:00 PM!";
+                mensaje = "🔒 <strong>Martes y Miércoles no tenemos servicio.</strong> ¡Te esperamos de Jueves a Lunes desde las 5:00 PM!";
             } else if (esDiaPermitido && !esHoraPermitida) {
                 mensaje = "⏳ <strong>Hoy abrimos a las 5:00 PM.</strong> ¡Prepara tu pedido!";
             } else {
-                mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves y Viernes de 5:00 PM a 11:59 PM.";
+                mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves a Lunes de 5:00 PM a 11:59 PM.";
             }
             
             bannerEstado.className = "banner-cerrado";
@@ -189,35 +191,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Ejecutar verificación de horario
     verificarHorarioAtencion();
 
     // =========================================================================
-    // ✅ ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
-    // =========================================================================
-    function actualizarVisibilidadBotonCarrito() {
-        if (btnVerCarrito) {
-            const totalProductos = carrito.reduce((total, item) => total + item.cantidad, 0);
-            
-            const contadores = document.querySelectorAll(".contador-productos");
-            contadores.forEach(contador => {
-                contador.innerHTML = totalProductos;
-            });
-            
-            if (totalProductos > 0) {
-                btnVerCarrito.classList.add("activo");
-                btnVerCarrito.style.display = "flex";
-            } else {
-                btnVerCarrito.classList.remove("activo");
-                btnVerCarrito.style.display = "none";
-            }
-        }
-    }
-
-    actualizarVisibilidadBotonCarrito();
-
-    // =========================================================================
-    // 📂 FUNCIONES DE CATEGORÍAS
+    // 5. FUNCIONES DE FILTRADO POR CATEGORÍAS
     // =========================================================================
     function mostrarCategoriasPrincipales(manipularHistorial = true) {
         platos.forEach(plato => plato.style.display = "none");
@@ -275,7 +252,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================================================
-    // LÓGICA DINÁMICA DE ACTUALIZACIÓN EN VIVO (ARMA TU PLATO)
+    // 6. ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
+    // =========================================================================
+    function actualizarVisibilidadBotonCarrito() {
+        if (btnVerCarrito) {
+            const totalProductos = carrito.reduce((total, item) => total + item.cantidad, 0);
+            const contadores = document.querySelectorAll(".contador-productos");
+            contadores.forEach(contador => {
+                contador.innerHTML = totalProductos;
+            });
+            
+            if (totalProductos > 0) {
+                btnVerCarrito.classList.add("activo");
+                btnVerCarrito.style.display = "flex";
+            } else {
+                btnVerCarrito.classList.remove("activo");
+                btnVerCarrito.style.display = "none";
+            }
+        }
+    }
+
+    actualizarVisibilidadBotonCarrito();
+
+    // =========================================================================
+    // 7. LÓGICA DINÁMICA DE ACTUALIZACIÓN EN VIVO (ARMA TU PLATO)
     // =========================================================================
     const cardAtp = document.querySelector('.item-menu[data-categoria="arma-tu-plato"]');
     if (cardAtp) {
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    //  LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
+    // 8. LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
     // =========================================================================
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("salsa-item")) {
@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================================================
-    // EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
+    // 9. EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
     // =========================================================================
     document.addEventListener("click", (e) => {
         if (e.target.tagName === "BUTTON" && e.target.closest(".item-menu")) {
@@ -519,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================================================
-    // EVENTO DEL BOTÓN VER CARRITO
+    // 10. MODAL DEL CARRITO Y WHATSAPP
     // =========================================================================
     if (btnVerCarrito) {
         btnVerCarrito.addEventListener("click", (e) => {
@@ -545,9 +545,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cerrarCarrito) cerrarCarrito.addEventListener("click", () => modalCarrito.style.display = "none");
     if (btnSeguirComiendo) btnSeguirComiendo.addEventListener("click", () => modalCarrito.style.display = "none");
 
-    // =========================================================================
-    // RENDERIZAR CARRITO
-    // =========================================================================
     function renderizarCarrito() {
         if (!itemsCarritoContenedor) return;
         itemsCarritoContenedor.innerHTML = "";
@@ -624,9 +621,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // =========================================================================
-    // 💬 WHATSAPP + GUARDADO
-    // =========================================================================
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
             if (carrito.length === 0) return;
@@ -663,7 +657,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 datosEnvioText += `🥡 *Entrega:* Pasar a recoger al local.\n`;
                 clienteDireccion = "No aplica";
             } else {
-                datosEnvioText += `️ *Entrega:* Comer en el establecimiento.\n`;
+                datosEnvioText += `🍽️ *Entrega:* Comer en el establecimiento.\n`;
                 clienteDireccion = "No aplica";
             }
 
@@ -695,7 +689,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnGps.style.background = "#e0f2fe";
                 btnGps.style.color = "#0369a1";
                 btnGps.textContent = "📍 Compartir mi ubicación GPS actual";
-                document.getElementById("status-gps").textContent = "";
+                const statusGps = document.getElementById("status-gps");
+                if (statusGps) statusGps.textContent = "";
             }
 
             carrito = [];
@@ -711,33 +706,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 🌍 UBICACIÓN GPS
+    // 11. UBICACIÓN GPS
     // =========================================================================
     window.obtenerUbicacionGPS = function() {
         const status = document.getElementById("status-gps");
         const btn = document.getElementById("btn-gps");
 
         if (!navigator.geolocation) {
-            status.textContent = "❌ Tu teléfono no soporta geolocalización.";
+            if (status) status.textContent = "❌ Tu teléfono no soporta geolocalización.";
             return;
         }
 
-        status.textContent = "🛰️ Localizando...";
-        btn.disabled = true;
+        if (status) status.textContent = "🛰️ Localizando...";
+        if (btn) btn.disabled = true;
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 linkGoogleMaps = `https://www.google.com/maps?q=${lat},${lon}`;
-                status.textContent = "✅ ¡Ubicación GPS agregada con éxito!";
-                btn.style.background = "#d4edda";
-                btn.style.color = "#155724";
-                btn.textContent = "📍 Ubicación Guardada ✔️";
+                if (status) status.textContent = "✅ ¡Ubicación GPS agregada con éxito!";
+                if (btn) {
+                    btn.style.background = "#d4edda";
+                    btn.style.color = "#155724";
+                    btn.textContent = "📍 Ubicación Guardada ✔️";
+                }
             },
             (error) => {
-                btn.disabled = false;
-                status.textContent = " No se pudo acceder al GPS. Activa tu ubicación.";
+                if (btn) btn.disabled = false;
+                if (status) status.textContent = " No se pudo acceder al GPS. Activa tu ubicación.";
                 console.log(error);
             },
             { enableHighAccuracy: true, timeout: 10000 }
@@ -745,7 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // =========================================================================
-    // 🛵 CONTROL TIPO DE ENTREGA
+    // 12. CONTROL DE TIPOS DE ENTREGA
     // =========================================================================
     const radiosEntrega = document.querySelectorAll('input[name="tipo-entrega"]');
     const camposDomicilio = document.getElementById("campos-domicilio");
@@ -766,7 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // ⭐ MARQUESINA
+    // 13. MARQUESINA INTERACTIVA
     // =========================================================================
     const marqueeItems = document.querySelectorAll(".marquee-item");
     marqueeItems.forEach(item => {

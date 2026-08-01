@@ -10,12 +10,10 @@ const firebaseConfig = {
     appId: "1:432685338703:web:81967270e483e477ed5a3a",
     measurementId: "G-TR69YF2SSC"
 };
-
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.firestore();
-
 let linkGoogleMaps = "";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     botonVolver.className = "btn-volver";
     botonVolver.innerHTML = "⬅ Volver al Menú Principal";
     botonVolver.style.display = "none";
-
     if (contenedorMenu) {
         contenedorMenu.parentNode.insertBefore(botonVolver, contenedorMenu);
     }
@@ -125,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let cant = parseInt(indicadorCantidad.textContent);
             indicadorCantidad.textContent = cant + 1;
         });
-
         btnMenos.addEventListener("click", (e) => {
             e.stopPropagation();
             let cant = parseInt(indicadorCantidad.textContent);
@@ -140,17 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
     function verificarHorarioAtencion() {
         const ahora = new Date();
-        const dia = ahora.getDay(); // 0: Dom, 1: Lun, 2: Mar (Cerrado), 3: Mié (Cerrado), 4: Jue, 5: Vie, 6: Sáb
+        const dia = ahora.getDay();
         const hora = ahora.getHours();
         const minutos = ahora.getMinutes();
         const tiempoEnMinutos = hora * 60 + minutos;
-
-        const inicioServicio = 17 * 60;      // 5:00 PM (1020 min)
-        const finServicio = 23 * 60 + 59;   // 11:59 PM (1439 min)
-
-        const esDiaPermitido = (dia !== 2 && dia !== 3); // Jueves a Lunes
+        const inicioServicio = 17 * 60;
+        const finServicio = 23 * 60 + 59;
+        const esDiaPermitido = (dia !== 2 && dia !== 3);
         const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
-
         const abierto = esDiaPermitido && esHoraPermitida;
 
         const botonesPedir = document.querySelectorAll(".btn-pedir-plato");
@@ -182,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves a Lunes de 5:00 PM a 11:59 PM.";
             }
-            
             bannerEstado.className = "banner-cerrado";
             bannerEstado.innerHTML = mensaje;
         } else {
@@ -190,11 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
             bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:00 PM - 11:59 PM)";
         }
     }
-
     verificarHorarioAtencion();
 
     // =========================================================================
-    // 5. FUNCIONES DE FILTRADO POR CATEGORÍAS
+    // 5. FUNCIONES DE FILTRADO POR CATEGORÍAS +  POPUP MEGA CHUZO
     // =========================================================================
     function mostrarCategoriasPrincipales(manipularHistorial = true) {
         platos.forEach(plato => plato.style.display = "none");
@@ -214,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 plato.style.display = "none";
             }
         });
-
         if (categoriaFiltrada === "todos") {
             mostrarCategoriasPrincipales(manipularHistorial);
         } else {
@@ -227,10 +217,69 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // 🍢 POPUP MEGA CHUZO - Solo se muestra 1 vez al entrar a categoría "chuzos"
+    const popupMegaChuzo = document.getElementById("popup-mega-chuzo");
+    const cerrarPopupMegaChuzo = document.getElementById("cerrar-popup-mega-chuzo");
+    const btnVerMegaChuzo = document.getElementById("btn-ver-mega-chuzo");
+
+    function mostrarPopupMegaChuzo() {
+        const yaMostrado = localStorage.getItem("popup_mega_chuzo_mostrado");
+        if (yaMostrado === "true") return;
+
+        if (popupMegaChuzo) {
+            popupMegaChuzo.classList.add("activo");
+            localStorage.setItem("popup_mega_chuzo_mostrado", "true");
+        }
+    }
+
+    function cerrarPopupMegaChuzoFn() {
+        if (popupMegaChuzo) {
+            popupMegaChuzo.style.opacity = "0";
+            popupMegaChuzo.style.transition = "opacity 0.3s ease";
+            setTimeout(() => {
+                popupMegaChuzo.classList.remove("activo");
+                popupMegaChuzo.style.opacity = "";
+            }, 300);
+        }
+    }
+
+    if (cerrarPopupMegaChuzo) {
+        cerrarPopupMegaChuzo.addEventListener("click", cerrarPopupMegaChuzoFn);
+    }
+
+    if (popupMegaChuzo) {
+        popupMegaChuzo.addEventListener("click", (e) => {
+            if (e.target === popupMegaChuzo) cerrarPopupMegaChuzoFn();
+        });
+    }
+
+    if (btnVerMegaChuzo) {
+        btnVerMegaChuzo.addEventListener("click", () => {
+            cerrarPopupMegaChuzoFn();
+            setTimeout(() => {
+                const megaChuzoCards = document.querySelectorAll('.item-menu[data-categoria="chuzos"]');
+                const megaChuzoCard = megaChuzoCards[1]; // El segundo es el Mega Chuzo
+                if (megaChuzoCard) {
+                    megaChuzoCard.scrollIntoView({ behavior: "smooth", block: "center" });
+                    megaChuzoCard.style.animation = "resaltarPlato 1.5s ease";
+                    setTimeout(() => {
+                        megaChuzoCard.style.animation = "";
+                    }, 1500);
+                }
+            }, 400);
+        });
+    }
+
+    // Evento click en botones de categoría
     botones.forEach(boton => {
         boton.addEventListener("click", () => {
             const categoriaFiltrada = boton.getAttribute("data-categoria");
             activarCategoriaFiltro(categoriaFiltrada, true);
+
+            // 🍢 Mostrar popup solo al entrar a categoría "chuzos" por primera vez
+            if (categoriaFiltrada === "chuzos") {
+                setTimeout(mostrarPopupMegaChuzo, 500);
+            }
         });
     });
 
@@ -261,7 +310,6 @@ document.addEventListener("DOMContentLoaded", () => {
             contadores.forEach(contador => {
                 contador.innerHTML = totalProductos;
             });
-            
             if (totalProductos > 0) {
                 btnVerCarrito.classList.add("activo");
                 btnVerCarrito.style.display = "flex";
@@ -271,68 +319,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
-
     actualizarVisibilidadBotonCarrito();
 
     // =========================================================================
-    // 7. LÓGICA DINÁMICA DE ACTUALIZACIÓN EN VIVO (ARMA TU PLATO)
-    // =========================================================================
-    const cardAtp = document.querySelector('.item-menu[data-categoria="arma-tu-plato"]');
-    if (cardAtp) {
-        const actualizarResumenYPrecioATP = () => {
-            const precioElemento = cardAtp.querySelector(".precio");
-            const resumenBase = document.getElementById("resumen-base-atp");
-            const resumenProteinas = document.getElementById("resumen-proteinas-atp");
-            const resumenExtras = document.getElementById("resumen-extras-atp");
-            let totalPlato = 0;
-
-            const baseSeleccionada = cardAtp.querySelector('input[name="base-atp"]:checked');
-            if (baseSeleccionada) {
-                totalPlato += parseInt(baseSeleccionada.getAttribute("data-valor")) || 5000;
-                if (resumenBase) resumenBase.textContent = baseSeleccionada.value;
-            }
-
-            let proteinasClasificadas = [];
-            cardAtp.querySelectorAll('.opcion-proteina input:checked').forEach(chk => {
-                totalPlato += parseInt(chk.getAttribute("data-valor")) || 0;
-                proteinasClasificadas.push(chk.value);
-            });
-            if (resumenProteinas) {
-                resumenProteinas.textContent = proteinasClasificadas.length > 0 ? proteinasClasificadas.join(", ") : "Ninguna";
-            }
-
-            let extrasClasificados = [];
-            cardAtp.querySelectorAll('.opcion-extra input:checked').forEach(chk => {
-                totalPlato += parseInt(chk.getAttribute("data-valor")) || 0;
-                extrasClasificados.push(chk.value);
-            });
-            if (resumenExtras) {
-                resumenExtras.textContent = extrasClasificados.length > 0 ? extrasClasificados.join(", ") : "Ninguno";
-            }
-
-            if (precioElemento) {
-                precioElemento.textContent = `$${totalPlato.toLocaleString('es-CO')}`;
-            }
-        };
-
-        cardAtp.addEventListener("change", (e) => {
-            if (e.target.classList.contains("input-precio-atp") || e.target.classList.contains("adicion-item") || e.target.name === "base-atp") {
-                actualizarResumenYPrecioATP();
-            }
-        });
-    }
-
-    // =========================================================================
-    // 8. LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
+    // 7. LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
     // =========================================================================
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("salsa-item")) {
             const plato = e.target.closest(".item-menu");
             if (!plato) return;
-
             const sinSalsasChk = plato.querySelector('.salsa-item[value="Sin Salsas"]');
             const otrasSalsas = plato.querySelectorAll('.salsa-item:not([value="Sin Salsas"])');
-
             if (e.target.value === "Sin Salsas" && e.target.checked) {
                 otrasSalsas.forEach(chk => chk.checked = false);
             } else if (e.target.value !== "Sin Salsas" && e.target.checked) {
@@ -342,18 +339,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // =========================================================================
-    // 9. EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
+    // 8. EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
     // =========================================================================
     document.addEventListener("click", (e) => {
         if (e.target.tagName === "BUTTON" && e.target.closest(".item-menu")) {
             const btnPedir = e.target;
             if (btnPedir.classList.contains("btn-volver") || btnPedir.id === "cerrar-carrito" || btnPedir.classList.contains("btn-mas") || btnPedir.classList.contains("btn-menos") || btnPedir.disabled) return;
-
             e.preventDefault();
             e.stopPropagation();
 
             const plato = btnPedir.closest(".item-menu");
-
             let salsas = [];
             plato.querySelectorAll(".salsa-item:checked").forEach(chk => {
                 salsas.push(chk.value);
@@ -369,7 +364,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         toast.innerHTML = "✨ ¡Plato añadido al carrito!";
                     }, 2500);
                 }
-
                 const titulosSeccion = plato.querySelectorAll(".titulo-seccion");
                 titulosSeccion.forEach(titulo => {
                     if (titulo.textContent.includes("salsas")) {
@@ -388,7 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const nombrePlato = plato.querySelector("h3").textContent;
-
             let quitados = [];
             plato.querySelectorAll(".quitar-item:checked").forEach(chk => {
                 quitados.push(chk.value);
@@ -403,29 +396,16 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             let acompanamiento = "";
-            const isAtp = plato.getAttribute("data-categoria") === "arma-tu-plato";
-
-            if (isAtp) {
-                const baseRadio = plato.querySelector('input[name="base-atp"]:checked');
-                if (baseRadio) {
-                    acompanamiento = `Base: ${baseRadio.value}`;
-                    const precioRadio = parseInt(baseRadio.getAttribute("data-valor")) || 5000;
-                    valorAdiciones += (precioRadio - 5000);
-                }
-            } else {
-                const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
-                if (radioSeleccionado) {
-                    acompanamiento = radioSeleccionado.value;
-                }
+            const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
+            if (radioSeleccionado) {
+                acompanamiento = radioSeleccionado.value;
             }
 
             const elementoPrecio = plato.querySelector(".precio");
             const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
             const precioFinalItem = precioBase + valorAdiciones;
-
             const indicadorCantidad = plato.querySelector(".numero-cantidad");
             const cantidadA_Anadir = indicadorCantidad ? parseInt(indicadorCantidad.textContent) : 1;
-
             const configuracionId = `${nombrePlato}-${quitados.join(",")}-${adiciones.join(",")}-${salsas.join(",")}-${acompanamiento}`;
             const itemExistente = carrito.find(item => item.configId === configuracionId);
 
@@ -449,7 +429,6 @@ document.addEventListener("DOMContentLoaded", () => {
             contadores.forEach(contador => {
                 contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
             });
-
             actualizarVisibilidadBotonCarrito();
 
             const toast = document.getElementById("notificacion-toast");
@@ -466,7 +445,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btnPedir.innerHTML = "¡Añadido! ✔️";
             btnPedir.style.background = "#25d366";
             btnPedir.disabled = true;
-
             setTimeout(() => {
                 btnPedir.innerHTML = textoOriginal;
                 btnPedir.style.background = "";
@@ -476,26 +454,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const details = plato.querySelector("details");
             if (details) details.removeAttribute("open");
-
             plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
             plato.querySelectorAll("input[type='radio']").forEach(rd => {
-                if (rd.name !== "base-atp") rd.checked = false;
+                rd.checked = false;
             });
-
-            const primerRadioAtp = plato.querySelector('input[name="base-atp"][value="Papas a la francesa"]');
-            if (primerRadioAtp) primerRadioAtp.checked = true;
 
             if (elementoPrecio) {
                 elementoPrecio.textContent = `$${precioBase.toLocaleString('es-CO')}`;
             }
-
-            const resumenBase = document.getElementById("resumen-base-atp");
-            const resumenProteinas = document.getElementById("resumen-proteinas-atp");
-            const resumenExtras = document.getElementById("resumen-extras-atp");
-
-            if (resumenBase) resumenBase.textContent = "Papas a la francesa";
-            if (resumenProteinas) resumenProteinas.textContent = "Ninguna";
-            if (resumenExtras) resumenExtras.textContent = "Ninguno";
         }
     });
 
@@ -503,35 +469,29 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("change", (e) => {
         if (e.target.classList.contains("adicion-item")) {
             const plato = e.target.closest(".item-menu");
-            if (!plato || plato.getAttribute("data-categoria") === "arma-tu-plato") return;
-
+            if (!plato) return;
             const elementoPrecio = plato.querySelector(".precio");
             const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
             let extra = 0;
-
             plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
                 const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 2000;
                 extra += valorAdicion;
             });
-
             elementoPrecio.textContent = `$${(precioBase + extra).toLocaleString('es-CO')}`;
         }
     });
 
     // =========================================================================
-    // 10. MODAL DEL CARRITO Y WHATSAPP
+    // 9. MODAL DEL CARRITO Y WHATSAPP
     // =========================================================================
     if (btnVerCarrito) {
         btnVerCarrito.addEventListener("click", (e) => {
             e.preventDefault();
             if (carrito.length === 0) return;
-            
             renderizarCarrito();
             if (modalCarrito) modalCarrito.style.display = "flex";
-
             const camposDomicilio = document.getElementById("campos-domicilio");
             const entregaInicial = document.querySelector('input[name="tipo-entrega"]:checked');
-            
             if (entregaInicial && camposDomicilio) {
                 if (entregaInicial.value === "Domicilio") {
                     camposDomicilio.style.display = "flex";
@@ -553,16 +513,13 @@ document.addEventListener("DOMContentLoaded", () => {
         carrito.forEach((producto) => {
             const subtotalItem = producto.precio * producto.cantidad;
             granTotal += subtotalItem;
-
             const itemDiv = document.createElement("div");
             itemDiv.className = "item-lista-carrito";
-
             let detallesHTML = "";
             if (producto.acompanamiento) detallesHTML += `<li>${producto.acompanamiento}</li>`;
             if (producto.quitados.length > 0) detallesHTML += `<li>Sin: ${producto.quitados.join(", ")}</li>`;
             if (producto.adiciones.length > 0) detallesHTML += `<li>Extras: ${producto.adiciones.join(", ")}</li>`;
             if (producto.salsas.length > 0) detallesHTML += `<li>Salsas: ${producto.salsas.join(", ")}</li>`;
-
             itemDiv.innerHTML = `
                 <div class="info-item-car">
                     <h4><span style="color:#ff4757; font-weight:800;">${producto.cantidad}x</span> ${producto.nombre}</h4>
@@ -582,14 +539,11 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.addEventListener("click", (e) => {
                 const idEliminar = parseFloat(e.target.getAttribute("data-id"));
                 carrito = carrito.filter(item => item.id !== idEliminar);
-
                 const contadores = document.querySelectorAll(".contador-productos");
                 contadores.forEach(contador => {
                     contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
                 });
-
                 actualizarVisibilidadBotonCarrito();
-
                 if (carrito.length === 0) {
                     if (modalCarrito) modalCarrito.style.display = "none";
                 } else {
@@ -614,7 +568,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
         document.body.appendChild(modalConfirmacion);
-
         const btnCerrarConf = modalConfirmacion.querySelector(".btn-cerrar-confirmacion");
         btnCerrarConf.addEventListener("click", () => {
             modalConfirmacion.remove();
@@ -624,7 +577,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnConfirmarWhatsapp) {
         btnConfirmarWhatsapp.addEventListener("click", () => {
             if (carrito.length === 0) return;
-
             let mensaje = "*¡Hola Donde Carmen! 🍔*\n*Este es mi pedido desde el menú digital:*\n\n";
             let granTotal = 0;
 
@@ -657,7 +609,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 datosEnvioText += `🥡 *Entrega:* Pasar a recoger al local.\n`;
                 clienteDireccion = "No aplica";
             } else {
-                datosEnvioText += `🍽️ *Entrega:* Comer en el establecimiento.\n`;
+                datosEnvioText += `️ *Entrega:* Comer en el establecimiento.\n`;
                 clienteDireccion = "No aplica";
             }
 
@@ -698,7 +650,6 @@ document.addEventListener("DOMContentLoaded", () => {
             contadores.forEach(contador => {
                 contador.innerHTML = "0";
             });
-
             actualizarVisibilidadBotonCarrito();
             if (modalCarrito) modalCarrito.style.display = "none";
             mostrarConfirmacionPedido();
@@ -706,17 +657,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 11. UBICACIÓN GPS
+    // 10. UBICACIÓN GPS
     // =========================================================================
     window.obtenerUbicacionGPS = function() {
         const status = document.getElementById("status-gps");
         const btn = document.getElementById("btn-gps");
-
         if (!navigator.geolocation) {
             if (status) status.textContent = "❌ Tu teléfono no soporta geolocalización.";
             return;
         }
-
         if (status) status.textContent = "🛰️ Localizando...";
         if (btn) btn.disabled = true;
 
@@ -734,7 +683,7 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             (error) => {
                 if (btn) btn.disabled = false;
-                if (status) status.textContent = " No se pudo acceder al GPS. Activa tu ubicación.";
+                if (status) status.textContent = "⚠️ No se pudo acceder al GPS. Activa tu ubicación.";
                 console.log(error);
             },
             { enableHighAccuracy: true, timeout: 10000 }
@@ -742,11 +691,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // =========================================================================
-    // 12. CONTROL DE TIPOS DE ENTREGA
+    // 11. CONTROL DE TIPOS DE ENTREGA
     // =========================================================================
     const radiosEntrega = document.querySelectorAll('input[name="tipo-entrega"]');
     const camposDomicilio = document.getElementById("campos-domicilio");
-
     if (radiosEntrega && camposDomicilio) {
         radiosEntrega.forEach(radio => {
             radio.addEventListener("change", (e) => {
@@ -763,7 +711,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // =========================================================================
-    // 13. MARQUESINA INTERACTIVA
+    // 12. MARQUESINA INTERACTIVA
     // =========================================================================
     const marqueeItems = document.querySelectorAll(".marquee-item");
     marqueeItems.forEach(item => {
@@ -778,7 +726,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => {
                         item.style.background = "#ffffff";
                     }, 200);
-
                     const conMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
                     if (conMenu) {
                         window.scrollTo({

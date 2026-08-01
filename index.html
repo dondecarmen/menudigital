@@ -1,1410 +1,1261 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donde Carmen - Menú Digital</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donde Carmen - Menú Digital</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-    <!-- HERO BANNER -->
-    <header class="hero-banner">
-        <h1 class="titulo-principal">Donde Carmen</h1>
-        
-        <!-- MARQUESINA MODERNA -->
-        <div class="frase-contenedor-movil">
-            <div class="marquee-moderna-wrapper">
-                <div class="marquee-comercial">
-                    <span class="marquee-item">
-                        <span class="badge-live">🛵 DÍAS DE SERVICIO 🛵</span>
-                        <span class="frase-moderna">Atendemos de <span class="resaltado-ParriBurguer">Jueves a Lunes</span> • 5:00 PM a 11:59 PM ✨</span>
-                    </span>
-                    <span class="marquee-separator">•</span>
-                    <span class="marquee-item" data-destino="hamburguesas">
-                        <span class="badge-live">✨ NUEVO ✨</span>
-                        <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal • ¡Ver Categoría! 🧀</span>
-                    </span>
-                    <span class="marquee-separator">•</span>
-                    <span class="marquee-item" data-destino="desgranados">
-                        <span class="frase-moderna">🤤 Desgranado de <span class="resaltado-ParriBurguer">Chuleta Ahumada</span> • ¡Toca Aquí! 👆</span>
-                    </span>
-                    <span class="marquee-separator">•</span>
-                    <span class="marquee-item">
-                        <span class="badge-live">🛵 DÍAS DE SERVICIO 🛵</span>
-                        <span class="frase-moderna">Atendemos de <span class="resaltado-ParriBurguer">Jueves a Lunes</span> • 5:00 PM a 11:59 PM ✨</span>
-                    </span>
-                    <span class="marquee-separator">•</span>
-                    <span class="marquee-item" data-destino="hamburguesas">
-                        <span class="badge-live">✨ NUEVO ✨</span>
-                        <span class="frase-moderna">🔥 Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal • ¡Ver Categoría! 🧀</span>
-                    </span>
+<!-- 🔥 HERO BANNER -->
+<header class="hero-banner">
+    <h1 class="titulo-principal">Donde Carmen</h1>
+    <div class="frase-contenedor-movil">
+        <div class="marquee-moderna-wrapper">
+            <div class="marquee-comercial">
+                <div class="marquee-item" data-destino="todos">
+                    <span class="badge-live">🛵 SERVICIO</span>
+                    <span class="frase-moderna">Atendemos de <span class="resaltado-ParriBurguer">Jueves a Lunes</span> • 5:00 PM a 11:59 PM</span>
                 </div>
+                <span class="marquee-separator">✨</span>
+                <div class="marquee-item" data-destino="hamburguesas">
+                    <span class="badge-live">🔥 NUEVO</span>
+                    <span class="frase-moderna">Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal • ¡Ver Categoría! 🧀</span>
+                </div>
+                <span class="marquee-separator">•</span>
+                <div class="marquee-item" data-destino="desgranados">
+                    <span class="badge-live">🤤 TOP</span>
+                    <span class="frase-moderna">Desgranado de <span class="resaltado-ParriBurguer">Chuleta Ahumada</span> • ¡Toca Aquí! 👆</span>
+                </div>
+                <span class="marquee-separator">•</span>
+                <div class="marquee-item" data-destino="todos">
+                    <span class="badge-live">🛵 SERVICIO</span>
+                    <span class="frase-moderna">Atendemos de <span class="resaltado-ParriBurguer">Jueves a Lunes</span> • 5:00 PM a 11:59 PM</span>
+                </div>
+                <span class="marquee-separator">✨</span>
+                <div class="marquee-item" data-destino="hamburguesas">
+                    <span class="badge-live">🔥 NUEVO</span>
+                    <span class="frase-moderna">Prueba la nueva <span class="resaltado-ParriBurguer">ParriBurger</span> Artesanal • ¡Ver Categoría! 🧀</span>
+                </div>
+                <span class="marquee-separator">🧀</span>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 
-    <!-- FILTROS DE CATEGORÍAS -->
-    <nav class="filtros">
-        <button class="btn-filtro-card" data-categoria="arma-tu-plato"><span>🍟🍔 Arma tu Plato🥓🍹</span></button>
-        <button class="btn-filtro-card" data-categoria="salchipapas"><span> 🍟 Salchipapas</span></button>
-        <button class="btn-filtro-card" data-categoria="salchipicadas"><span>🍟🥓 Salchipicadas</span></button>
-        <button class="btn-filtro-card" data-categoria="desgranados"><span>🧀 Desgranados</span></button>
-        <button class="btn-filtro-card" data-categoria="arepas"><span>🫓 Arepas</span></button>
-        <button class="btn-filtro-card" data-categoria="asados"><span>🥩 Asados</span></button>
-        <button class="btn-filtro-card" data-categoria="picadas"><span>🍖🍟 Picadas</span></button>
-        <button class="btn-filtro-card" data-categoria="hamburguesas"><span> 😋🍔Hamburguesas</span></button>
-        <button class="btn-filtro-card" data-categoria="patacones"><span>🧀🤤 Patacones</span></button>
-        <button class="btn-filtro-card" data-categoria="chorizos"><span> 🤤 Chorizos</span></button>
-        <button class="btn-filtro-card" data-categoria="butifarras"><span>🥓 Butifarras</span></button>
-        <button class="btn-filtro-card" data-categoria="bebidas"><span> 🍹 Bebidas</span></button>
-    </nav>
+<!-- 🎯 BOTONES DE CATEGORÍAS -->
+<nav class="filtros">
+    <button class="btn-filtro-card" data-categoria="salchipapas"><span>🍟 Salchipapas</span></button>
+    <button class="btn-filtro-card" data-categoria="salchipicadas"><span>🍟🥓 Salchipicadas</span></button>
+    <button class="btn-filtro-card" data-categoria="desgranados"><span>🧀 Desgranados</span></button>
+    <button class="btn-filtro-card" data-categoria="arepas"><span>🫓 Arepas</span></button>
+    <button class="btn-filtro-card" data-categoria="asados"><span>🥩 Asados</span></button>
+    <button class="btn-filtro-card" data-categoria="chuzos"><span>🍢 Chuzos</span></button>
+    <button class="btn-filtro-card" data-categoria="picadas"><span>🍖🍟 Picadas</span></button>
+    <button class="btn-filtro-card" data-categoria="hamburguesas"><span>😋🍔 Hamburguesas</span></button>
+    <button class="btn-filtro-card" data-categoria="patacones"><span>🧀🤤 Patacones</span></button>
+    <button class="btn-filtro-card" data-categoria="chorizos"><span>🤤 Chorizos</span></button>
+    <button class="btn-filtro-card" data-categoria="butifarras"><span>🥓 Butifarras</span></button>
+    <button class="btn-filtro-card" data-categoria="bebidas"><span>🍹 Bebidas</span></button>
+</nav>
 
-    <!-- MENÚ -->
-    <main class="contenedor-menu">
-        <!-- ARMA TU PLATO -->
-        <article class="item-menu arma-tu-plato" data-categoria="arma-tu-plato">
-            <span class="badge-especial">✨ MÁS POPULAR</span>
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1585238342024-78d387d3a3c1?w=400" alt="Arma tu Plato" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>🛠️ Arma tu Plato</h3>
-                    <p class="descripcion">Crea tu combinación perfecta en 4 pasos. ¡Tú eliges base, proteína, extras y salsas!</p>
-                    <p class="precio" data-precio-base="5000">desde $5.000</p>
-                </div>
+<!-- 🍽️ CONTENEDOR DEL MENÚ -->
+<main class="contenedor-menu">
+
+    <!-- 🍟 SALCHIPAPAS -->
+    <div class="item-menu" data-categoria="salchipapas">
+        <div class="info-plato-principal">
+            <img src="https://i.ibb.co/ycywjhr7/OIP.jpg" alt="Salchipapas Normal" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Salchipapas Normal</h3>
+                <p class="descripcion">Papas a la francesa, salchichas y salsas de la casa.</p>
+                <p class="precio" data-precio-base="7000">$7.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personaliza tu plato paso a paso</summary>
-                <div class="seccion-personalizacion builder-atp">
-                    <h4 class="titulo-seccion titulo-paso">🥔 1. Elige tu BASE</h4>
-                    <p class="ayuda-atp">Selecciona una opción</p>
-                    <div class="grupo-opciones-atp">
-                        <label class="opcion-atp">
-                            <input type="radio" name="base-atp" value="Papas a la francesa" data-valor="5000" class="input-precio-atp" checked>
-                            <span class="emoji-atp">🍟</span>
-                            <span class="texto-atp"><strong>Papas a la francesa</strong> <small>Incluida</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="radio" name="base-atp" value="Patacón crujiente" data-valor="6000" class="input-precio-atp">
-                            <span class="emoji-atp">🍌</span>
-                            <span class="texto-atp"><strong>Patacón crujiente</strong> <small>+$1.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="radio" name="base-atp" value="Arepa paisa frita" data-valor="6500" class="input-precio-atp">
-                            <span class="emoji-atp">🫓</span>
-                            <span class="texto-atp"><strong>Arepa paisa frita</strong> <small>+$1.500</small></span>
-                        </label>
-                    </div>
-
-                    <h4 class="titulo-seccion titulo-paso"> 2. Agrega tu PROTEÍNA</h4>
-                    <p class="ayuda-atp">Puedes elegir varias 🤤</p>
-                    <div class="grupo-opciones-atp">
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Carne desmechada" data-valor="8000" class="adicion-item input-precio-atp opcion-proteina">
-                            <span class="emoji-atp">🐄</span>
-                            <span class="texto-atp"><strong>Carne desmechada</strong> <small>+$8.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Pollo desmechado" data-valor="7000" class="adicion-item input-precio-atp opcion-proteina">
-                            <span class="emoji-atp">🐔</span>
-                            <span class="texto-atp"><strong>Pollo desmechado</strong> <small>+$7.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Chuleta ahumada" data-valor="8000" class="adicion-item input-precio-atp opcion-proteina">
-                            <span class="emoji-atp"></span>
-                            <span class="texto-atp"><strong>Chuleta ahumada</strong> <small>+$8.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Salchicha + Tocineta" data-valor="6000" class="adicion-item input-precio-atp opcion-proteina">
-                            <span class="emoji-atp"></span>
-                            <span class="texto-atp"><strong>Salchicha + Tocineta</strong> <small>+$6.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Albóndigas de la casa" data-valor="7000" class="adicion-item input-precio-atp opcion-proteina">
-                            <span class="emoji-atp">🍖</span>
-                            <span class="texto-atp"><strong>Albóndigas de la casa</strong> <small>+$7.000</small></span>
-                        </label>
-                    </div>
-
-                    <h4 class="titulo-seccion titulo-paso"> 3. Agrega EXTRAS</h4>
-                    <div class="grupo-opciones-atp">
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Queso mozzarella" data-valor="2000" class="adicion-item input-precio-atp opcion-extra">
-                            <span class="emoji-atp"></span>
-                            <span class="texto-atp"><strong>Queso mozzarella</strong> <small>+$2.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Tocineta extra" data-valor="2000" class="adicion-item input-precio-atp opcion-extra">
-                            <span class="emoji-atp">🥓</span>
-                            <span class="texto-atp"><strong>Tocineta extra</strong> <small>+$2.000</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Maicitos" data-valor="1500" class="adicion-item input-precio-atp opcion-extra">
-                            <span class="emoji-atp">🌽</span>
-                            <span class="texto-atp"><strong>Maicitos</strong> <small>+$1.500</small></span>
-                        </label>
-                        <label class="opcion-atp">
-                            <input type="checkbox" value="Huevo frito" data-valor="2000" class="adicion-item input-precio-atp opcion-extra">
-                            <span class="emoji-atp">🍳</span>
-                            <span class="texto-atp"><strong>Huevo frito</strong> <small>+$2.000</small></span>
-                        </label>
-                    </div>
-
-                    <h4 class="titulo-seccion titulo-paso">🧴 4. Elige tus SALSAS</h4>
-                    <div class="grupo-opciones-atp grupo-salsas-atp">
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Sin Salsas" class="salsa-item">
-                            <span class="texto-atp">🚫 Sin salsas</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Rosada" class="salsa-item">
-                            <span class="texto-atp">Rosada</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Roja" class="salsa-item">
-                            <span class="texto-atp">Roja</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Piña" class="salsa-item">
-                            <span class="texto-atp">Piña</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="BBQ" class="salsa-item">
-                            <span class="texto-atp">BBQ</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Guac." class="salsa-item">
-                            <span class="texto-atp">Guac.</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Ajo" class="salsa-item">
-                            <span class="texto-atp">Ajo</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Maíz" class="salsa-item">
-                            <span class="texto-atp">Maíz</span>
-                        </label>
-                        <label class="opcion-atp opcion-salsa">
-                            <input type="checkbox" value="Tocineta" class="salsa-item">
-                            <span class="texto-atp">Tocineta</span>
-                        </label>
-                    </div>
-
-                    <div class="resumen-atp">
-                        <div class="fila-resumen"><span>Base:</span> <strong id="resumen-base-atp">Papas a la francesa</strong></div>
-                        <div class="fila-resumen"><span>Proteínas:</span> <strong id="resumen-proteinas-atp">Ninguna</strong></div>
-                        <div class="fila-resumen"><span>Extras:</span> <strong id="resumen-extras-atp">Ninguno</strong></div>
-                    </div>
-
-                    <button class="btn-pedir-plato btn-atp-final">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <!-- SALCHIPAPAS -->
-        <article class="item-menu" data-categoria="salchipapas">
-            <div class="info-plato-principal">
-                <img src="https://i.ibb.co/ycywjhr7/OIP.jpg" alt="Salchipapas Normal" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Salchipapas Normal</h3>
-                    <p class="descripcion">Papas a la francesa, salchichas y salsas de la casa.</p>
-                    <p class="precio" data-precio-base="7000">$7.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Salsas"> Sin Salsas</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="quitar-item"> Sin Salsas</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="salchipapas">
-            <div class="info-plato-principal">
-                <img src="https://i.ibb.co/gbPzMrd4/images.jpg" alt="Salchipapas Sencilla" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Salchipapas Sencilla</h3>
-                    <p class="descripcion">Papas a la francesa, salchichas, tocineta y salsas de la casa.</p>
-                    <p class="precio" data-precio-base="9000">$9.000</p>
-                </div>
+    <div class="item-menu" data-categoria="salchipapas">
+        <div class="info-plato-principal">
+            <img src="https://i.ibb.co/gbPzMrd4/images.jpg" alt="Salchipapas Sencilla" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Salchipapas Sencilla</h3>
+                <p class="descripcion">Papas a la francesa, salchichas, tocineta y salsas de la casa.</p>
+                <p class="precio" data-precio-base="9000">$9.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Tocineta" class="quitar-item"> Sin Tocineta</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="quitar-item"> Sin Salsas</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="salchipicadas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchiburguer" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Salchiburguer</h3>
-                    <p class="descripcion">Papas, salchichas, tocineta, carne de hamburguesa, queso mozzarella y salsas.</p>
-                    <p class="precio" data-precio-base="14000">$14.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Salsas"> Sin Salsas</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Tocineta" class="quitar-item"> Sin Tocineta</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="salchipicadas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchipicada Super" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Salchipicada Super</h3>
-                    <p class="descripcion">Papas, salchichas, tocineta, carne de hamburguesa, butifarra, queso mozzarella y salsas.</p>
-                    <p class="precio" data-precio-base="18000">$18.000</p>
-                </div>
+    <div class="item-menu" data-categoria="salchipapas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchiburguer" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Salchiburguer</h3>
+                <p class="descripcion">Papas, salchichas, tocineta, carne de hamburguesa, queso mozzarella y salsas.</p>
+                <p class="precio" data-precio-base="14000">$14.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Butifarra" class="quitar-item"> Sin Butifarra</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="salchipicadas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchipicadas Mega" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Salchipicadas Mega</h3>
-                    <p class="descripcion">Papas, salchichas, tocineta, carne, butifarra, chorizo, queso mozzarella y salsas.</p>
-                    <p class="precio" data-precio-base="22000">$22.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Chorizo" class="quitar-item"> Sin Chorizo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Butifarra" class="quitar-item"> Sin Butifarra</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="salchipicadas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt='Salchipicada "La que tal"' class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Salchipicada "La que tal"</h3>
-                    <p class="descripcion">Papas, salchichas, tocineta, carne, butifarra, chorizo, maicitos, queso mozzarella y salsas.</p>
-                    <p class="precio" data-precio-base="25000">$25.000</p>
-                </div>
+    <!-- 🍟🥓 SALCHIPICADAS -->
+    <div class="item-menu" data-categoria="salchipicadas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchipicada Super" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Salchipicada Super</h3>
+                <p class="descripcion">Papas, salchichas, tocineta, carne de hamburguesa, butifarra, queso mozzarella y salsas.</p>
+                <p class="precio" data-precio-base="18000">$18.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Maicitos" class="quitar-item"> Sin Maicitos</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Tocineta" class="quitar-item"> Sin Tocineta</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito </button>
-                </div>
-            </details>
-        </article>
-
-        <!-- DESGRANADOS -->
-        <article class="item-menu" data-categoria="desgranados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Carne Desmechada" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Desgranado Carne Desmechada</h3>
-                    <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y jugosa carne desmechada.</p>
-                    <p class="precio" data-precio-base="24000">$24.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Butifarra"> Sin Butifarra</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Maicitos" class="quitar-item"> Sin Maicitos</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito </button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="desgranados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Mixto" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Desgranado Mixto</h3>
-                    <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y combinación de carnes.</p>
-                    <p class="precio" data-precio-base="22000">$22.000</p>
-                </div>
+    <div class="item-menu" data-categoria="salchipicadas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchipicadas Mega" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Salchipicadas Mega</h3>
+                <p class="descripcion">Papas, salchichas, tocineta, carne, butifarra, chorizo, queso mozzarella y salsas.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
             </div>
-            <details>
-                <summary>️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Maicitos" class="quitar-item"> Sin Maicitos</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="desgranados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Pollo Desmechado" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Desgranado Pollo Desmechado</h3>
-                    <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y tierno pollo desmechado.</p>
-                    <p class="precio" data-precio-base="20000">$20.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Chorizo"> Sin Chorizo</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Butifarra"> Sin Butifarra</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Maicitos" class="quitar-item"> Sin Maicitos</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="desgranados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Chuleta Ahumada" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Desgranado Chuleta Ahumada</h3>
-                    <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y deliciosa chuleta ahumada.</p>
-                    <p class="precio" data-precio-base="22000">$22.000</p>
-                </div>
+    <div class="item-menu" data-categoria="salchipicadas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Salchipicada La que tal" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Salchipicada "La que tal"</h3>
+                <p class="descripcion">Papas, salchichas, tocineta, carne, butifarra, chorizo, maicitos, queso mozzarella y salsas.</p>
+                <p class="precio" data-precio-base="25000">$25.000</p>
             </div>
-            <details>
-                <summary>️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Maicitos" class="quitar-item"> Sin Maicitos</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="desgranados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Albóndigas" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Desgranado Albóndigas</h3>
-                    <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y sabrosas albóndigas de la casa.</p>
-                    <p class="precio" data-precio-base="20000">$20.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Maicitos"> Sin Maicitos</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Albóndigas" class="quitar-item"> Sin Albóndigas</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <!-- AREPAS -->
-        <article class="item-menu" data-categoria="arepas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=400" alt="Arepa Rellena Carne Desmechada" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Arepa Rellena Carne Desmechada</h3>
-                    <p class="descripcion">Arepa abierta y rellena con abundante queso mozzarella y jugosa carne desmechada.</p>
-                    <p class="precio" data-precio-base="16000">$16.000</p>
-                </div>
+    <!-- 🧀 DESGRANADOS -->
+    <div class="item-menu" data-categoria="desgranados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Carne" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Desgranado Carne Desmechada</h3>
+                <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y jugosa carne desmechada.</p>
+                <p class="precio" data-precio-base="24000">$24.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="arepas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=400" alt="Arepa Rellena Pollo Desmechado" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Arepa Rellena Pollo Desmechado</h3>
-                    <p class="descripcion">Arepa abierta y rellena con abundante queso mozzarella y tierno pollo desmechado.</p>
-                    <p class="precio" data-precio-base="13000">$13.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Maicitos"> Sin Maicitos</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="arepas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=400" alt="Arepa Rellena Mixta" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Arepa Rellena Mixta</h3>
-                    <p class="descripcion">Arepa abierta y rellena con queso mozzarella, combinación de pollo y carne desmechada.</p>
-                    <p class="precio" data-precio-base="14000">$14.000</p>
-                </div>
+    <div class="item-menu" data-categoria="desgranados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Mixto" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Desgranado Mixto</h3>
+                <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y combinación de carnes.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="arepas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Arepa Frita con Carne Desmechada" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Arepa Frita con Carne Desmechada</h3>
-                    <p class="descripcion">Arepa Paisa frita crujiente con papas a la francesa, queso mozzarella y carne desmechada.</p>
-                    <p class="precio" data-precio-base="16000">$16.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Maicitos"> Sin Maicitos</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="arepas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Arepa Frita con Pollo Desmechado" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Arepa Frita con Pollo Desmechado</h3>
-                    <p class="descripcion">Arepa Paisa frita crujiente con papas a la francesa, queso mozzarella y pollo desmechado.</p>
-                    <p class="precio" data-precio-base="13000">$13.000</p>
-                </div>
+    <div class="item-menu" data-categoria="desgranados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Pollo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Desgranado Pollo Desmechado</h3>
+                <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y tierno pollo desmechado.</p>
+                <p class="precio" data-precio-base="20000">$20.000</p>
             </div>
-            <details>
-                <summary>️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="arepas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Arepa Frita Mixta" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Arepa Frita Mixta</h3>
-                    <p class="descripcion">Arepa Paisa frita crujiente con papas a la francesa, queso mozzarella, carne y pollo desmechado.</p>
-                    <p class="precio" data-precio-base="14000">$14.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Maicitos"> Sin Maicitos</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <!-- ASADOS -->
-        <article class="item-menu" data-categoria="asados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Asado Pechuga de Pollo" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Asado Pechuga de Pollo</h3>
-                    <p class="descripcion">Jugosa pechuga de pollo asada a la plancha con papas a la francesa, arepa paisa y queso mozzarella.</p>
-                    <p class="precio" data-precio-base="22000">$22.000</p>
-                </div>
+    <div class="item-menu" data-categoria="desgranados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Chuleta" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Desgranado Chuleta Ahumada</h3>
+                <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y deliciosa chuleta ahumada.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="asados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Asado Solomo de Res" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Asado Solomo de Res</h3>
-                    <p class="descripcion">Corte de solomo de res tierno asado a la plancha con papas a la francesa, arepa paisa y queso mozzarella.</p>
-                    <p class="precio" data-precio-base="26000">$26.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Maicitos"> Sin Maicitos</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="asados">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Asado Lomo de Cerdo" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Asado Lomo de Cerdo</h3>
-                    <p class="descripcion">Lomo de cerdo seleccionado asado a la plancha con papas a la francesa, arepa paisa y queso mozzarella.</p>
-                    <p class="precio" data-precio-base="22000">$22.000</p>
-                </div>
+    <div class="item-menu" data-categoria="desgranados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" alt="Desgranado Albóndigas" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Desgranado Albóndigas</h3>
+                <p class="descripcion">Base de papas, tocineta, maicitos, queso mozzarella y sabrosas albóndigas de la casa.</p>
+                <p class="precio" data-precio-base="20000">$20.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <!-- PICADAS -->
-        <article class="item-menu" data-categoria="picadas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Picada Normal" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Picada Normal</h3>
-                    <p class="descripcion">Lomo de cerdo, solomo de res, pechuga de pollo, chorizos, butifarras, papas y acompañamiento.</p>
-                    <p class="precio" data-precio-base="30000">$30.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Albóndigas"> Sin Albóndigas</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Seleccionar acompañamiento</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">Acompañado con:</h4>
-                    <label class="opcion-check"><input type="radio" name="acompanamiento-picada-normal" value="Con Patacón" checked> Con Patacón</label>
-                    <label class="opcion-check"><input type="radio" name="acompanamiento-picada-normal" value="Con Arepa"> Con Arepa</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="picadas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Picada Familiar" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Picada Familiar</h3>
-                    <p class="descripcion">Porción gigante: Lomo, solomo, pechuga, chorizos, butifarras, papas y acompañamiento.</p>
-                    <p class="precio" data-precio-base="50000">$50.000</p>
-                </div>
+    <!-- 🫓 AREPAS -->
+    <div class="item-menu" data-categoria="arepas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=400" alt="Arepa Rellena Carne" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Arepa Rellena Carne Desmechada</h3>
+                <p class="descripcion">Arepa abierta y rellena con abundante queso mozzarella y jugosa carne desmechada.</p>
+                <p class="precio" data-precio-base="16000">$16.000</p>
             </div>
-            <details>
-                <summary>⚙️ Seleccionar acompañamiento</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">Acompañado con:</h4>
-                    <label class="opcion-check"><input type="radio" name="acompanamiento-picada-familiar" value="Con Patacón" checked> Con Patacón</label>
-                    <label class="opcion-check"><input type="radio" name="acompanamiento-picada-familiar" value="Con Arepa"> Con Arepa</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <!-- PATACONES -->
-        <article class="item-menu" data-categoria="patacones">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Patacón con Carne Desmechada" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Patacón con Carne Desmechada</h3>
-                    <p class="descripcion">Patacón crujiente con papas a la francesa, queso mozzarella derretido y carne desmechada.</p>
-                    <p class="precio" data-precio-base="23000">$23.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="patacones">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Patacón Mixto" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Patacón Mixto</h3>
-                    <p class="descripcion">Patacón crujiente con papas a la francesa, queso mozzarella derretido y combinación de carnes.</p>
-                    <p class="precio" data-precio-base="22000">$22.000</p>
-                </div>
+    <div class="item-menu" data-categoria="arepas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=400" alt="Arepa Rellena Pollo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Arepa Rellena Pollo Desmechado</h3>
+                <p class="descripcion">Arepa abierta y rellena con abundante queso mozzarella y tierno pollo desmechado.</p>
+                <p class="precio" data-precio-base="13000">$13.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="patacones">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Patacón Pollo Desmechado" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Patacón Pollo Desmechado</h3>
-                    <p class="descripcion">Patacón crujiente con papas a la francesa, queso mozzarella derretido y tierno pollo desmechado.</p>
-                    <p class="precio" data-precio-base="20000">$20.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <!-- HAMBURGUESAS -->
-        <article class="item-menu" data-categoria="hamburguesas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt='ParriBurguer Sifrina "Gomela"' class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>ParriBurguer Sifrina "Gomela"</h3>
-                    <p class="descripcion">Carne artesanal, chorizo, huevo frito, queso mozzarella, papas ripio y salsas de la casa.</p>
-                    <p class="precio" data-precio-base="12000">$12.000</p>
-                </div>
+    <div class="item-menu" data-categoria="arepas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1627662236973-4f8259fa2441?w=400" alt="Arepa Rellena Mixta" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Arepa Rellena Mixta</h3>
+                <p class="descripcion">Arepa abierta y rellena con queso mozzarella, combinación de pollo y carne desmechada.</p>
+                <p class="precio" data-precio-base="14000">$14.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar ingredientes</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Huevo Frito" class="quitar-item"> Sin Huevo Frito</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Papas Ripio" class="quitar-item"> Sin Papas Ripio</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item">  Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="hamburguesas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt='ParriBurguer "La Bestia" (1 Carne)' class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>ParriBurguer "La Bestia" (1 Carne)</h3>
-                    <p class="descripcion">Carne artesanal, chorizo, tocineta, carne desmechada, huevo frito, jamón, queso mozzarella, papas ripio y salsas.</p>
-                    <p class="precio" data-precio-base="18000">$18.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar ingredientes</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Huevo Frito" class="quitar-item"> Sin Huevo Frito</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Papas Ripio" class="quitar-item"> Sin Papas Ripio</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Tocineta" class="quitar-item"> Sin Tocineta</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones épicas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="hamburguesas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt='ParriBurguer "La Bestia" (2 Carnes)' class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>ParriBurguer "La Bestia" (2 Carnes)</h3>
-                    <p class="descripcion">Doble carne artesanal, chorizo, tocineta, carne desmechada, huevo frito, jamón, queso mozzarella, papas ripio y salsas.</p>
-                    <p class="precio" data-precio-base="24000">$24.000</p>
-                </div>
+    <div class="item-menu" data-categoria="arepas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Arepa Frita Carne" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Arepa Frita con Carne Desmechada</h3>
+                <p class="descripcion">Arepa Paisa frita crujiente con papas a la francesa, queso mozzarella y carne desmechada.</p>
+                <p class="precio" data-precio-base="16000">$16.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar ingredientes</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Quitar algo?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Huevo Frito" class="quitar-item"> Sin Huevo Frito</label>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Tocineta" class="quitar-item"> Sin Tocineta</label>
-                    
-                    <h4 class="titulo-seccion">¿Adiciones?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Salchicha" data-valor="2000" class="adicion-item"> + Salchicha (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" data-valor="2000" class="adicion-item"> + Tocineta (+$2.000)</label>
-                    <label class="opcion-check"><input type="checkbox" value="Queso" data-valor="2000" class="adicion-item"> + Queso (+$2.000)</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <!-- CHORIZOS -->
-        <article class="item-menu" data-categoria="chorizos">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Chorizo Normal" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Chorizo Normal</h3>
-                    <p class="descripcion">Sabor tradicional. Chorizo seleccionado asado a la plancha acompañado de una crocante arepa frita.</p>
-                    <p class="precio" data-precio-base="4000">$4.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <article class="item-menu" data-categoria="chorizos">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Choripapa" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Choripapa</h3>
-                    <p class="descripcion">Porción de papas a la francesa acompañadas con trozos de chorizo premium.</p>
-                    <p class="precio" data-precio-base="6000">$6.000</p>
-                </div>
+    <div class="item-menu" data-categoria="arepas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Arepa Frita Pollo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Arepa Frita con Pollo Desmechado</h3>
+                <p class="descripcion">Arepa Paisa frita crujiente con papas a la francesa, queso mozzarella y pollo desmechado.</p>
+                <p class="precio" data-precio-base="13000">$13.000</p>
             </div>
-            <details>
-                <summary>⚙️ Elegir tipo de chorizo</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">Tipo de Chorizo:</h4>
-                    <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa" value="Chorizo de Pollo" checked> Chorizo de Pollo</label>
-                    <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa" value="Chorizo de Cerdo"> Chorizo de Cerdo</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-
-        <article class="item-menu" data-categoria="chorizos">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Choripapa Especial" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Choripapa Especial</h3>
-                    <p class="descripcion">Papas a la francesa y arepa frita con trozos de chorizo, coronado con tocineta crocante y queso mozzarella fundido.</p>
-                    <p class="precio" data-precio-base="12000">$12.000</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Elegir tipo de chorizo</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">Tipo de Chorizo:</h4>
-                    <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa-especial" value="Chorizo de Pollo" checked> Chorizo de Pollo</label>
-                    <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa-especial" value="Chorizo de Cerdo"> Chorizo de Cerdo</label>
-                    
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
+        </details>
+    </div>
 
-        <!-- BUTIFARRAS -->
-        <article class="item-menu" data-categoria="butifarras">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Butifarra Tradicional" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Butifarra Tradicional</h3>
-                    <p class="descripcion">Butifarra seleccionada y asada a la plancha con el toque secreto de la casa. (Precio por unidad).</p>
-                    <p class="precio" data-precio-base="1000">$1.000</p>
-                </div>
+    <div class="item-menu" data-categoria="arepas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Arepa Frita Mixta" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Arepa Frita Mixta</h3>
+                <p class="descripcion">Arepa Paisa frita crujiente con papas a la francesa, queso mozzarella, carne y pollo desmechado.</p>
+                <p class="precio" data-precio-base="14000">$14.000</p>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
-                    <label class="opcion-check"><input type="checkbox" value="Sin Salsas" class="salsa-item"> 🚫 Sin Salsas</label>
-                    <label class="opcion-check"><input type="checkbox" value="Rosada" class="salsa-item"> Rosada</label>
-                    <label class="opcion-check"><input type="checkbox" value="Roja" class="salsa-item"> Roja</label>
-                    <label class="opcion-check"><input type="checkbox" value="Piña" class="salsa-item"> Piña</label>
-                    <label class="opcion-check"><input type="checkbox" value="BBQ" class="salsa-item"> BBQ</label>
-                    <label class="opcion-check"><input type="checkbox" value="Guac." class="salsa-item"> Guac.</label>
-                    <label class="opcion-check"><input type="checkbox" value="Ajo" class="salsa-item"> Ajo</label>
-                    <label class="opcion-check"><input type="checkbox" value="Maíz" class="salsa-item"> Maíz</label>
-                    <label class="opcion-check"><input type="checkbox" value="Tocineta" class="salsa-item"> Tocineta</label>
-                    
-                    <button class="btn-pedir-plato">Añadir al Carrito </button>
-                </div>
-            </details>
-        </article>
-
-        <!-- BEBIDAS -->
-        <article class="item-menu" data-categoria="bebidas">
-            <div class="info-plato-principal">
-                <img src="https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400" alt="Bebida Refrescante" class="foto-plato">
-                <div class="detalles-basicos">
-                    <h3>Bebida Refrescante</h3>
-                    <p class="descripcion">Gaseosas o jugos de tu preferencia, servidos bien fríos para acompañar el pedido.</p>
-                    <p class="precio" data-precio-base="1500">$1.500</p>
-                </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
             </div>
-            <details>
-                <summary>⚙️ Personalizar plato</summary>
-                <div class="seccion-personalizacion">
-                    <p style="font-size: 0.9rem; color: #6c757d; margin-bottom: 15px;">Especifica los sabores al enviar tu pedido.</p>
-                    <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
-                </div>
-            </details>
-        </article>
-    </main>
+        </details>
+    </div>
 
-    <!-- BOTÓN FLOTANTE VER MI PEDIDO (ÚNICO) -->
-    <a href="#" id="btn-ver-carrito" class="btn-flotante-carrito">
-         VER MI PEDIDO (<span id="contador-productos" class="contador-productos">0</span>)
-    </a>
+    <!-- 🥩 ASADOS -->
+    <div class="item-menu" data-categoria="asados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Asado Pechuga" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Asado Pechuga de Pollo</h3>
+                <p class="descripcion">Jugosa pechuga de pollo asada a la plancha con papas a la francesa, arepa paisa y queso mozzarella.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
 
-    <!-- BOTÓN WHATSAPP FIJO (ÚNICO) -->
-    <a href="https://wa.me/573028549426" class="btn-whatsapp" target="_blank">
-        💬 WhatsApp <span id="contador-whatsapp">0</span>
-    </a>
+    <div class="item-menu" data-categoria="asados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Asado Solomo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Asado Solomo de Res</h3>
+                <p class="descripcion">Corte de solomo de res tierno asado a la plancha con papas a la francesa, arepa paisa y queso mozzarella.</p>
+                <p class="precio" data-precio-base="26000">$26.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
 
-    <!-- MODAL DEL CARRITO (CON CAMPOS DE ENTREGA DENTRO) -->
-    <!-- MODAL DEL CARRITO -->
-<div id="modal-carrito" class="modal-carrito">
+    <div class="item-menu" data-categoria="asados">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Asado Lomo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Asado Lomo de Cerdo</h3>
+                <p class="descripcion">Lomo de cerdo seleccionado asado a la plancha con papas a la francesa, arepa paisa y queso mozzarella.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 🍢 CHUZOS -->
+    <div class="item-menu" data-categoria="chuzos">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400" alt="Mini Chuzo de Pollo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Mini Chuzo de Pollo</h3>
+                <p class="descripcion">Jugoso chuzo de pollo a la plancha acompañado de papas a la francesa, arepa, tocineta crocante, queso mozzarella y salsas de la casa.</p>
+                <p class="precio" data-precio-base="15000">$15.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Arepa"> Sin Arepa</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Queso"> Sin Queso</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Salsas"> Sin Salsas</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta Extra" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso Extra" data-valor="2000"> + Queso (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Huevo Frito" data-valor="2000"> + Huevo Frito (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="chuzos">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400" alt="Mega Chuzo de Pollo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Mega Chuzo de Pollo 🏆</h3>
+                <p class="descripcion">Generoso chuzo con 250g de milanesa de pollo a la plancha, acompañado de papas a la francesa, arepa, tocineta crocante y salsas de la casa.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Arepa"> Sin Arepa</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Salsas"> Sin Salsas</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso Extra" data-valor="2000"> + Queso (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta Extra" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Huevo Frito" data-valor="2000"> + Huevo Frito (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 🍖🍟 PICADAS -->
+    <div class="item-menu" data-categoria="picadas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Picada Normal" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Picada Normal</h3>
+                <p class="descripcion">Lomo de cerdo, solomo de res, pechuga de pollo, chorizos, butifarras, papas y acompañamiento.</p>
+                <p class="precio" data-precio-base="30000">$30.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Seleccionar acompañamiento</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">Acompañado con:</h4>
+                <label class="opcion-check"><input type="radio" name="acompanamiento-picada-normal" value="Con Patacón" checked> Con Patacón</label>
+                <label class="opcion-check"><input type="radio" name="acompanamiento-picada-normal" value="Con Arepa"> Con Arepa</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="picadas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Picada Familiar" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Picada Familiar</h3>
+                <p class="descripcion">Porción gigante: Lomo, solomo, pechuga, chorizos, butifarras, papas y acompañamiento.</p>
+                <p class="precio" data-precio-base="50000">$50.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Seleccionar acompañamiento</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">Acompañado con:</h4>
+                <label class="opcion-check"><input type="radio" name="acompanamiento-picada-familiar" value="Con Patacón" checked> Con Patacón</label>
+                <label class="opcion-check"><input type="radio" name="acompanamiento-picada-familiar" value="Con Arepa"> Con Arepa</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 😋🍔 HAMBURGUESAS -->
+    <div class="item-menu" data-categoria="hamburguesas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt="ParriBurguer Sifrina" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>ParriBurguer Sifrina "Gomela"</h3>
+                <p class="descripcion">Carne artesanal, chorizo, huevo frito, queso mozzarella, papas ripio y salsas de la casa.</p>
+                <p class="precio" data-precio-base="12000">$12.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar ingredientes</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Huevo Frito"> Sin Huevo Frito</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Papas Ripio"> Sin Papas Ripio</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="hamburguesas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt="ParriBurguer La Bestia 1" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>ParriBurguer "La Bestia" (1 Carne)</h3>
+                <p class="descripcion">Carne artesanal, chorizo, tocineta, carne desmechada, huevo frito, jamón, queso mozzarella, papas ripio y salsas.</p>
+                <p class="precio" data-precio-base="18000">$18.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar ingredientes</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Huevo Frito"> Sin Huevo Frito</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Papas Ripio"> Sin Papas Ripio</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <h4 class="titulo-seccion">¿Adiciones épicas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="hamburguesas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt="ParriBurguer La Bestia 2" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>ParriBurguer "La Bestia" (2 Carnes)</h3>
+                <p class="descripcion">Doble carne artesanal, chorizo, tocineta, carne desmechada, huevo frito, jamón, queso mozzarella, papas ripio y salsas.</p>
+                <p class="precio" data-precio-base="24000">$24.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar ingredientes</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Quitar algo?</h4>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Huevo Frito"> Sin Huevo Frito</label>
+                <label class="opcion-check"><input type="checkbox" class="quitar-item" value="Tocineta"> Sin Tocineta</label>
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 🧀🤤 PATACONES -->
+    <div class="item-menu" data-categoria="patacones">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Patacón Carne" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Patacón con Carne Desmechada</h3>
+                <p class="descripcion">Patacón crujiente con papas a la francesa, queso mozzarella derretido y carne desmechada.</p>
+                <p class="precio" data-precio-base="23000">$23.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="patacones">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Patacón Mixto" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Patacón Mixto</h3>
+                <p class="descripcion">Patacón crujiente con papas a la francesa, queso mozzarella derretido y combinación de carnes.</p>
+                <p class="precio" data-precio-base="22000">$22.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="patacones">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=400" alt="Patacón Pollo" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Patacón Pollo Desmechado</h3>
+                <p class="descripcion">Patacón crujiente con papas a la francesa, queso mozzarella derretido y tierno pollo desmechado.</p>
+                <p class="precio" data-precio-base="20000">$20.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Adiciones?</h4>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Salchicha" data-valor="2000"> + Salchicha (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Tocineta" data-valor="2000"> + Tocineta (+$2.000)</label>
+                <label class="opcion-check"><input type="checkbox" class="adicion-item" value="Queso" data-valor="2000"> + Queso (+$2.000)</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 🤤 CHORIZOS -->
+    <div class="item-menu" data-categoria="chorizos">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Chorizo Normal" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Chorizo Normal</h3>
+                <p class="descripcion">Sabor tradicional. Chorizo seleccionado asado a la plancha acompañado de una crocante arepa frita.</p>
+                <p class="precio" data-precio-base="4000">$4.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="chorizos">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Choripapa" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Choripapa</h3>
+                <p class="descripcion">Porción de papas a la francesa acompañadas con trozos de chorizo premium.</p>
+                <p class="precio" data-precio-base="6000">$6.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Elegir tipo de chorizo</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">Tipo de Chorizo:</h4>
+                <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa" value="Chorizo de Pollo" checked> Chorizo de Pollo</label>
+                <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa" value="Chorizo de Cerdo"> Chorizo de Cerdo</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <div class="item-menu" data-categoria="chorizos">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Choripapa Especial" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Choripapa Especial</h3>
+                <p class="descripcion">Papas a la francesa y arepa frita con trozos de chorizo, coronado con tocineta crocante y queso mozzarella fundido.</p>
+                <p class="precio" data-precio-base="12000">$12.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Elegir tipo de chorizo</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">Tipo de Chorizo:</h4>
+                <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa-esp" value="Chorizo de Pollo" checked> Chorizo de Pollo</label>
+                <label class="opcion-check"><input type="radio" name="tipo-chorizo-choripapa-esp" value="Chorizo de Cerdo"> Chorizo de Cerdo</label>
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 🥓 BUTIFARRAS -->
+    <div class="item-menu" data-categoria="butifarras">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Butifarra" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Butifarra Tradicional</h3>
+                <p class="descripcion">Butifarra seleccionada y asada a la plancha con el toque secreto de la casa. (Precio por unidad).</p>
+                <p class="precio" data-precio-base="1000">$1.000</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <h4 class="titulo-seccion">¿Qué salsas deseas?</h4>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Sin Salsas"> 🚫 Sin Salsas</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Rosada"> Rosada</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Roja"> Roja</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Piña"> Piña</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="BBQ"> BBQ</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Guac."> Guac.</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Ajo"> Ajo</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Maíz"> Maíz</label>
+                <label class="opcion-check"><input type="checkbox" class="salsa-item" value="Tocineta"> Tocineta</label>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+    <!-- 🍹 BEBIDAS -->
+    <div class="item-menu" data-categoria="bebidas">
+        <div class="info-plato-principal">
+            <img src="https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400" alt="Bebida" class="foto-plato">
+            <div class="detalles-basicos">
+                <h3>Bebida Refrescante</h3>
+                <p class="descripcion">Gaseosas o jugos de tu preferencia, servidos bien fríos para acompañar el pedido.</p>
+                <p class="precio" data-precio-base="1500">$1.500</p>
+            </div>
+        </div>
+        <details>
+            <summary>⚙️ Personalizar plato</summary>
+            <div class="seccion-personalizacion">
+                <p style="color:#6c757d; font-size:0.9rem; margin:10px 0;">Especifica los sabores al enviar tu pedido.</p>
+                <button class="btn-pedir-plato">Añadir al Carrito 🛒</button>
+            </div>
+        </details>
+    </div>
+
+</main>
+
+<!-- 🛒 BOTÓN FLOTANTE VER PEDIDO -->
+<a href="#" id="btn-ver-carrito">
+    🛒 VER MI PEDIDO (<span class="contador-productos">0</span>)
+</a>
+
+<!-- 💬 BOTÓN WHATSAPP -->
+<a href="https://wa.me/573028549426" class="btn-whatsapp" id="btn-whatsapp-flotante">💬 WhatsApp <span id="contador-productos-whatsapp">0</span></a>
+
+<!-- 🛒 MODAL DEL CARRITO -->
+<div class="modal-carrito" id="modal-carrito">
     <div class="contenido-carrito">
-        <!-- Encabezado FIJO -->
         <div class="encabezado-carrito">
             <h2>🛒 Tu Pedido Actual</h2>
             <button class="btn-cerrar" id="cerrar-carrito">×</button>
         </div>
-        
-        <!-- Área con scroll -->
         <div class="carrito-scroll">
-            <div id="items-carrito" class="items-carrito">
-                <!-- Los items se renderizan aquí -->
-            </div>
-            
-            <!-- Total -->
-            <div class="totales-carrito">
-                <p>Total a pagar: <span id="total-carrito-precio">$0</span></p>
-            </div>
-            
-            <!-- Sección de entrega -->
-            <div class="seccion-entrega">
-                <h3>📍 ¿Cómo deseas recibir tu pedido?</h3>
-                <div class="opciones-entrega">
-                    <div class="opcion-entrega">
-                        <input type="radio" id="entrega-domicilio" name="tipo-entrega" value="Domicilio" checked>
-                        <label for="entrega-domicilio">🚀 A Domicilio</label>
-                    </div>
-                    <div class="opcion-entrega">
-                        <input type="radio" id="entrega-recoger" name="tipo-entrega" value="Recoger">
-                        <label for="entrega-recoger">🏠 Recoger en Local</label>
-                    </div>
-                    <div class="opcion-entrega">
-                        <input type="radio" id="entrega-local" name="tipo-entrega" value="Comer">
-                        <label for="entrega-local">🍽️ Comer en el Local</label>
-                    </div>
-                </div>
-                
-                <!-- Campos de domicilio -->
-                <div id="campos-domicilio">
-                    <input type="text" id="dom-nombre" placeholder=" Nombre de quién recibe">
-                    <button type="button" id="btn-gps" onclick="obtenerUbicacionGPS()">
-                        📍 Compartir mi ubicación GPS actual
-                    </button>
-                    <div id="status-gps"></div>
-                </div>
-            </div>
+            <div class="items-carrito" id="items-carrito"></div>
         </div>
-        
-        <!-- Footer FIJO con botones -->
+        <div class="totales-carrito">
+            <p>Total a pagar: <span id="total-carrito-precio">$0</span></p>
+        </div>
+        <div class="seccion-entrega">
+            <h3>📍 ¿Cómo deseas recibir tu pedido?</h3>
+            <div class="opciones-entrega">
+                <label class="opcion-entrega">
+                    <input type="radio" name="tipo-entrega" value="Domicilio" checked> 🚀 A Domicilio
+                </label>
+                <label class="opcion-entrega">
+                    <input type="radio" name="tipo-entrega" value="Recoger"> 🏠 Recoger en Local
+                </label>
+                <label class="opcion-entrega">
+                    <input type="radio" name="tipo-entrega" value="Local"> 🍽️ Comer en el Local
+                </label>
+            </div>
+            <div class="campos-domicilio" id="campos-domicilio">
+                <input type="text" id="dom-nombre" placeholder="Nombre completo">
+                <button id="btn-gps" onclick="obtenerUbicacionGPS()">📍 Compartir mi ubicación GPS actual</button>
+            </div>
+            <div id="status-gps"></div>
+        </div>
         <div class="footer-carrito">
-            <button class="btn-seguir-comiendo" id="btn-seguir-comiendo">
-                 Añadir otro plato al pedido
-            </button>
-            <button class="btn-confirmar-whatsapp" id="btn-confirmar-whatsapp">
-                Confirmar Pedido y Enviar 💬
-            </button>
+            <button class="btn-seguir-comiendo" id="btn-seguir-comiendo">➕ Añadir otro plato al pedido</button>
+            <button class="btn-confirmar-whatsapp" id="btn-confirmar-whatsapp">Confirmar Pedido y Enviar 💬</button>
         </div>
     </div>
 </div>
 
-    <!-- NOTIFICACIÓN TOAST -->
-    <div id="notificacion-toast" class="notificacion-toast">
-        ✨ ¡Plato añadido al carrito!
-    </div>
+<!-- ✨ TOAST NOTIFICACIÓN -->
+<div class="notificacion-toast" id="notificacion-toast">✨ ¡Plato añadido al carrito!</div>
 
-    <!-- SPLASH SCREEN -->
-    <div id="splash-promo" class="splash-overlay">
-        <div class="splash-contenido animate-popup">
-            <button id="cerrar-splash" class="btn-cerrar-splash">×</button>
-            <div class="splash-imagen-contenedor">
-                <img src="https://i.ibb.co/8LTKqws9/Whats-App-Image-2026-07-08-at-8-12-42-PM.jpg" alt="Promo" class="img-splash-promo">
-                <span class="badge-promo-tag">🔥 Nueva</span>
-            </div>
-            <div class="splash-pie">
-                <h3>🍔 Hamburguesas Artesanales</h3>
-                <p> Estamos estrenando ricas Hamburguesas, con carne 100% Artesanal y de primera 🤤 Pide la tuya 😋.</p>
-                <button id="btn-accion-splash" class="btn-accion-splash">¡Con domicilio gratis 🤫😶! 🚀</button>
-            </div>
+<!-- 🔥 SPLASH PROMOCIONAL -->
+<div class="splash-overlay" id="splash-promo">
+    <div class="splash-contenido animate-popup">
+        <button class="btn-cerrar-splash" id="cerrar-splash">×</button>
+        <div class="splash-imagen-contenedor">
+            <img src="https://i.ibb.co/8LTKqws9/Whats-App-Image-2026-07-08-at-8-12-42-PM.jpg" alt="Promo Hamburguesas" class="img-splash-promo">
+            <span class="badge-promo-tag">🔥 Nueva</span>
+        </div>
+        <div class="splash-pie">
+            <h3>🍔 Hamburguesas Artesanales</h3>
+            <p>Estamos estrenando ricas Hamburguesas, con carne 100% Artesanal y de primera 🤤 Pide la tuya 😋.<br><strong>¡Con domicilio gratis 🤫😶!</strong> 🚀</p>
+            <button class="btn-accion-splash" id="btn-accion-splash">¡Ver Hamburguesas! 🍔</button>
         </div>
     </div>
+</div>
 
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="script.js"></script>
+<script src="script.js"></script>
+<!--  POPUP MEGA CHUZO - Solo aparece 1 vez al entrar a categoría Chuzos -->
+<div class="popup-mega-chuzo" id="popup-mega-chuzo">
+    <div class="popup-contenido animate-popup">
+        <button class="btn-cerrar-popup" id="cerrar-popup-mega-chuzo">×</button>
+        <div class="popup-imagen-contenedor">
+            <img src="https://i.ibb.co/8LTKqws9/Whats-App-Image-2026-07-08-at-8-12-42-PM.jpg" alt="Mega Chuzo de Pollo" class="img-popup-promo" id="img-mega-chuzo">
+            <span class="badge-popup-tag">🔥 NUEVO</span>
+            <span class="badge-popup-precio">$22.000</span>
+        </div>
+        <div class="popup-pie">
+            <h3>🍢 ¡Mega Chuzo de Pollo! 🏆</h3>
+            <p>250g de milanesa de pollo a la plancha, papas a la francesa, arepa, tocineta crocante y salsas de la casa. <strong>¡El más pedido de la casa!</strong> 🤤</p>
+            <button class="btn-accion-popup" id="btn-ver-mega-chuzo">¡Lo quiero probar! 🍢</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

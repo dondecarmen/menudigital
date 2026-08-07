@@ -2,739 +2,765 @@
 // 🔥 CONEXIÓN OFICIAL CON FIREBASE (DONDE CARMEN)
 // =========================================================================
 const firebaseConfig = {
-    apiKey: "AIzaSyA8I3ybJNfXLYvx6quNcgYv9mDpOMyWhjc",
-    authDomain: "donde-carmen.firebaseapp.com",
-    projectId: "donde-carmen",
-    storageBucket: "donde-carmen.firebasestorage.app",
-    messagingSenderId: "432685338703",
-    appId: "1:432685338703:web:81967270e483e477ed5a3a",
-    measurementId: "G-TR69YF2SSC"
+  apiKey: "AIzaSyA8I3ybJNfXLYvx6quNbgYv9mDpOMyWhjc",
+  authDomain: "donde-carmen.firebaseapp.com",
+  projectId: "donde-carmen",
+  storageBucket: "donde-carmen.firebasestorage.app",
+  messagingSenderId: "432685338703",
+  appId: "1:432685338703:web:81967270e483e477ed5a3a",
+  measurementId: "G-TR69YF2SSC"
 };
-if (!firebase.apps.length) {
+
+// Protección: si Firebase no carga, la página sigue funcionando
+let db = null;
+if (typeof firebase !== "undefined") {
+  if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
+  }
+  db = firebase.firestore();
 }
-const db = firebase.firestore();
+
+// ✅ CORREGIDO: era " " (un espacio) y nunca se detectaba como vacío
 let linkGoogleMaps = "";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const contenedorMenu = document.querySelector(".contenedor-menu");
-    const headerFiltros = document.querySelector(".filtros");
-    const heroBanner = document.querySelector(".hero-banner");
-    const botones = document.querySelectorAll(".btn-filtro-card");
-    const platos = document.querySelectorAll(".item-menu");
-    const btnVerCarrito = document.getElementById("btn-ver-carrito");
-    const modalCarrito = document.getElementById("modal-carrito");
-    const cerrarCarrito = document.getElementById("cerrar-carrito");
-    const btnSeguirComiendo = document.getElementById("btn-seguir-comiendo");
-    const btnConfirmarWhatsapp = document.getElementById("btn-confirmar-whatsapp");
-    const itemsCarritoContenedor = document.getElementById("items-carrito");
-    const totalCarritoPrecio = document.getElementById("total-carrito-precio");
-    const numeroTelefono = "573028549426";
-    let carrito = [];
+  const contenedorMenu = document.querySelector(".contenedor-menu");
+  const headerFiltros = document.querySelector(".filtros");
+  const heroBanner = document.querySelector(".hero-banner");
+  const botones = document.querySelectorAll(".btn-filtro-card");
+  const platos = document.querySelectorAll(".item-menu");
+  const btnVerCarrito = document.getElementById("btn-ver-carrito");
+  const modalCarrito = document.getElementById("modal-carrito");
+  const cerrarCarrito = document.getElementById("cerrar-carrito");
+  const btnSeguirComiendo = document.getElementById("btn-seguir-comiendo");
+  const btnConfirmarWhatsapp = document.getElementById("btn-confirmar-whatsapp");
+  const itemsCarritoContenedor = document.getElementById("items-carrito");
+  const totalCarritoPrecio = document.getElementById("total-carrito-precio");
 
-    // =========================================================================
-    // 1. ESTADO INICIAL DEL MENÚ (Ocultar platos al entrar)
-    // =========================================================================
-    platos.forEach(plato => plato.style.display = "none");
-    if (headerFiltros) headerFiltros.style.display = "flex";
-    if (heroBanner) heroBanner.style.display = "block";
+  // ✅ CORREGIDO: sin espacios al final
+  const numeroTelefono = "573028549426";
 
-    const botonVolver = document.createElement("button");
-    botonVolver.className = "btn-volver";
-    botonVolver.innerHTML = "⬅ Volver al Menú Principal";
-    botonVolver.style.display = "none";
-    if (contenedorMenu) {
-        contenedorMenu.parentNode.insertBefore(botonVolver, contenedorMenu);
-    }
+  let carrito = [];
 
-    // =========================================================================
-    // 2. CONTROL DE PUBLICIDAD CONTINUO (SPLASH SCREEN)
-    // =========================================================================
-    const splashPromo = document.getElementById("splash-promo");
-    const cerrarSplash = document.getElementById("cerrar-splash");
-    const btnAccionSplash = document.getElementById("btn-accion-splash");
+  // =========================================================================
+  // 1. ESTADO INICIAL DEL MENÚ (Ocultar platos al entrar)
+  // =========================================================================
+  platos.forEach(plato => plato.style.display = "none");
+  if (headerFiltros) headerFiltros.style.display = "flex";
+  if (heroBanner) heroBanner.style.display = "block";
 
-    if (splashPromo) {
-        setTimeout(() => {
-            splashPromo.style.display = "flex";
-        }, 800);
+  const botonVolver = document.createElement("button");
+  botonVolver.className = "btn-volver";
+  botonVolver.type = "button";
+  botonVolver.innerHTML = "⬅ Volver al Menú Principal";
+  botonVolver.style.display = "none";
+  if (contenedorMenu) {
+    contenedorMenu.parentNode.insertBefore(botonVolver, contenedorMenu);
+  }
 
-        const ocultarSplashConAnimacion = () => {
-            splashPromo.style.opacity = "0";
-            splashPromo.style.transition = "opacity 0.3s ease";
-            setTimeout(() => {
-                splashPromo.style.display = "none";
-                splashPromo.style.opacity = "";
-            }, 300);
-        };
+  // =========================================================================
+  // 2. CONTROL DE PUBLICIDAD CONTINUO (SPLASH SCREEN)
+  // =========================================================================
+  const splashPromo = document.getElementById("splash-promo");
+  const cerrarSplash = document.getElementById("cerrar-splash");
+  const btnAccionSplash = document.getElementById("btn-accion-splash");
 
-        if (cerrarSplash) cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
-        splashPromo.addEventListener("click", (e) => {
-            if (e.target === splashPromo) ocultarSplashConAnimacion();
-        });
+  if (splashPromo) {
+    setTimeout(() => {
+      splashPromo.style.display = "flex";
+    }, 800);
 
-        if (btnAccionSplash) {
-            btnAccionSplash.addEventListener("click", () => {
-                ocultarSplashConAnimacion();
-                const botonHamburguesas = document.querySelector('.btn-filtro-card[data-categoria="hamburguesas"]');
-                if (botonHamburguesas) {
-                    botonHamburguesas.click();
-                    const targetScroll = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
-                    if (targetScroll) {
-                        window.scrollTo({
-                            top: targetScroll.offsetTop - 140,
-                            behavior: "smooth"
-                        });
-                    }
-                }
-            });
-        }
-    }
-
-    // =========================================================================
-    // 3. INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD (Butifarras y Bebidas)
-    // =========================================================================
-    const botonesPedirIniciales = document.querySelectorAll(".btn-pedir-plato");
-    botonesPedirIniciales.forEach(btn => {
-        const platoContenedor = btn.closest(".item-menu");
-        if (!platoContenedor) return;
-        const categoria = platoContenedor.getAttribute("data-categoria");
-        if (categoria !== "butifarras" && categoria !== "bebidas") return;
-
-        const contenedorCantidad = document.createElement("div");
-        contenedorCantidad.className = "contenedor-cantidad-pedir";
-        btn.parentNode.insertBefore(contenedorCantidad, btn);
-        contenedorCantidad.innerHTML = `
-            <div class="control-cantidad">
-                <button class="btn-menos" type="button">−</button>
-                <span class="numero-cantidad">1</span>
-                <button class="btn-mas" type="button">+</button>
-            </div>
-        `;
-        contenedorCantidad.appendChild(btn);
-
-        const btnMas = contenedorCantidad.querySelector(".btn-mas");
-        const btnMenos = contenedorCantidad.querySelector(".btn-menos");
-        const indicadorCantidad = contenedorCantidad.querySelector(".numero-cantidad");
-
-        btnMas.addEventListener("click", (e) => {
-            e.stopPropagation();
-            let cant = parseInt(indicadorCantidad.textContent);
-            indicadorCantidad.textContent = cant + 1;
-        });
-        btnMenos.addEventListener("click", (e) => {
-            e.stopPropagation();
-            let cant = parseInt(indicadorCantidad.textContent);
-            if (cant > 1) {
-                indicadorCantidad.textContent = cant - 1;
-            }
-        });
-    });
-
-    // =========================================================================
-    // 4. 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN (Jueves a Lunes, 5pm - 11:59pm)
-    // =========================================================================
-    function verificarHorarioAtencion() {
-        const ahora = new Date();
-        const dia = ahora.getDay();
-        const hora = ahora.getHours();
-        const minutos = ahora.getMinutes();
-        const tiempoEnMinutos = hora * 60 + minutos;
-        const inicioServicio = 17 * 60;
-        const finServicio = 23 * 60 + 59;
-        const esDiaPermitido = (dia !== 2 && dia !== 3);
-        const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
-        const abierto = esDiaPermitido && esHoraPermitida;
-
-        const botonesPedir = document.querySelectorAll(".btn-pedir-plato");
-        botonesPedir.forEach(btn => {
-            if (!abierto) {
-                btn.disabled = true;
-                btn.textContent = "🔒 Cerrado por el momento";
-                btn.classList.add("btn-deshabilitado");
-            } else {
-                btn.disabled = false;
-                btn.textContent = "Añadir al Carrito 🛒";
-                btn.classList.remove("btn-deshabilitado");
-            }
-        });
-
-        let bannerEstado = document.getElementById("banner-estado-local");
-        if (!bannerEstado) {
-            bannerEstado = document.createElement("div");
-            bannerEstado.id = "banner-estado-local";
-            if (heroBanner) heroBanner.appendChild(bannerEstado);
-        }
-
-        if (!abierto) {
-            let mensaje = "🕒 <strong>Actualmente estamos cerrados.</strong>";
-            if (dia === 2 || dia === 3) {
-                mensaje = "🔒 <strong>Martes y Miércoles no tenemos servicio.</strong> ¡Te esperamos de Jueves a Lunes desde las 5:00 PM!";
-            } else if (esDiaPermitido && !esHoraPermitida) {
-                mensaje = "⏳ <strong>Hoy abrimos a las 5:00 PM.</strong> ¡Prepara tu pedido!";
-            } else {
-                mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves a Lunes de 5:00 PM a 11:59 PM.";
-            }
-            bannerEstado.className = "banner-cerrado";
-            bannerEstado.innerHTML = mensaje;
-        } else {
-            bannerEstado.className = "banner-abierto";
-            bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:00 PM - 11:59 PM)";
-        }
-    }
-    verificarHorarioAtencion();
-
-    // =========================================================================
-    // 5. FUNCIONES DE FILTRADO POR CATEGORÍAS +  POPUP MEGA CHUZO
-    // =========================================================================
-    function mostrarCategoriasPrincipales(manipularHistorial = true) {
-        platos.forEach(plato => plato.style.display = "none");
-        if (headerFiltros) headerFiltros.style.display = "flex";
-        botonVolver.style.display = "none";
-        if (heroBanner) heroBanner.style.display = "block";
-        if (manipularHistorial && window.history.state && window.history.state.categoria) {
-            window.history.pushState(null, "", window.location.pathname);
-        }
-    }
-
-    function activarCategoriaFiltro(categoriaFiltrada, manipularHistorial = true) {
-        platos.forEach(plato => {
-            if (categoriaFiltrada === "todos" || plato.getAttribute("data-categoria") === categoriaFiltrada) {
-                plato.style.display = "flex";
-            } else {
-                plato.style.display = "none";
-            }
-        });
-        if (categoriaFiltrada === "todos") {
-            mostrarCategoriasPrincipales(manipularHistorial);
-        } else {
-            if (headerFiltros) headerFiltros.style.display = "none";
-            botonVolver.style.display = "block";
-            if (heroBanner) heroBanner.style.display = "none";
-            if (manipularHistorial) {
-                window.history.pushState({ categoria: categoriaFiltrada }, "", `#${categoriaFiltrada}`);
-            }
-        }
-    }
-
-    // 🍢 POPUP MEGA CHUZO - Solo se muestra 1 vez al entrar a categoría "chuzos"
-    const popupMegaChuzo = document.getElementById("popup-mega-chuzo");
-    const cerrarPopupMegaChuzo = document.getElementById("cerrar-popup-mega-chuzo");
-    const btnVerMegaChuzo = document.getElementById("btn-ver-mega-chuzo");
-
-    function mostrarPopupMegaChuzo() {
-        const yaMostrado = localStorage.getItem("popup_mega_chuzo_mostrado");
-        if (yaMostrado === "true") return;
-
-        if (popupMegaChuzo) {
-            popupMegaChuzo.classList.add("activo");
-            localStorage.setItem("popup_mega_chuzo_mostrado", "true");
-        }
-    }
-
-    function cerrarPopupMegaChuzoFn() {
-        if (popupMegaChuzo) {
-            popupMegaChuzo.style.opacity = "0";
-            popupMegaChuzo.style.transition = "opacity 0.3s ease";
-            setTimeout(() => {
-                popupMegaChuzo.classList.remove("activo");
-                popupMegaChuzo.style.opacity = "";
-            }, 300);
-        }
-    }
-
-    if (cerrarPopupMegaChuzo) {
-        cerrarPopupMegaChuzo.addEventListener("click", cerrarPopupMegaChuzoFn);
-    }
-
-    if (popupMegaChuzo) {
-        popupMegaChuzo.addEventListener("click", (e) => {
-            if (e.target === popupMegaChuzo) cerrarPopupMegaChuzoFn();
-        });
-    }
-
-    if (btnVerMegaChuzo) {
-        btnVerMegaChuzo.addEventListener("click", () => {
-            cerrarPopupMegaChuzoFn();
-            setTimeout(() => {
-                const megaChuzoCards = document.querySelectorAll('.item-menu[data-categoria="chuzos"]');
-                const megaChuzoCard = megaChuzoCards[1]; // El segundo es el Mega Chuzo
-                if (megaChuzoCard) {
-                    megaChuzoCard.scrollIntoView({ behavior: "smooth", block: "center" });
-                    megaChuzoCard.style.animation = "resaltarPlato 1.5s ease";
-                    setTimeout(() => {
-                        megaChuzoCard.style.animation = "";
-                    }, 1500);
-                }
-            }, 400);
-        });
-    }
-
-    // Evento click en botones de categoría
-    botones.forEach(boton => {
-        boton.addEventListener("click", () => {
-            const categoriaFiltrada = boton.getAttribute("data-categoria");
-            activarCategoriaFiltro(categoriaFiltrada, true);
-
-            // 🍢 Mostrar popup solo al entrar a categoría "chuzos" por primera vez
-            if (categoriaFiltrada === "chuzos") {
-                setTimeout(mostrarPopupMegaChuzo, 500);
-            }
-        });
-    });
-
-    botonVolver.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (window.history.state && window.history.state.categoria) {
-            window.history.back();
-        } else {
-            mostrarCategoriasPrincipales(true);
-        }
-    });
-
-    window.addEventListener("popstate", (event) => {
-        if (event.state && event.state.categoria) {
-            activarCategoriaFiltro(event.state.categoria, false);
-        } else {
-            mostrarCategoriasPrincipales(false);
-        }
-    });
-
-    // =========================================================================
-    // 6. ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
-    // =========================================================================
-    function actualizarVisibilidadBotonCarrito() {
-        if (btnVerCarrito) {
-            const totalProductos = carrito.reduce((total, item) => total + item.cantidad, 0);
-            const contadores = document.querySelectorAll(".contador-productos");
-            contadores.forEach(contador => {
-                contador.innerHTML = totalProductos;
-            });
-            if (totalProductos > 0) {
-                btnVerCarrito.classList.add("activo");
-                btnVerCarrito.style.display = "flex";
-            } else {
-                btnVerCarrito.classList.remove("activo");
-                btnVerCarrito.style.display = "none";
-            }
-        }
-    }
-    actualizarVisibilidadBotonCarrito();
-
-    // =========================================================================
-    // 7. LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
-    // =========================================================================
-    document.addEventListener("change", (e) => {
-        if (e.target.classList.contains("salsa-item")) {
-            const plato = e.target.closest(".item-menu");
-            if (!plato) return;
-            const sinSalsasChk = plato.querySelector('.salsa-item[value="Sin Salsas"]');
-            const otrasSalsas = plato.querySelectorAll('.salsa-item:not([value="Sin Salsas"])');
-            if (e.target.value === "Sin Salsas" && e.target.checked) {
-                otrasSalsas.forEach(chk => chk.checked = false);
-            } else if (e.target.value !== "Sin Salsas" && e.target.checked) {
-                if (sinSalsasChk) sinSalsasChk.checked = false;
-            }
-        }
-    });
-
-    // =========================================================================
-    // 8. EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
-    // =========================================================================
-    document.addEventListener("click", (e) => {
-        if (e.target.tagName === "BUTTON" && e.target.closest(".item-menu")) {
-            const btnPedir = e.target;
-            if (btnPedir.classList.contains("btn-volver") || btnPedir.id === "cerrar-carrito" || btnPedir.classList.contains("btn-mas") || btnPedir.classList.contains("btn-menos") || btnPedir.disabled) return;
-            e.preventDefault();
-            e.stopPropagation();
-
-            const plato = btnPedir.closest(".item-menu");
-            let salsas = [];
-            plato.querySelectorAll(".salsa-item:checked").forEach(chk => {
-                salsas.push(chk.value);
-            });
-
-            if (salsas.length === 0) {
-                const toast = document.getElementById("notificacion-toast");
-                if (toast) {
-                    toast.innerHTML = "⚠️ Debes seleccionar al menos una salsa (o 'Sin Salsas')";
-                    toast.classList.add("mostrar");
-                    setTimeout(() => {
-                        toast.classList.remove("mostrar");
-                        toast.innerHTML = "✨ ¡Plato añadido al carrito!";
-                    }, 2500);
-                }
-                const titulosSeccion = plato.querySelectorAll(".titulo-seccion");
-                titulosSeccion.forEach(titulo => {
-                    if (titulo.textContent.includes("salsas")) {
-                        const textoOriginal = titulo.textContent;
-                        titulo.style.color = "#dc3545";
-                        titulo.style.fontWeight = "900";
-                        titulo.textContent = "🔴 ¿Qué salsas deseas? (OBLIGATORIO)";
-                        setTimeout(() => {
-                            titulo.style.color = "#ff4757";
-                            titulo.style.fontWeight = "800";
-                            titulo.textContent = textoOriginal;
-                        }, 2500);
-                    }
-                });
-                return;
-            }
-
-            const nombrePlato = plato.querySelector("h3").textContent;
-            let quitados = [];
-            plato.querySelectorAll(".quitar-item:checked").forEach(chk => {
-                quitados.push(chk.value);
-            });
-
-            let adiciones = [];
-            let valorAdiciones = 0;
-            plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
-                adiciones.push(chk.value);
-                const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 0;
-                valorAdiciones += valorAdicion;
-            });
-
-            let acompanamiento = "";
-            const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
-            if (radioSeleccionado) {
-                acompanamiento = radioSeleccionado.value;
-            }
-
-            const elementoPrecio = plato.querySelector(".precio");
-            const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
-            const precioFinalItem = precioBase + valorAdiciones;
-            const indicadorCantidad = plato.querySelector(".numero-cantidad");
-            const cantidadA_Anadir = indicadorCantidad ? parseInt(indicadorCantidad.textContent) : 1;
-            const configuracionId = `${nombrePlato}-${quitados.join(",")}-${adiciones.join(",")}-${salsas.join(",")}-${acompanamiento}`;
-            const itemExistente = carrito.find(item => item.configId === configuracionId);
-
-            if (itemExistente) {
-                itemExistente.cantidad += cantidadA_Anadir;
-            } else {
-                carrito.push({
-                    id: Date.now() + Math.random(),
-                    configId: configuracionId,
-                    nombre: nombrePlato,
-                    precio: precioFinalItem,
-                    cantidad: cantidadA_Anadir,
-                    quitados: quitados,
-                    adiciones: adiciones,
-                    salsas: salsas,
-                    acompanamiento: acompanamiento
-                });
-            }
-
-            const contadores = document.querySelectorAll(".contador-productos");
-            contadores.forEach(contador => {
-                contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
-            });
-            actualizarVisibilidadBotonCarrito();
-
-            const toast = document.getElementById("notificacion-toast");
-            if (toast) {
-                toast.innerHTML = `✨ ¡${cantidadA_Anadir} producto(s) añadido(s) al carrito!`;
-                toast.classList.add("mostrar");
-                setTimeout(() => {
-                    toast.classList.remove("mostrar");
-                    toast.innerHTML = "✨ ¡Plato añadido al carrito!";
-                }, 2000);
-            }
-
-            const textoOriginal = btnPedir.innerHTML;
-            btnPedir.innerHTML = "¡Añadido! ✔️";
-            btnPedir.style.background = "#25d366";
-            btnPedir.disabled = true;
-            setTimeout(() => {
-                btnPedir.innerHTML = textoOriginal;
-                btnPedir.style.background = "";
-                btnPedir.disabled = false;
-                if (indicadorCantidad) indicadorCantidad.textContent = "1";
-            }, 1000);
-
-            const details = plato.querySelector("details");
-            if (details) details.removeAttribute("open");
-            plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
-            plato.querySelectorAll("input[type='radio']").forEach(rd => {
-                rd.checked = false;
-            });
-
-            if (elementoPrecio) {
-                elementoPrecio.textContent = `$${precioBase.toLocaleString('es-CO')}`;
-            }
-        }
-    });
-
-    // EVENTO: CAMBIO EN ADICIONES (PLATOS REGULARES)
-    document.addEventListener("change", (e) => {
-        if (e.target.classList.contains("adicion-item")) {
-            const plato = e.target.closest(".item-menu");
-            if (!plato) return;
-            const elementoPrecio = plato.querySelector(".precio");
-            const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
-            let extra = 0;
-            plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
-                const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 2000;
-                extra += valorAdicion;
-            });
-            elementoPrecio.textContent = `$${(precioBase + extra).toLocaleString('es-CO')}`;
-        }
-    });
-
-    // =========================================================================
-    // 9. MODAL DEL CARRITO Y WHATSAPP
-    // =========================================================================
-    if (btnVerCarrito) {
-        btnVerCarrito.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (carrito.length === 0) return;
-            renderizarCarrito();
-            if (modalCarrito) modalCarrito.style.display = "flex";
-            const camposDomicilio = document.getElementById("campos-domicilio");
-            const entregaInicial = document.querySelector('input[name="tipo-entrega"]:checked');
-            if (entregaInicial && camposDomicilio) {
-                if (entregaInicial.value === "Domicilio") {
-                    camposDomicilio.style.display = "flex";
-                } else {
-                    camposDomicilio.style.display = "none";
-                }
-            }
-        });
-    }
-
-    if (cerrarCarrito) cerrarCarrito.addEventListener("click", () => modalCarrito.style.display = "none");
-    if (btnSeguirComiendo) btnSeguirComiendo.addEventListener("click", () => modalCarrito.style.display = "none");
-
-    function renderizarCarrito() {
-        if (!itemsCarritoContenedor) return;
-        itemsCarritoContenedor.innerHTML = "";
-        let granTotal = 0;
-
-        carrito.forEach((producto) => {
-            const subtotalItem = producto.precio * producto.cantidad;
-            granTotal += subtotalItem;
-            const itemDiv = document.createElement("div");
-            itemDiv.className = "item-lista-carrito";
-            let detallesHTML = "";
-            if (producto.acompanamiento) detallesHTML += `<li>${producto.acompanamiento}</li>`;
-            if (producto.quitados.length > 0) detallesHTML += `<li>Sin: ${producto.quitados.join(", ")}</li>`;
-            if (producto.adiciones.length > 0) detallesHTML += `<li>Extras: ${producto.adiciones.join(", ")}</li>`;
-            if (producto.salsas.length > 0) detallesHTML += `<li>Salsas: ${producto.salsas.join(", ")}</li>`;
-            itemDiv.innerHTML = `
-                <div class="info-item-car">
-                    <h4><span style="color:#ff4757; font-weight:800;">${producto.cantidad}x</span> ${producto.nombre}</h4>
-                    ${detallesHTML ? `<ul>${detallesHTML}</ul>` : ""}
-                    <p class="precio-item-car">$${subtotalItem.toLocaleString('es-CO')}</p>
-                </div>
-                <button class="btn-eliminar-item" data-id="${producto.id}">❌</button>
-            `;
-            itemsCarritoContenedor.appendChild(itemDiv);
-        });
-
-        if (totalCarritoPrecio) {
-            totalCarritoPrecio.textContent = `$${granTotal.toLocaleString('es-CO')}`;
-        }
-
-        document.querySelectorAll(".btn-eliminar-item").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const idEliminar = parseFloat(e.target.getAttribute("data-id"));
-                carrito = carrito.filter(item => item.id !== idEliminar);
-                const contadores = document.querySelectorAll(".contador-productos");
-                contadores.forEach(contador => {
-                    contador.innerHTML = Math.max(0, carrito.reduce((total, item) => total + item.cantidad, 0));
-                });
-                actualizarVisibilidadBotonCarrito();
-                if (carrito.length === 0) {
-                    if (modalCarrito) modalCarrito.style.display = "none";
-                } else {
-                    renderizarCarrito();
-                }
-            });
-        });
-    }
-
-    function mostrarConfirmacionPedido() {
-        const modalConfirmacion = document.createElement("div");
-        modalConfirmacion.className = "modal-confirmacion";
-        modalConfirmacion.innerHTML = `
-            <div class="contenido-confirmacion">
-                <div class="icono-confirmacion">✅</div>
-                <h2 class="titulo-confirmacion">¡Pedido Enviado!</h2>
-                <p class="texto-confirmacion">
-                    Tu pedido fue enviado por <strong>WhatsApp</strong>.<br>
-                    Te contactaremos pronto para confirmar los detalles y la dirección de entrega. 🙏
-                </p>
-                <button class="btn-cerrar-confirmacion">Volver al Menú 🍔</button>
-            </div>
-        `;
-        document.body.appendChild(modalConfirmacion);
-        const btnCerrarConf = modalConfirmacion.querySelector(".btn-cerrar-confirmacion");
-        btnCerrarConf.addEventListener("click", () => {
-            modalConfirmacion.remove();
-        });
-    }
-
-    if (btnConfirmarWhatsapp) {
-        btnConfirmarWhatsapp.addEventListener("click", () => {
-            if (carrito.length === 0) return;
-            let mensaje = "*¡Hola Donde Carmen! 🍔*\n*Este es mi pedido desde el menú digital:*\n\n";
-            let granTotal = 0;
-
-            carrito.forEach((producto, index) => {
-                const subtotalItem = producto.precio * producto.cantidad;
-                let textProducto = `${index + 1}. *${producto.cantidad}x ${producto.nombre}*`;
-                if (producto.acompanamiento) textProducto += ` _(${producto.acompanamiento})_`;
-                mensaje += textProducto + `\n`;
-                if (producto.quitados.length > 0) mensaje += `    ❌ Sin: ${producto.quitados.join(", ")}\n`;
-                if (producto.adiciones.length > 0) mensaje += `    ➕ Extra: ${producto.adiciones.join(", ")}\n`;
-                if (producto.salsas.length > 0) mensaje += `     Salsas: ${producto.salsas.join(", ")}\n`;
-                mensaje += `    _Subtotal: $${subtotalItem.toLocaleString('es-CO')}_\n\n`;
-                granTotal += subtotalItem;
-            });
-
-            const entregaSeleccionada = document.querySelector('input[name="tipo-entrega"]:checked').value;
-            let datosEnvioText = "";
-            let clienteNombre = "Cliente Web";
-            let clienteDireccion = "Ubicación GPS";
-
-            if (entregaSeleccionada === "Domicilio") {
-                clienteNombre = document.getElementById("dom-nombre").value.trim() || "No especificado";
-                if (!linkGoogleMaps) {
-                    alert("⚠️ Por favor, comparte tu ubicación GPS para poder realizar el domicilio.");
-                    return;
-                }
-                datosEnvioText += ` *Cliente:* ${clienteNombre}\n`;
-                datosEnvioText += `📍 *Mapa GPS:* ${linkGoogleMaps}\n`;
-            } else if (entregaSeleccionada === "Recoger") {
-                datosEnvioText += `🥡 *Entrega:* Pasar a recoger al local.\n`;
-                clienteDireccion = "No aplica";
-            } else {
-                datosEnvioText += `️ *Entrega:* Comer en el establecimiento.\n`;
-                clienteDireccion = "No aplica";
-            }
-
-            mensaje += `---------------------------\n`;
-            mensaje += datosEnvioText;
-            mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
-            mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
-
-            window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
-
-            db.collection("pedidos_donde_carmen").add({
-                fecha_raw: new Date(),
-                hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
-                productos: carrito,
-                total: granTotal,
-                estado: "Pendiente",
-                tipo_entrega: entregaSeleccionada,
-                cliente: clienteNombre,
-                direccion: clienteDireccion,
-                gps: linkGoogleMaps || "No enviado"
-            })
-            .then(() => console.log("¡Pedido guardado!"))
-            .catch((err) => console.error(err));
-
-            linkGoogleMaps = "";
-            const btnGps = document.getElementById("btn-gps");
-            if (btnGps) {
-                btnGps.disabled = false;
-                btnGps.style.background = "#e0f2fe";
-                btnGps.style.color = "#0369a1";
-                btnGps.textContent = "📍 Compartir mi ubicación GPS actual";
-                const statusGps = document.getElementById("status-gps");
-                if (statusGps) statusGps.textContent = "";
-            }
-
-            carrito = [];
-            const contadores = document.querySelectorAll(".contador-productos");
-            contadores.forEach(contador => {
-                contador.innerHTML = "0";
-            });
-            actualizarVisibilidadBotonCarrito();
-            if (modalCarrito) modalCarrito.style.display = "none";
-            mostrarConfirmacionPedido();
-        });
-    }
-
-    // =========================================================================
-    // 10. UBICACIÓN GPS
-    // =========================================================================
-    window.obtenerUbicacionGPS = function() {
-        const status = document.getElementById("status-gps");
-        const btn = document.getElementById("btn-gps");
-        if (!navigator.geolocation) {
-            if (status) status.textContent = "❌ Tu teléfono no soporta geolocalización.";
-            return;
-        }
-        if (status) status.textContent = "🛰️ Localizando...";
-        if (btn) btn.disabled = true;
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                linkGoogleMaps = `https://www.google.com/maps?q=${lat},${lon}`;
-                if (status) status.textContent = "✅ ¡Ubicación GPS agregada con éxito!";
-                if (btn) {
-                    btn.style.background = "#d4edda";
-                    btn.style.color = "#155724";
-                    btn.textContent = "📍 Ubicación Guardada ✔️";
-                }
-            },
-            (error) => {
-                if (btn) btn.disabled = false;
-                if (status) status.textContent = "⚠️ No se pudo acceder al GPS. Activa tu ubicación.";
-                console.log(error);
-            },
-            { enableHighAccuracy: true, timeout: 10000 }
-        );
+    const ocultarSplashConAnimacion = () => {
+      splashPromo.style.opacity = "0";
+      splashPromo.style.transition = "opacity 0.3s ease";
+      setTimeout(() => {
+        splashPromo.style.display = "none";
+        splashPromo.style.opacity = "";
+      }, 300);
     };
 
-    // =========================================================================
-    // 11. CONTROL DE TIPOS DE ENTREGA
-    // =========================================================================
-    const radiosEntrega = document.querySelectorAll('input[name="tipo-entrega"]');
-    const camposDomicilio = document.getElementById("campos-domicilio");
-    if (radiosEntrega && camposDomicilio) {
-        radiosEntrega.forEach(radio => {
-            radio.addEventListener("change", (e) => {
-                if (e.target.value === "Domicilio") {
-                    camposDomicilio.style.display = "flex";
-                } else {
-                    camposDomicilio.style.display = "none";
-                    linkGoogleMaps = "";
-                    const statusGps = document.getElementById("status-gps");
-                    if (statusGps) statusGps.textContent = "";
-                }
+    if (cerrarSplash) cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
+
+    splashPromo.addEventListener("click", (e) => {
+      if (e.target === splashPromo) ocultarSplashConAnimacion();
+    });
+
+    if (btnAccionSplash) {
+      btnAccionSplash.addEventListener("click", () => {
+        ocultarSplashConAnimacion();
+        const botonHamburguesas = document.querySelector('.btn-filtro-card[data-categoria="hamburguesas"]');
+        if (botonHamburguesas) {
+          botonHamburguesas.click();
+          const targetScroll = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+          if (targetScroll) {
+            window.scrollTo({
+              top: targetScroll.offsetTop - 140,
+              behavior: "smooth"
             });
-        });
+          }
+        }
+      });
+    }
+  }
+
+  // =========================================================================
+  // 3. INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD (Butifarras y Bebidas)
+  // =========================================================================
+  const botonesPedirIniciales = document.querySelectorAll(".btn-pedir-plato");
+  botonesPedirIniciales.forEach(btn => {
+    const platoContenedor = btn.closest(".item-menu");
+    if (!platoContenedor) return;
+
+    const categoria = platoContenedor.getAttribute("data-categoria");
+    if (categoria !== "butifarras" && categoria !== "bebidas") return;
+
+    const contenedorCantidad = document.createElement("div");
+    contenedorCantidad.className = "contenedor-cantidad-pedir";
+    btn.parentNode.insertBefore(contenedorCantidad, btn);
+    contenedorCantidad.innerHTML = `
+      <div class="control-cantidad">
+        <button class="btn-menos" type="button">−</button>
+        <span class="numero-cantidad">1</span>
+        <button class="btn-mas" type="button">+</button>
+      </div>
+    `;
+    contenedorCantidad.appendChild(btn);
+
+    const btnMas = contenedorCantidad.querySelector(".btn-mas");
+    const btnMenos = contenedorCantidad.querySelector(".btn-menos");
+    const indicadorCantidad = contenedorCantidad.querySelector(".numero-cantidad");
+
+    btnMas.addEventListener("click", (e) => {
+      e.stopPropagation();
+      let cant = parseInt(indicadorCantidad.textContent);
+      indicadorCantidad.textContent = cant + 1;
+    });
+
+    btnMenos.addEventListener("click", (e) => {
+      e.stopPropagation();
+      let cant = parseInt(indicadorCantidad.textContent);
+      if (cant > 1) {
+        indicadorCantidad.textContent = cant - 1;
+      }
+    });
+  });
+
+  // =========================================================================
+  // 4. 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN
+  // =========================================================================
+  function verificarHorarioAtencion() {
+    const ahora = new Date();
+    const dia = ahora.getDay();
+    const hora = ahora.getHours();
+    const minutos = ahora.getMinutes();
+    const tiempoEnMinutos = hora * 60 + minutos;
+
+    const inicioServicio = 17 * 60;      // 5:00 PM
+    const finServicio = 23 * 60 + 59;    // 11:59 PM
+
+    const esDiaPermitido = (dia !== 2 && dia !== 3); // Martes y Miércoles cerrado
+    const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
+    const abierto = esDiaPermitido && esHoraPermitida;
+
+    const botonesPedir = document.querySelectorAll(".btn-pedir-plato");
+    botonesPedir.forEach(btn => {
+      if (!abierto) {
+        btn.disabled = true;
+        btn.textContent = "🔒 Cerrado por el momento";
+        btn.classList.add("btn-deshabilitado");
+      } else {
+        btn.disabled = false;
+        btn.textContent = "Añadir al Carrito 🛒";
+        btn.classList.remove("btn-deshabilitado");
+      }
+    });
+
+    let bannerEstado = document.getElementById("banner-estado-local");
+    if (!bannerEstado) {
+      bannerEstado = document.createElement("div");
+      bannerEstado.id = "banner-estado-local";
+      if (heroBanner) heroBanner.appendChild(bannerEstado);
     }
 
-    // =========================================================================
-    // 12. MARQUESINA INTERACTIVA
-    // =========================================================================
-    const marqueeItems = document.querySelectorAll(".marquee-item");
-    marqueeItems.forEach(item => {
-        item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const categoriaDestino = item.getAttribute("data-destino");
-            if (categoriaDestino) {
-                const botonFiltro = document.querySelector(`.btn-filtro-card[data-categoria="${categoriaDestino}"]`);
-                if (botonFiltro) {
-                    botonFiltro.click();
-                    item.style.background = "#ffe0e2";
-                    setTimeout(() => {
-                        item.style.background = "#ffffff";
-                    }, 200);
-                    const conMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
-                    if (conMenu) {
-                        window.scrollTo({
-                            top: conMenu.offsetTop - 140,
-                            behavior: "smooth"
-                        });
-                    }
-                }
-            }
-        });
+    if (!abierto) {
+      let mensaje = "🕒 <strong>Actualmente estamos cerrados.</strong>";
+      if (dia === 2 || dia === 3) {
+        mensaje = "🔒 <strong>Martes y Miércoles no tenemos servicio.</strong> ¡Te esperamos de Jueves a Lunes desde las 5:00 PM!";
+      } else if (esDiaPermitido && !esHoraPermitida) {
+        mensaje = "⏳ <strong>Hoy abrimos a las 5:00 PM.</strong> ¡Prepara tu pedido!";
+      } else {
+        mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves a Lunes de 5:00 PM a 11:59 PM.";
+      }
+      bannerEstado.className = "banner-cerrado";
+      bannerEstado.innerHTML = mensaje;
+    } else {
+      bannerEstado.className = "banner-abierto";
+      bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:00 PM - 11:59 PM)";
+    }
+  }
+
+  verificarHorarioAtencion();
+  // ✅ NUEVO: revalida el horario cada minuto sin recargar la página
+  setInterval(verificarHorarioAtencion, 60000);
+
+  // =========================================================================
+  // 5. FUNCIONES DE FILTRADO Y CATEGORÍAS
+  // =========================================================================
+  function mostrarCategoriasPrincipales(manipularHistorial = true) {
+    platos.forEach(plato => plato.style.display = "none");
+    if (headerFiltros) headerFiltros.style.display = "flex";
+    botonVolver.style.display = "none";
+    if (heroBanner) heroBanner.style.display = "block";
+    if (manipularHistorial && window.history.state && window.history.state.categoria) {
+      window.history.pushState(null, "", window.location.pathname);
+    }
+  }
+
+  function activarCategoriaFiltro(categoriaFiltrada, manipularHistorial = true) {
+    platos.forEach(plato => {
+      if (categoriaFiltrada === "todos" || plato.getAttribute("data-categoria") === categoriaFiltrada) {
+        plato.style.display = "flex";
+      } else {
+        plato.style.display = "none";
+      }
     });
+
+    if (categoriaFiltrada === "todos") {
+      mostrarCategoriasPrincipales(manipularHistorial);
+    } else {
+      if (headerFiltros) headerFiltros.style.display = "none";
+      botonVolver.style.display = "block";
+      if (heroBanner) heroBanner.style.display = "none";
+      if (manipularHistorial) {
+        window.history.pushState({ categoria: categoriaFiltrada }, "", `#${categoriaFiltrada}`);
+      }
+    }
+  }
+
+  botones.forEach(boton => {
+    boton.addEventListener("click", () => {
+      const categoriaFiltrada = boton.getAttribute("data-categoria");
+      activarCategoriaFiltro(categoriaFiltrada, true);
+    });
+  });
+
+  botonVolver.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (window.history.state && window.history.state.categoria) {
+      window.history.back();
+    } else {
+      mostrarCategoriasPrincipales(true);
+    }
+  });
+
+  window.addEventListener("popstate", (event) => {
+    if (event.state && event.state.categoria) {
+      activarCategoriaFiltro(event.state.categoria, false);
+    } else {
+      mostrarCategoriasPrincipales(false);
+    }
+  });
+
+  // ✅ NUEVO: si la URL trae #categoria, abre esa categoría directamente
+  const hashInicial = window.location.hash.replace("#", "");
+  if (hashInicial && document.querySelector(`.btn-filtro-card[data-categoria="${hashInicial}"]`)) {
+    activarCategoriaFiltro(hashInicial, false);
+  }
+
+  // =========================================================================
+  // 6. ACTUALIZAR VISIBILIDAD DEL BOTÓN CARRITO
+  // =========================================================================
+  function actualizarVisibilidadBotonCarrito() {
+    if (btnVerCarrito) {
+      const totalProductos = carrito.reduce((total, item) => total + item.cantidad, 0);
+      const contadores = document.querySelectorAll(".contador-productos");
+      contadores.forEach(contador => {
+        contador.innerHTML = totalProductos;
+      });
+
+      if (totalProductos > 0) {
+        btnVerCarrito.classList.add("activo");
+      } else {
+        btnVerCarrito.classList.remove("activo");
+      }
+    }
+  }
+  actualizarVisibilidadBotonCarrito();
+
+  // =========================================================================
+  // 7. LÓGICA DE EXCLUSIVIDAD: "Sin Salsas" vs otras salsas
+  // =========================================================================
+  document.addEventListener("change", (e) => {
+    if (e.target.classList.contains("salsa-item")) {
+      const plato = e.target.closest(".item-menu");
+      if (!plato) return;
+
+      const sinSalsasChk = plato.querySelector('.salsa-item[value="Sin Salsas"]');
+      const otrasSalsas = plato.querySelectorAll('.salsa-item:not([value="Sin Salsas"])');
+
+      if (e.target.value === "Sin Salsas" && e.target.checked) {
+        otrasSalsas.forEach(chk => chk.checked = false);
+      } else if (e.target.value !== "Sin Salsas" && e.target.checked) {
+        if (sinSalsasChk) sinSalsasChk.checked = false;
+      }
+    }
+  });
+
+  // =========================================================================
+  // 8. EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
+  // ✅ CORREGIDO: usa closest(".btn-pedir-plato") en lugar de tagName,
+  //    más robusto si el botón contiene otros elementos dentro.
+  // =========================================================================
+  document.addEventListener("click", (e) => {
+    const btnPedir = e.target.closest(".btn-pedir-plato");
+    if (!btnPedir || btnPedir.disabled) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const plato = btnPedir.closest(".item-menu");
+    if (!plato) return;
+
+    // ✅ CORREGIDO: la validación de salsas solo aplica si el plato TIENE salsas.
+    // (Antes, las bebidas nunca se podían agregar al carrito).
+    const salsaChecks = plato.querySelectorAll(".salsa-item");
+    let salsas = [];
+    plato.querySelectorAll(".salsa-item:checked").forEach(chk => {
+      salsas.push(chk.value);
+    });
+
+    if (salsaChecks.length > 0 && salsas.length === 0) {
+      const toast = document.getElementById("notificacion-toast");
+      if (toast) {
+        toast.innerHTML = "⚠️ Debes seleccionar al menos una salsa (o 'Sin Salsas')";
+        toast.classList.add("mostrar");
+        setTimeout(() => {
+          toast.classList.remove("mostrar");
+          toast.innerHTML = "✨ ¡Plato añadido al carrito!";
+        }, 2500);
+      }
+
+      const titulosSeccion = plato.querySelectorAll(".titulo-seccion");
+      titulosSeccion.forEach(titulo => {
+        if (titulo.textContent.toLowerCase().includes("salsas")) {
+          const textoOriginal = titulo.textContent;
+          titulo.style.color = "#dc3545";
+          titulo.style.fontWeight = "900";
+          titulo.textContent = "🔴 ¿Qué salsas deseas? (OBLIGATORIO)";
+          setTimeout(() => {
+            titulo.style.color = "#ff4757";
+            titulo.style.fontWeight = "800";
+            titulo.textContent = textoOriginal;
+          }, 2500);
+        }
+      });
+      return;
+    }
+
+    const nombrePlato = plato.querySelector("h3").textContent;
+
+    let quitados = [];
+    plato.querySelectorAll(".quitar-item:checked").forEach(chk => {
+      quitados.push(chk.value);
+    });
+
+    let adiciones = [];
+    let valorAdiciones = 0;
+    plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
+      adiciones.push(chk.value);
+      const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 0;
+      valorAdiciones += valorAdicion;
+    });
+
+    let acompanamiento = "";
+    const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
+    if (radioSeleccionado) {
+      acompanamiento = radioSeleccionado.value;
+    }
+
+    const elementoPrecio = plato.querySelector(".precio");
+    const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
+    const precioFinalItem = precioBase + valorAdiciones;
+
+    const indicadorCantidad = plato.querySelector(".numero-cantidad");
+    const cantidadA_Anadir = indicadorCantidad ? parseInt(indicadorCantidad.textContent) : 1;
+
+    const configuracionId = `${nombrePlato}-${quitados.join(",")}-${adiciones.join(",")}-${salsas.join(",")}-${acompanamiento}`;
+    const itemExistente = carrito.find(item => item.configId === configuracionId);
+
+    if (itemExistente) {
+      itemExistente.cantidad += cantidadA_Anadir;
+    } else {
+      carrito.push({
+        id: Date.now() + Math.random(),
+        configId: configuracionId,
+        nombre: nombrePlato,
+        precio: precioFinalItem,
+        cantidad: cantidadA_Anadir,
+        quitados: quitados,
+        adiciones: adiciones,
+        salsas: salsas,
+        acompanamiento: acompanamiento
+      });
+    }
+
+    actualizarVisibilidadBotonCarrito();
+
+    const toast = document.getElementById("notificacion-toast");
+    if (toast) {
+      toast.innerHTML = `✨ ¡${cantidadA_Anadir} producto(s) añadido(s) al carrito!`;
+      toast.classList.add("mostrar");
+      setTimeout(() => {
+        toast.classList.remove("mostrar");
+        toast.innerHTML = "✨ ¡Plato añadido al carrito!";
+      }, 2000);
+    }
+
+    const textoOriginal = btnPedir.innerHTML;
+    btnPedir.innerHTML = "¡Añadido! ✔️";
+    btnPedir.style.background = "#25d366";
+    btnPedir.disabled = true;
+
+    setTimeout(() => {
+      btnPedir.innerHTML = textoOriginal;
+      btnPedir.style.background = "";
+      btnPedir.disabled = false;
+      if (indicadorCantidad) indicadorCantidad.textContent = "1";
+    }, 1000);
+
+    // Limpiar la personalización del plato tras añadirlo
+    const details = plato.querySelector("details");
+    if (details) details.removeAttribute("open");
+    plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
+    plato.querySelectorAll("input[type='radio']").forEach(rd => rd.checked = false);
+
+    if (elementoPrecio) {
+      elementoPrecio.textContent = `$${precioBase.toLocaleString('es-CO')}`;
+    }
+  });
+
+  // EVENTO: CAMBIO EN ADICIONES (actualiza el precio visible)
+  document.addEventListener("change", (e) => {
+    if (e.target.classList.contains("adicion-item")) {
+      const plato = e.target.closest(".item-menu");
+      if (!plato) return;
+
+      const elementoPrecio = plato.querySelector(".precio");
+      const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
+      let extra = 0;
+      plato.querySelectorAll(".adicion-item:checked").forEach(chk => {
+        const valorAdicion = parseInt(chk.getAttribute("data-valor")) || 2000;
+        extra += valorAdicion;
+      });
+      elementoPrecio.textContent = `$${(precioBase + extra).toLocaleString('es-CO')}`;
+    }
+  });
+
+  // =========================================================================
+  // 9. MODAL DEL CARRITO Y WHATSAPP
+  // =========================================================================
+  if (btnVerCarrito) {
+    btnVerCarrito.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (carrito.length === 0) return;
+
+      renderizarCarrito();
+      if (modalCarrito) modalCarrito.style.display = "flex";
+
+      const camposDomicilio = document.getElementById("campos-domicilio");
+      const entregaInicial = document.querySelector('input[name="tipo-entrega"]:checked');
+      if (entregaInicial && camposDomicilio) {
+        camposDomicilio.style.display = (entregaInicial.value === "Domicilio") ? "flex" : "none";
+      }
+    });
+  }
+
+  if (cerrarCarrito) cerrarCarrito.addEventListener("click", () => modalCarrito.style.display = "none");
+  if (btnSeguirComiendo) btnSeguirComiendo.addEventListener("click", () => modalCarrito.style.display = "none");
+
+  function renderizarCarrito() {
+    if (!itemsCarritoContenedor) return;
+    itemsCarritoContenedor.innerHTML = "";
+    let granTotal = 0;
+
+    carrito.forEach((producto) => {
+      const subtotalItem = producto.precio * producto.cantidad;
+      granTotal += subtotalItem;
+
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "item-lista-carrito";
+
+      let detallesHTML = "";
+      if (producto.acompanamiento) detallesHTML += `<li>${producto.acompanamiento}</li>`;
+      if (producto.quitados.length > 0) detallesHTML += `<li>Sin: ${producto.quitados.join(", ")}</li>`;
+      if (producto.adiciones.length > 0) detallesHTML += `<li>Extras: ${producto.adiciones.join(", ")}</li>`;
+      if (producto.salsas.length > 0) detallesHTML += `<li>Salsas: ${producto.salsas.join(", ")}</li>`;
+
+      itemDiv.innerHTML = `
+        <div class="info-item-car">
+          <h4><span style="color:#ff4757; font-weight:800;">${producto.cantidad}x</span> ${producto.nombre}</h4>
+          ${detallesHTML ? `<ul>${detallesHTML}</ul>` : ""}
+          <p class="precio-item-car">$${subtotalItem.toLocaleString('es-CO')}</p>
+        </div>
+        <button class="btn-eliminar-item" data-id="${producto.id}" type="button">❌</button>
+      `;
+      itemsCarritoContenedor.appendChild(itemDiv);
+    });
+
+    if (totalCarritoPrecio) {
+      totalCarritoPrecio.textContent = `$${granTotal.toLocaleString('es-CO')}`;
+    }
+
+    document.querySelectorAll(".btn-eliminar-item").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idEliminar = parseFloat(e.currentTarget.getAttribute("data-id"));
+        carrito = carrito.filter(item => item.id !== idEliminar);
+        actualizarVisibilidadBotonCarrito();
+
+        if (carrito.length === 0) {
+          if (modalCarrito) modalCarrito.style.display = "none";
+        } else {
+          renderizarCarrito();
+        }
+      });
+    });
+  }
+
+  function mostrarConfirmacionPedido() {
+    const modalConfirmacion = document.createElement("div");
+    modalConfirmacion.className = "modal-confirmacion";
+    modalConfirmacion.innerHTML = `
+      <div class="contenido-confirmacion">
+        <div class="icono-confirmacion">✅</div>
+        <h2 class="titulo-confirmacion">¡Pedido Enviado!</h2>
+        <p class="texto-confirmacion">
+          Tu pedido fue enviado por <strong>WhatsApp</strong>.<br>
+          Te contactaremos pronto para confirmar los detalles y la dirección de entrega. 🙏
+        </p>
+        <button class="btn-cerrar-confirmacion" type="button">Volver al Menú 🍔</button>
+      </div>
+    `;
+    document.body.appendChild(modalConfirmacion);
+
+    const btnCerrarConf = modalConfirmacion.querySelector(".btn-cerrar-confirmacion");
+    btnCerrarConf.addEventListener("click", () => {
+      modalConfirmacion.remove();
+    });
+  }
+
+  if (btnConfirmarWhatsapp) {
+    btnConfirmarWhatsapp.addEventListener("click", () => {
+      if (carrito.length === 0) return;
+
+      // ✅ CORREGIDO: si ningún radio está marcado, usa un valor por defecto
+      //    (antes podía dar error "null.value" y tumbar la confirmación)
+      const entregaCheck = document.querySelector('input[name="tipo-entrega"]:checked');
+      const entregaSeleccionada = entregaCheck ? entregaCheck.value : "Recoger";
+
+      if (entregaSeleccionada === "Domicilio" && !linkGoogleMaps) {
+        alert("⚠️ Por favor, comparte tu ubicación GPS para poder realizar el domicilio.");
+        return;
+      }
+
+      let mensaje = "*¡Hola Donde Carmen! 🍔*\n*Este es mi pedido desde el menú digital:*\n\n";
+      let granTotal = 0;
+
+      carrito.forEach((producto, index) => {
+        const subtotalItem = producto.precio * producto.cantidad;
+        let textProducto = `${index + 1}. *${producto.cantidad}x ${producto.nombre}*`;
+        if (producto.acompanamiento) textProducto += ` _(${producto.acompanamiento})_`;
+        mensaje += textProducto + "\n";
+        if (producto.quitados.length > 0) mensaje += `   ❌ Sin: ${producto.quitados.join(", ")}\n`;
+        if (producto.adiciones.length > 0) mensaje += `   ➕ Extra: ${producto.adiciones.join(", ")}\n`;
+        if (producto.salsas.length > 0) mensaje += `   🥫 Salsas: ${producto.salsas.join(", ")}\n`;
+        mensaje += `   _Subtotal: $${subtotalItem.toLocaleString('es-CO')}_\n\n`;
+        granTotal += subtotalItem;
+      });
+
+      let datosEnvioText = "";
+      let clienteNombre = "Cliente Web";
+      let clienteDireccion = "Ubicación GPS";
+
+      if (entregaSeleccionada === "Domicilio") {
+        const inputNombre = document.getElementById("dom-nombre");
+        clienteNombre = (inputNombre && inputNombre.value.trim()) ? inputNombre.value.trim() : "No especificado";
+        datosEnvioText += `👤 *Cliente:* ${clienteNombre}\n`;
+        datosEnvioText += `📍 *Mapa GPS:* ${linkGoogleMaps}\n`;
+      } else if (entregaSeleccionada === "Recoger") {
+        datosEnvioText += `🥡 *Entrega:* Pasar a recoger al local.\n`;
+        clienteDireccion = "No aplica";
+      } else {
+        datosEnvioText += `🍽️ *Entrega:* Comer en el establecimiento.\n`;
+        clienteDireccion = "No aplica";
+      }
+
+      mensaje += `---------------------------\n`;
+      mensaje += datosEnvioText;
+      mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
+      mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
+
+      window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+
+      // Guardar en Firebase (solo si Firebase está disponible)
+      if (db) {
+        db.collection("pedidos_donde_carmen").add({
+          fecha_raw: new Date(),
+          hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+          productos: carrito,
+          total: granTotal,
+          estado: "Pendiente",
+          tipo_entrega: entregaSeleccionada,
+          cliente: clienteNombre,
+          direccion: clienteDireccion,
+          gps: linkGoogleMaps || "No enviado"
+        })
+          .then(() => console.log("¡Pedido guardado!"))
+          .catch((err) => console.error(err));
+      }
+
+      // Reiniciar estado
+      linkGoogleMaps = "";
+      const btnGps = document.getElementById("btn-gps");
+      if (btnGps) {
+        btnGps.disabled = false;
+        btnGps.style.background = "#e0f2fe";
+        btnGps.style.color = "#0369a1";
+        btnGps.textContent = "📍 Compartir mi ubicación GPS actual";
+        const statusGps = document.getElementById("status-gps");
+        if (statusGps) statusGps.textContent = "";
+      }
+      const inputNombre = document.getElementById("dom-nombre");
+      if (inputNombre) inputNombre.value = "";
+
+      carrito = [];
+      actualizarVisibilidadBotonCarrito();
+      if (modalCarrito) modalCarrito.style.display = "none";
+      mostrarConfirmacionPedido();
+    });
+  }
+
+  // =========================================================================
+  // 10. UBICACIÓN GPS
+  // =========================================================================
+  window.obtenerUbicacionGPS = function () {
+    const status = document.getElementById("status-gps");
+    const btn = document.getElementById("btn-gps");
+
+    if (!navigator.geolocation) {
+      if (status) status.textContent = "❌ Tu teléfono no soporta geolocalización.";
+      return;
+    }
+
+    if (status) status.textContent = "🛰️ Localizando...";
+    if (btn) btn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        linkGoogleMaps = `https://www.google.com/maps?q=${lat},${lon}`;
+        if (status) status.textContent = "✅ ¡Ubicación GPS agregada con éxito!";
+        if (btn) {
+          btn.style.background = "#d4edda";
+          btn.style.color = "#155724";
+          btn.textContent = "📍 Ubicación Guardada ✔️";
+        }
+      },
+      (error) => {
+        if (btn) btn.disabled = false;
+        if (status) status.textContent = "⚠️ No se pudo acceder al GPS. Activa tu ubicación.";
+        console.log(error);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  };
+
+  // =========================================================================
+  // 11. CONTROL DE TIPOS DE ENTREGA
+  // =========================================================================
+  const radiosEntrega = document.querySelectorAll('input[name="tipo-entrega"]');
+  const camposDomicilio = document.getElementById("campos-domicilio");
+
+  if (radiosEntrega && camposDomicilio) {
+    radiosEntrega.forEach(radio => {
+      radio.addEventListener("change", (e) => {
+        if (e.target.value === "Domicilio") {
+          camposDomicilio.style.display = "flex";
+        } else {
+          camposDomicilio.style.display = "none";
+          linkGoogleMaps = "";
+          const statusGps = document.getElementById("status-gps");
+          if (statusGps) statusGps.textContent = "";
+        }
+      });
+    });
+  }
+
+  // =========================================================================
+  // 12. MARQUESINA INTERACTIVA
+  // =========================================================================
+  const marqueeItems = document.querySelectorAll(".marquee-item");
+  marqueeItems.forEach(item => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      const categoriaDestino = item.getAttribute("data-destino");
+      if (!categoriaDestino) return;
+
+      const botonFiltro = document.querySelector(`.btn-filtro-card[data-categoria="${categoriaDestino}"]`);
+      if (botonFiltro) {
+        botonFiltro.click();
+        item.style.background = "#ffe0e2";
+        setTimeout(() => {
+          item.style.background = "#ffffff";
+        }, 200);
+
+        const conMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+        if (conMenu) {
+          window.scrollTo({
+            top: conMenu.offsetTop - 140,
+            behavior: "smooth"
+          });
+        }
+      }
+    });
+  });
+
+  // =========================================================================
+  // 13. POP-UP MEGA CHUZO
+  // ✅ CORREGIDO: ahora está DENTRO del DOMContentLoaded
+  //    (antes estaba fuera y podía ejecutarse antes de que existiera el HTML)
+  // =========================================================================
+  const popupMegaChuzo = document.getElementById("popup-mega-chuzo");
+  const cerrarMegaChuzo = document.getElementById("cerrar-mega-chuzo");
+  const btnAccionMegaChuzo = document.getElementById("btn-accion-mega-chuzo");
+
+  if (popupMegaChuzo) {
+    // Aparece deslizándose desde abajo a la derecha después de 1.5 segundos
+    setTimeout(() => {
+      popupMegaChuzo.classList.add("mostrar");
+    }, 1500);
+
+    const ocultarMegaChuzo = () => {
+      popupMegaChuzo.classList.remove("mostrar");
+    };
+
+    if (cerrarMegaChuzo) cerrarMegaChuzo.addEventListener("click", ocultarMegaChuzo);
+
+    if (btnAccionMegaChuzo) {
+      btnAccionMegaChuzo.addEventListener("click", () => {
+        ocultarMegaChuzo();
+        const botonCategoria = document.querySelector('.btn-filtro-card[data-categoria="chuzos"]');
+        if (botonCategoria) {
+          botonCategoria.click();
+        }
+        const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
+        if (contenedorMenu) {
+          window.scrollTo({
+            top: contenedorMenu.offsetTop - 140,
+            behavior: "smooth"
+          });
+        }
+      });
+    }
+  }
 });

@@ -1,7 +1,7 @@
 {
-  "name": "Donde-Carmen-Menú-Digital",
-  "short_name": "Donde-Carmen",
-  "description": "Pide-tus-platos-favoritos-de-Donde-Carmen",
+  "name": "Donde Carmen - Menú Digital",
+  "short_name": "Donde Carmen",
+  "description": "Pide tus platos favoritos de Donde Carmen",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

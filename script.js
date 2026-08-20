@@ -20,7 +20,15 @@ if (typeof firebase !== "undefined") {
   db = firebase.firestore();
 }
 
-// ✅ CORREGIDO: era " " (un espacio) y nunca se detectaba como vacío
+// 🆕 === REGISTRO DEL SERVICE WORKER (PWA) ===
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ PWA instalada correctamente'))
+      .catch(err => console.warn('⚠️ SW falló:', err));
+  });
+}
+
 let linkGoogleMaps = "";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,10 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnConfirmarWhatsapp = document.getElementById("btn-confirmar-whatsapp");
   const itemsCarritoContenedor = document.getElementById("items-carrito");
   const totalCarritoPrecio = document.getElementById("total-carrito-precio");
-
-  // ✅ CORREGIDO: sin espacios al final
   const numeroTelefono = "573028549426";
-
   let carrito = [];
 
   // =========================================================================
@@ -66,21 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAccionSplash = document.getElementById("btn-accion-splash");
 
   if (splashPromo) {
-    setTimeout(() => {
-      splashPromo.style.display = "flex";
-    }, 800);
+    setTimeout(() => { splashPromo.style.display = "flex"; }, 800);
 
     const ocultarSplashConAnimacion = () => {
       splashPromo.style.opacity = "0";
       splashPromo.style.transition = "opacity 0.3s ease";
       setTimeout(() => {
         splashPromo.style.display = "none";
-        splashPromo.style.opacity = "";
+        splashPromo.style.opacity = "1";
       }, 300);
     };
 
     if (cerrarSplash) cerrarSplash.addEventListener("click", ocultarSplashConAnimacion);
-
     splashPromo.addEventListener("click", (e) => {
       if (e.target === splashPromo) ocultarSplashConAnimacion();
     });
@@ -104,13 +106,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================================================================
-  // 3. INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD (Butifarras y Bebidas)
+  // 3. INYECCIÓN AUTOMÁTICA DEL SELECTOR DE CANTIDAD
   // =========================================================================
   const botonesPedirIniciales = document.querySelectorAll(".btn-pedir-plato");
   botonesPedirIniciales.forEach(btn => {
     const platoContenedor = btn.closest(".item-menu");
     if (!platoContenedor) return;
-
     const categoria = platoContenedor.getAttribute("data-categoria");
     if (categoria !== "butifarras" && categoria !== "bebidas") return;
 
@@ -135,13 +136,10 @@ document.addEventListener("DOMContentLoaded", () => {
       let cant = parseInt(indicadorCantidad.textContent);
       indicadorCantidad.textContent = cant + 1;
     });
-
     btnMenos.addEventListener("click", (e) => {
       e.stopPropagation();
       let cant = parseInt(indicadorCantidad.textContent);
-      if (cant > 1) {
-        indicadorCantidad.textContent = cant - 1;
-      }
+      if (cant > 1) indicadorCantidad.textContent = cant - 1;
     });
   });
 
@@ -155,12 +153,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const minutos = ahora.getMinutes();
     const tiempoEnMinutos = hora * 60 + minutos;
 
-    const inicioServicio = 17 * 60;      // 5:00 PM
-    const finServicio = 23 * 60 + 59;    // 11:59 PM
-
-    const esDiaPermitido = (dia !== 2 && dia !== 3); // Martes y Miércoles cerrado
+    const inicioServicio = 17 * 60 + 30;
+    const finServicio = 23 * 60 + 30;
+    const esMartes = (dia === 2);
     const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
-    const abierto = esDiaPermitido && esHoraPermitida;
+    const abierto = !esMartes && esHoraPermitida;
 
     const botonesPedir = document.querySelectorAll(".btn-pedir-plato");
     botonesPedir.forEach(btn => {
@@ -184,23 +181,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!abierto) {
       let mensaje = "🕒 <strong>Actualmente estamos cerrados.</strong>";
-      if (dia === 2 || dia === 3) {
-        mensaje = "🔒 <strong>Martes y Miércoles no tenemos servicio.</strong> ¡Te esperamos de Jueves a Lunes desde las 5:00 PM!";
-      } else if (esDiaPermitido && !esHoraPermitida) {
-        mensaje = "⏳ <strong>Hoy abrimos a las 5:00 PM.</strong> ¡Prepara tu pedido!";
+      if (esMartes) {
+        mensaje = "🔒 <strong>Martes no tenemos servicio.</strong> ¡Te esperamos de Lunes, Miércoles a Domingo desde las 5:30 PM!";
+      } else if (!esMartes && !esHoraPermitida) {
+        mensaje = "⏳ <strong>Hoy abrimos a las 5:30 PM.</strong> ¡Prepara tu pedido!";
       } else {
-        mensaje = "🛵 <strong>Horario de pedidos:</strong> Jueves a Lunes de 5:00 PM a 11:59 PM.";
+        mensaje = "🛵 <strong>Horario de pedidos:</strong> Lunes, Miércoles a Domingo de 5:30 PM a 11:30 PM.";
       }
       bannerEstado.className = "banner-cerrado";
       bannerEstado.innerHTML = mensaje;
     } else {
       bannerEstado.className = "banner-abierto";
-      bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:00 PM - 11:59 PM)";
+      bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:30 PM - 11:30 PM)";
     }
   }
-
   verificarHorarioAtencion();
-  // ✅ NUEVO: revalida el horario cada minuto sin recargar la página
   setInterval(verificarHorarioAtencion, 60000);
 
   // =========================================================================
@@ -261,7 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ✅ NUEVO: si la URL trae #categoria, abre esa categoría directamente
   const hashInicial = window.location.hash.replace("#", "");
   if (hashInicial && document.querySelector(`.btn-filtro-card[data-categoria="${hashInicial}"]`)) {
     activarCategoriaFiltro(hashInicial, false);
@@ -274,10 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnVerCarrito) {
       const totalProductos = carrito.reduce((total, item) => total + item.cantidad, 0);
       const contadores = document.querySelectorAll(".contador-productos");
-      contadores.forEach(contador => {
-        contador.innerHTML = totalProductos;
-      });
-
+      contadores.forEach(contador => { contador.innerHTML = totalProductos; });
       if (totalProductos > 0) {
         btnVerCarrito.classList.add("activo");
       } else {
@@ -294,7 +285,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains("salsa-item")) {
       const plato = e.target.closest(".item-menu");
       if (!plato) return;
-
       const sinSalsasChk = plato.querySelector('.salsa-item[value="Sin Salsas"]');
       const otrasSalsas = plato.querySelectorAll('.salsa-item:not([value="Sin Salsas"])');
 
@@ -308,21 +298,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // =========================================================================
   // 8. EVENTO PRINCIPAL: CLICK EN BOTÓN DE PEDIR PLATO
-  // ✅ CORREGIDO: usa closest(".btn-pedir-plato") en lugar de tagName,
-  //    más robusto si el botón contiene otros elementos dentro.
   // =========================================================================
   document.addEventListener("click", (e) => {
     const btnPedir = e.target.closest(".btn-pedir-plato");
     if (!btnPedir || btnPedir.disabled) return;
-
     e.preventDefault();
     e.stopPropagation();
 
     const plato = btnPedir.closest(".item-menu");
     if (!plato) return;
 
-    // ✅ CORREGIDO: la validación de salsas solo aplica si el plato TIENE salsas.
-    // (Antes, las bebidas nunca se podían agregar al carrito).
     const salsaChecks = plato.querySelectorAll(".salsa-item");
     let salsas = [];
     plato.querySelectorAll(".salsa-item:checked").forEach(chk => {
@@ -339,7 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
           toast.innerHTML = "✨ ¡Plato añadido al carrito!";
         }, 2500);
       }
-
       const titulosSeccion = plato.querySelectorAll(".titulo-seccion");
       titulosSeccion.forEach(titulo => {
         if (titulo.textContent.toLowerCase().includes("salsas")) {
@@ -358,7 +342,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const nombrePlato = plato.querySelector("h3").textContent;
-
     let quitados = [];
     plato.querySelectorAll(".quitar-item:checked").forEach(chk => {
       quitados.push(chk.value);
@@ -374,9 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let acompanamiento = "";
     const radioSeleccionado = plato.querySelector("input[type='radio']:checked");
-    if (radioSeleccionado) {
-      acompanamiento = radioSeleccionado.value;
-    }
+    if (radioSeleccionado) acompanamiento = radioSeleccionado.value;
 
     const elementoPrecio = plato.querySelector(".precio");
     const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
@@ -420,7 +401,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnPedir.innerHTML = "¡Añadido! ✔️";
     btnPedir.style.background = "#25d366";
     btnPedir.disabled = true;
-
     setTimeout(() => {
       btnPedir.innerHTML = textoOriginal;
       btnPedir.style.background = "";
@@ -428,12 +408,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (indicadorCantidad) indicadorCantidad.textContent = "1";
     }, 1000);
 
-    // Limpiar la personalización del plato tras añadirlo
     const details = plato.querySelector("details");
     if (details) details.removeAttribute("open");
     plato.querySelectorAll("input[type='checkbox']").forEach(chk => chk.checked = false);
     plato.querySelectorAll("input[type='radio']").forEach(rd => rd.checked = false);
-
     if (elementoPrecio) {
       elementoPrecio.textContent = `$${precioBase.toLocaleString('es-CO')}`;
     }
@@ -444,7 +422,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.classList.contains("adicion-item")) {
       const plato = e.target.closest(".item-menu");
       if (!plato) return;
-
       const elementoPrecio = plato.querySelector(".precio");
       const precioBase = parseInt(elementoPrecio.getAttribute("data-precio-base")) || 0;
       let extra = 0;
@@ -463,7 +440,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnVerCarrito.addEventListener("click", (e) => {
       e.preventDefault();
       if (carrito.length === 0) return;
-
       renderizarCarrito();
       if (modalCarrito) modalCarrito.style.display = "flex";
 
@@ -516,7 +492,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const idEliminar = parseFloat(e.currentTarget.getAttribute("data-id"));
         carrito = carrito.filter(item => item.id !== idEliminar);
         actualizarVisibilidadBotonCarrito();
-
         if (carrito.length === 0) {
           if (modalCarrito) modalCarrito.style.display = "none";
         } else {
@@ -552,8 +527,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnConfirmarWhatsapp.addEventListener("click", () => {
       if (carrito.length === 0) return;
 
-      // ✅ CORREGIDO: si ningún radio está marcado, usa un valor por defecto
-      //    (antes podía dar error "null.value" y tumbar la confirmación)
       const entregaCheck = document.querySelector('input[name="tipo-entrega"]:checked');
       const entregaSeleccionada = entregaCheck ? entregaCheck.value : "Recoger";
 
@@ -562,18 +535,37 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      let mensaje = "*¡Hola Donde Carmen! 🍔*\n*Este es mi pedido desde el menú digital:*\n\n";
+      const metodoPago = document.querySelector('input[name="metodo-pago"]:checked');
+      if (!metodoPago) {
+        alert("⚠️ Por favor selecciona un método de pago.");
+        return;
+      }
+
+      let metodoPagoTexto = metodoPago.value;
+      let detallePago = "";
+      if (metodoPagoTexto === "transferencia") {
+        detallePago = "💳 *Pago:* Transferencia Nequi\n📱 *Número:* 3028393885\n";
+      } else if (metodoPagoTexto === "efectivo") {
+        const tipoEfectivo = document.querySelector('input[name="tipo-efectivo"]:checked');
+        if (!tipoEfectivo) {
+          alert("⚠️ Por favor indica si pagas exacto o necesitas cambio.");
+          return;
+        }
+        detallePago = `💵 *Pago:* Efectivo\n🧾 *Detalle:* ${tipoEfectivo.value}\n`;
+      }
+
+      let mensaje = "¡Hola Donde Carmen! 🍔\nEste es mi pedido desde el menú digital:\n\n";
       let granTotal = 0;
 
       carrito.forEach((producto, index) => {
         const subtotalItem = producto.precio * producto.cantidad;
         let textProducto = `${index + 1}. *${producto.cantidad}x ${producto.nombre}*`;
-        if (producto.acompanamiento) textProducto += ` _(${producto.acompanamiento})_`;
+        if (producto.acompanamiento) textProducto += `_(${producto.acompanamiento})_`;
         mensaje += textProducto + "\n";
-        if (producto.quitados.length > 0) mensaje += `   ❌ Sin: ${producto.quitados.join(", ")}\n`;
-        if (producto.adiciones.length > 0) mensaje += `   ➕ Extra: ${producto.adiciones.join(", ")}\n`;
-        if (producto.salsas.length > 0) mensaje += `   🥫 Salsas: ${producto.salsas.join(", ")}\n`;
-        mensaje += `   _Subtotal: $${subtotalItem.toLocaleString('es-CO')}_\n\n`;
+        if (producto.quitados.length > 0) mensaje += `❌ Sin: ${producto.quitados.join(", ")}\n`;
+        if (producto.adiciones.length > 0) mensaje += `➕ Extra: ${producto.adiciones.join(", ")}\n`;
+        if (producto.salsas.length > 0) mensaje += `🥫 Salsas: ${producto.salsas.join(", ")}\n`;
+        mensaje += `_Subtotal: $${subtotalItem.toLocaleString('es-CO')}_\n\n`;
         granTotal += subtotalItem;
       });
 
@@ -596,14 +588,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       mensaje += `---------------------------\n`;
       mensaje += datosEnvioText;
+      mensaje += detallePago;
       mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
       mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
 
       window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
 
-      // Guardar en Firebase (solo si Firebase está disponible)
+      // 🆕 === GUARDAR EN FIREBASE CON SEGUIMIENTO EN TIEMPO REAL ===
       if (db) {
-        db.collection("pedidos_donde_carmen").add({
+        const pedidoRef = db.collection("pedidos_donde_carmen").doc();
+        pedidoRef.set({
           fecha_raw: new Date(),
           hora: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
           productos: carrito,
@@ -612,10 +606,46 @@ document.addEventListener("DOMContentLoaded", () => {
           tipo_entrega: entregaSeleccionada,
           cliente: clienteNombre,
           direccion: clienteDireccion,
-          gps: linkGoogleMaps || "No enviado"
-        })
-          .then(() => console.log("¡Pedido guardado!"))
-          .catch((err) => console.error(err));
+          gps: linkGoogleMaps || "No enviado",
+          metodo_pago: metodoPagoTexto,
+          detalle_pago: detallePago
+        }).then(() => {
+          // Guardar ID del pedido activo
+          localStorage.setItem('pedidoActivo', pedidoRef.id);
+
+          // 🆕 Mostrar modal de seguimiento
+          mostrarModalSeguimiento(pedidoRef.id);
+
+          // 🔥 Escuchar cambios en tiempo real
+          pedidoRef.onSnapshot(doc => {
+            if (!doc.exists) return;
+            const nuevoEstado = doc.data().estado;
+            actualizarTimeline(nuevoEstado);
+
+            // 🆕 Notificación push al cliente
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const mensajes = {
+                'Preparando': '👨‍🍳 ¡Tu pedido se está preparando!',
+                'EnCamino': '🛵 ¡Tu pedido va en camino!',
+                'Entregado': '✅ ¡Buen provecho! Gracias por tu pedido.'
+              };
+              if (mensajes[nuevoEstado]) {
+                new Notification('Donde Carmen', {
+                  body: mensajes[nuevoEstado],
+                  icon: '/icon-192.png'
+                });
+              }
+            }
+
+            // 🆕 Cerrar modal automáticamente cuando se entrega (después de 15 seg)
+            if (nuevoEstado === 'Entregado') {
+              setTimeout(() => {
+                const modal = document.getElementById('modal-seguimiento');
+                if (modal) modal.style.display = 'none';
+              }, 15000);
+            }
+          });
+        }).catch(err => console.error("Error guardando pedido:", err));
       }
 
       // Reiniciar estado
@@ -629,6 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const statusGps = document.getElementById("status-gps");
         if (statusGps) statusGps.textContent = "";
       }
+
       const inputNombre = document.getElementById("dom-nombre");
       if (inputNombre) inputNombre.value = "";
 
@@ -710,9 +741,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (botonFiltro) {
         botonFiltro.click();
         item.style.background = "#ffe0e2";
-        setTimeout(() => {
-          item.style.background = "#ffffff";
-        }, 200);
+        setTimeout(() => { item.style.background = "#ffffff"; }, 200);
 
         const conMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
         if (conMenu) {
@@ -726,41 +755,107 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================================================
-  // 13. POP-UP MEGA CHUZO
-  // ✅ CORREGIDO: ahora está DENTRO del DOMContentLoaded
-  //    (antes estaba fuera y podía ejecutarse antes de que existiera el HTML)
+  // 🆕 13. 📦 SEGUIMIENTO DE PEDIDO EN TIEMPO REAL
   // =========================================================================
-  const popupMegaChuzo = document.getElementById("popup-mega-chuzo");
-  const cerrarMegaChuzo = document.getElementById("cerrar-mega-chuzo");
-  const btnAccionMegaChuzo = document.getElementById("btn-accion-mega-chuzo");
+  function mostrarModalSeguimiento(pedidoId) {
+    const modal = document.getElementById('modal-seguimiento');
+    const idEl = document.getElementById('seguimiento-id');
+    const btnMisPedidos = document.getElementById('btn-mis-pedidos');
+    if (!modal || !idEl) return;
 
-  if (popupMegaChuzo) {
-    // Aparece deslizándose desde abajo a la derecha después de 1.5 segundos
-    setTimeout(() => {
-      popupMegaChuzo.classList.add("mostrar");
-    }, 1500);
-
-    const ocultarMegaChuzo = () => {
-      popupMegaChuzo.classList.remove("mostrar");
-    };
-
-    if (cerrarMegaChuzo) cerrarMegaChuzo.addEventListener("click", ocultarMegaChuzo);
-
-    if (btnAccionMegaChuzo) {
-      btnAccionMegaChuzo.addEventListener("click", () => {
-        ocultarMegaChuzo();
-        const botonCategoria = document.querySelector('.btn-filtro-card[data-categoria="chuzos"]');
-        if (botonCategoria) {
-          botonCategoria.click();
-        }
-        const contenedorMenu = document.querySelector(".contenedor-menu") || document.querySelector(".filtros");
-        if (contenedorMenu) {
-          window.scrollTo({
-            top: contenedorMenu.offsetTop - 140,
-            behavior: "smooth"
-          });
-        }
-      });
-    }
+    idEl.textContent = pedidoId.slice(-6).toUpperCase();
+    modal.style.display = 'flex';
+    if (btnMisPedidos) btnMisPedidos.style.display = 'block';
+    actualizarTimeline('Pendiente');
   }
-});
+
+  function actualizarTimeline(estado) {
+    const orden = ['Pendiente', 'Preparando', 'EnCamino', 'Entregado'];
+    const idx = orden.indexOf(estado);
+    document.querySelectorAll('.estado').forEach((el, i) => {
+      el.classList.remove('activo', 'completado');
+      if (i < idx) el.classList.add('completado');
+      else if (i === idx) el.classList.add('activo');
+    });
+
+    const msgs = {
+      'Pendiente': '⏳ Pedido recibido. Confirmando...',
+      'Preparando': '👨‍🍳 ¡Carmen ya está preparando tu pedido!',
+      'EnCamino': '🛵 Tu pedido va en camino. ¡Prepárate!',
+      'Entregado': '✅ ¡Entregado! Cuéntanos cómo estuvo 🙏'
+    };
+    const mensajeEl = document.getElementById('mensaje-estado');
+    if (mensajeEl) mensajeEl.textContent = msgs[estado] || '';
+  }
+
+  // Botón flotante "Ver mi pedido"
+  const btnMisPedidos = document.getElementById('btn-mis-pedidos');
+  if (btnMisPedidos) {
+    btnMisPedidos.addEventListener('click', () => {
+      const id = localStorage.getItem('pedidoActivo');
+      if (id) mostrarModalSeguimiento(id);
+    });
+  }
+
+  // Botón cerrar modal de seguimiento
+  const btnCerrarSeguimiento = document.getElementById('cerrar-seguimiento');
+  if (btnCerrarSeguimiento) {
+    btnCerrarSeguimiento.addEventListener('click', () => {
+      const modal = document.getElementById('modal-seguimiento');
+      if (modal) modal.style.display = 'none';
+    });
+  }
+
+  // 🆕 Reanudar seguimiento si hay pedido activo al cargar
+  window.addEventListener('load', () => {
+    const id = localStorage.getItem('pedidoActivo');
+    if (id && db) {
+      db.collection('pedidos_donde_carmen').doc(id).get().then(doc => {
+        if (doc.exists && doc.data().estado !== 'Entregado' && doc.data().estado !== 'Cancelado') {
+          mostrarModalSeguimiento(id);
+          // Re-suscribirse al listener
+          db.collection('pedidos_donde_carmen').doc(id).onSnapshot(docSnap => {
+            if (docSnap.exists) {
+              const nuevoEstado = docSnap.data().estado;
+              actualizarTimeline(nuevoEstado);
+
+              if ('Notification' in window && Notification.permission === 'granted') {
+                const mensajes = {
+                  'Preparando': '👨‍🍳 ¡Tu pedido se está preparando!',
+                  'EnCamino': '🛵 ¡Tu pedido va en camino!',
+                  'Entregado': '✅ ¡Buen provecho! Gracias por tu pedido.'
+                };
+                if (mensajes[nuevoEstado]) {
+                  new Notification('Donde Carmen', {
+                    body: mensajes[nuevoEstado],
+                    icon: '/icon-192.png'
+                  });
+                }
+              }
+
+              if (nuevoEstado === 'Entregado') {
+                setTimeout(() => {
+                  const modal = document.getElementById('modal-seguimiento');
+                  if (modal) modal.style.display = 'none';
+                }, 15000);
+              }
+            }
+          });
+        } else {
+          // Si ya está entregado o cancelado, limpiar localStorage
+          localStorage.removeItem('pedidoActivo');
+          if (btnMisPedidos) btnMisPedidos.style.display = 'none';
+        }
+      }).catch(err => console.log('No se pudo reanudar seguimiento:', err));
+    }
+  });
+
+  // 🆕 Pedir permiso de notificaciones al primer clic
+  document.addEventListener('click', function pedirPermiso() {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+    document.removeEventListener('click', pedirPermiso);
+  }, { once: true });
+
+}); // Cierre de DOMContentLoaded

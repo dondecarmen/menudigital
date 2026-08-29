@@ -448,6 +448,28 @@ document.addEventListener("DOMContentLoaded", () => {
       if (entregaInicial && camposDomicilio) {
         camposDomicilio.style.display = (entregaInicial.value === "Domicilio") ? "flex" : "none";
       }
+
+      // Sincronizar visibilidad de secciones de pago al abrir el carrito
+      const metodoPagoInicial = document.querySelector('input[name="metodo-pago"]:checked');
+      const opcionesEfectivoInit = document.querySelector('.opciones-efectivo');
+      const opcionesTransferenciaInit = document.querySelector('.opciones-transferencia');
+      const nequiInfoInit = document.querySelector('.nequi-info');
+      if (metodoPagoInicial) {
+        if (opcionesEfectivoInit) opcionesEfectivoInit.style.display = (metodoPagoInicial.value === "efectivo") ? "block" : "none";
+        if (opcionesTransferenciaInit) opcionesTransferenciaInit.style.display = (metodoPagoInicial.value === "transferencia") ? "block" : "none";
+        if (nequiInfoInit) nequiInfoInit.style.display = (metodoPagoInicial.value === "transferencia") ? "block" : "none";
+      } else {
+        if (opcionesEfectivoInit) opcionesEfectivoInit.style.display = "none";
+        if (opcionesTransferenciaInit) opcionesTransferenciaInit.style.display = "none";
+        if (nequiInfoInit) nequiInfoInit.style.display = "none";
+      }
+
+      // Sincronizar campo de cambio
+      const tipoEfectivoInicial = document.querySelector('input[name="tipo-efectivo"]:checked');
+      const campoCambioInit = document.getElementById('campo-cambio-efectivo');
+      if (campoCambioInit) {
+        campoCambioInit.style.display = (tipoEfectivoInicial && tipoEfectivoInicial.value === "Necesito cambio") ? "block" : "none";
+      }
     });
   }
 
@@ -542,8 +564,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       let metodoPagoTexto = metodoPago.value;
+
+      // === CALCULAR TOTAL PRIMERO ===
+      let granTotal = 0;
+      carrito.forEach((producto) => {
+        granTotal += producto.precio * producto.cantidad;
+      });
+
+      // === VALIDAR Y CONSTRUIR DETALLE DE PAGO ===
       let detallePago = "";
+      let montoEfectivo = 0;
       if (metodoPagoTexto === "transferencia") {
+        const checkComprobante = document.getElementById('check-comprobante-transferencia');
+        if (checkComprobante && !checkComprobante.checked) {
+          alert("⚠️ Por favor confirma que ya realizaste la transferencia a Nequi 3028393885.");
+          return;
+        }
         detallePago = "💳 *Pago:* Transferencia Nequi\n📱 *Número:* 3028393885\n";
       } else if (metodoPagoTexto === "efectivo") {
         const tipoEfectivo = document.querySelector('input[name="tipo-efectivo"]:checked');
@@ -551,11 +587,27 @@ document.addEventListener("DOMContentLoaded", () => {
           alert("⚠️ Por favor indica si pagas exacto o necesitas cambio.");
           return;
         }
-        detallePago = `💵 *Pago:* Efectivo\n🧾 *Detalle:* ${tipoEfectivo.value}\n`;
+        if (tipoEfectivo.value === "Necesito cambio") {
+          const inputMonto = document.getElementById('monto-paga-efectivo');
+          if (!inputMonto || !inputMonto.value || parseInt(inputMonto.value) <= 0) {
+            alert("⚠️ Por favor ingresa con cuánto vas a pagar para calcular el cambio.");
+            if (inputMonto) inputMonto.focus();
+            return;
+          }
+          montoEfectivo = parseInt(inputMonto.value);
+          if (montoEfectivo < granTotal) {
+            alert("⚠️ El monto ingresado ($" + montoEfectivo.toLocaleString('es-CO') + ") es menor que el total del pedido ($" + granTotal.toLocaleString('es-CO') + "). Por favor verifica.");
+            return;
+          }
+          const cambio = montoEfectivo - granTotal;
+          detallePago = `💵 *Pago:* Efectivo\n🧾 *Detalle:* Necesito cambio\n💰 *Paga con:* $${montoEfectivo.toLocaleString('es-CO')}\n🔀 *Cambio:* $${cambio.toLocaleString('es-CO')}\n`;
+        } else {
+          detallePago = `💵 *Pago:* Efectivo\n🧾 *Detalle:* Pago exacto\n`;
+        }
       }
 
+      // === CONSTRUIR MENSAJE DE WHATSAPP ===
       let mensaje = "¡Hola Donde Carmen! 🍔\nEste es mi pedido desde el menú digital:\n\n";
-      let granTotal = 0;
 
       carrito.forEach((producto, index) => {
         const subtotalItem = producto.precio * producto.cantidad;
@@ -566,7 +618,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (producto.adiciones.length > 0) mensaje += `➕ Extra: ${producto.adiciones.join(", ")}\n`;
         if (producto.salsas.length > 0) mensaje += `🥫 Salsas: ${producto.salsas.join(", ")}\n`;
         mensaje += `_Subtotal: $${subtotalItem.toLocaleString('es-CO')}_\n\n`;
-        granTotal += subtotalItem;
       });
 
       let datosEnvioText = "";
@@ -590,7 +641,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mensaje += datosEnvioText;
       mensaje += detallePago;
       mensaje += `💰 *TOTAL A PAGAR: $${granTotal.toLocaleString('es-CO')}*\n\n`;
-      mensaje += `¿Me confirman el pedido para enviar los datos de mi domicilio? 🙏`;
+      mensaje += `¿Me confirman el pedido? 🙏`;
 
       window.open(`https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
 
@@ -608,7 +659,8 @@ document.addEventListener("DOMContentLoaded", () => {
           direccion: clienteDireccion,
           gps: linkGoogleMaps || "No enviado",
           metodo_pago: metodoPagoTexto,
-          detalle_pago: detallePago
+          detalle_pago: detallePago,
+          monto_efectivo: montoEfectivo || 0
         }).then(() => {
           // Guardar ID del pedido activo
           localStorage.setItem('pedidoActivo', pedidoRef.id);
@@ -662,6 +714,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const inputNombre = document.getElementById("dom-nombre");
       if (inputNombre) inputNombre.value = "";
+
+      // === RESETEAR CAMPOS DE PAGO ===
+      const radiosMetodoPagoReset = document.querySelectorAll('input[name="metodo-pago"]');
+      radiosMetodoPagoReset.forEach(r => r.checked = false);
+      const radiosTipoEfectivoReset = document.querySelectorAll('input[name="tipo-efectivo"]');
+      radiosTipoEfectivoReset.forEach(r => r.checked = false);
+      const opcionesEfectivoReset = document.querySelector('.opciones-efectivo');
+      if (opcionesEfectivoReset) opcionesEfectivoReset.style.display = "none";
+      const opcionesTransferenciaReset = document.querySelector('.opciones-transferencia');
+      if (opcionesTransferenciaReset) opcionesTransferenciaReset.style.display = "none";
+      const campoCambioReset = document.getElementById('campo-cambio-efectivo');
+      if (campoCambioReset) campoCambioReset.style.display = "none";
+      const inputMontoReset = document.getElementById('monto-paga-efectivo');
+      if (inputMontoReset) inputMontoReset.value = "";
+      const checkComprobanteReset = document.getElementById('check-comprobante-transferencia');
+      if (checkComprobanteReset) checkComprobanteReset.checked = false;
+      const nequiInfoReset = document.querySelector('.nequi-info');
+      if (nequiInfoReset) nequiInfoReset.style.display = "none";
 
       carrito = [];
       actualizarVisibilidadBotonCarrito();
@@ -722,6 +792,64 @@ document.addEventListener("DOMContentLoaded", () => {
           linkGoogleMaps = "";
           const statusGps = document.getElementById("status-gps");
           if (statusGps) statusGps.textContent = "";
+        }
+      });
+    });
+  }
+
+  // =========================================================================
+  // 11b. CONTROL DE MÉTODO DE PAGO Y OPCIONES DE EFECTIVO
+  // =========================================================================
+  const radiosMetodoPago = document.querySelectorAll('input[name="metodo-pago"]');
+  const opcionesEfectivo = document.querySelector('.opciones-efectivo');
+  const opcionesTransferencia = document.querySelector('.opciones-transferencia');
+  const nequiInfo = document.querySelector('.nequi-info');
+
+  if (radiosMetodoPago.length > 0) {
+    radiosMetodoPago.forEach(radio => {
+      radio.addEventListener("change", (e) => {
+        const valor = e.target.value;
+
+        // Mostrar/ocultar sección de efectivo
+        if (opcionesEfectivo) {
+          opcionesEfectivo.style.display = (valor === "efectivo") ? "block" : "none";
+        }
+
+        // Mostrar/ocultar sección de transferencia
+        if (opcionesTransferencia) {
+          opcionesTransferencia.style.display = (valor === "transferencia") ? "block" : "none";
+        }
+
+        // Mostrar/ocultar info de Nequi junto a los radios
+        if (nequiInfo) {
+          nequiInfo.style.display = (valor === "transferencia") ? "block" : "none";
+        }
+
+        // Si se cambia a transferencia, resetear radios de efectivo
+        if (valor === "transferencia") {
+          const radiosTipoEfectivo = document.querySelectorAll('input[name="tipo-efectivo"]');
+          radiosTipoEfectivo.forEach(r => r.checked = false);
+          const campoCambio = document.getElementById('campo-cambio-efectivo');
+          if (campoCambio) campoCambio.style.display = "none";
+          const inputMonto = document.getElementById('monto-paga-efectivo');
+          if (inputMonto) inputMonto.value = "";
+        }
+      });
+    });
+  }
+
+  // Mostrar/ocultar campo de monto cuando se selecciona "Necesito cambio"
+  const radiosTipoEfectivo = document.querySelectorAll('input[name="tipo-efectivo"]');
+  if (radiosTipoEfectivo.length > 0) {
+    radiosTipoEfectivo.forEach(radio => {
+      radio.addEventListener("change", (e) => {
+        const campoCambio = document.getElementById('campo-cambio-efectivo');
+        if (campoCambio) {
+          campoCambio.style.display = (e.target.value === "Necesito cambio") ? "block" : "none";
+          if (e.target.value === "Pago exacto") {
+            const inputMonto = document.getElementById('monto-paga-efectivo');
+            if (inputMonto) inputMonto.value = "";
+          }
         }
       });
     });

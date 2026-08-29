@@ -4,6 +4,7 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ff4757">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
@@ -834,7 +835,7 @@
       <div class="detalles-basicos">
         <h3>Picada Normal</h3>
         <p class="descripcion">Lomo de cerdo, solomo de res, pechuga de pollo, chorizos, butifarras, papas y acompañamiento.</p>
-        <p class="precio" data-precio-base="30000">$30.000</p>
+        <p class="precio" data-precio-base="35000">$35.000</p>
       </div>
     </div>
     <details>
@@ -865,7 +866,7 @@
       <div class="detalles-basicos">
         <h3>Picada Familiar</h3>
         <p class="descripcion">Porción gigante: Lomo, solomo, pechuga, chorizos, butifarras, papas y acompañamiento.</p>
-        <p class="precio" data-precio-base="50000">$50.000</p>
+        <p class="precio" data-precio-base="60000">$60.000</p>
       </div>
     </div>
     <details>
@@ -1240,16 +1241,27 @@
         <label class="opcion-pago">
           <input type="radio" name="metodo-pago" value="transferencia" /> 💳 Transferencia
         </label>
-        <div class="nequi-info">📱 Nequi: 3028393885</div>
+        <div class="nequi-info" style="display:none;">📱 Nequi: 3028393885</div>
       </div>
 
-      <div class="opciones-efectivo">
+      <div class="opciones-efectivo" style="display:none;">
         <h4 style="font-size:0.85rem;margin:6px 0 4px 0;color:#e65100;">¿Pagas exacto o necesitas cambio?</h4>
         <label class="opcion-efectivo">
           <input type="radio" name="tipo-efectivo" value="Pago exacto" /> ✅ Pago exacto
         </label>
         <label class="opcion-efectivo">
           <input type="radio" name="tipo-efectivo" value="Necesito cambio" /> 💵 Necesito cambio
+        </label>
+        <div id="campo-cambio-efectivo" style="display:none;margin-top:8px;">
+          <label style="font-size:0.85rem;color:#e65100;font-weight:600;">💵 ¿Con cuánto vas a pagar?</label>
+          <input type="number" id="monto-paga-efectivo" placeholder="Ej: 50000 (sin puntos ni comas)" min="0" step="500" style="width:100%;padding:8px 10px;border:2px solid #ff4757;border-radius:8px;font-size:0.95rem;margin-top:4px;" />
+        </div>
+      </div>
+
+      <div class="opciones-transferencia" style="display:none;">
+        <p style="font-size:0.85rem;color:#1565c0;margin:4px 0;">📱 Realiza la transferencia a <strong>Nequi: 3028393885</strong></p>
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;margin-top:6px;color:#1565c0;font-weight:600;">
+          <input type="checkbox" id="check-comprobante-transferencia" /> ✅ Ya realicé la transferencia
         </label>
       </div>
     </div>

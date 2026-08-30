@@ -1191,86 +1191,150 @@
   🛒 VER MI PEDIDO (<span class="contador-productos">0</span>)
 </button>
 
-<!-- ============================================================ -->
-<!-- MODAL DEL CARRITO                                             -->
-<!-- ============================================================ -->
-<div id="modal-carrito" class="modal-carrito" role="dialog" aria-modal="true">
+<!-- ============ MODAL DEL CARRITO - NUEVA INTERFAZ ============ -->
+<div id="modal-carrito" class="modal-carrito">
   <div class="contenido-carrito">
+    
+    <!-- ENCABEZADO -->
     <div class="encabezado-carrito">
-      <h2>🛒 Tu Pedido Actual</h2>
-      <button id="cerrar-carrito" class="btn-cerrar" type="button" aria-label="Cerrar">×</button>
+      <h2>🛒 Tu Pedido</h2>
+      <button id="cerrar-carrito" class="btn-cerrar" type="button">×</button>
     </div>
 
+    <!-- LISTA DE PRODUCTOS (scroll) -->
     <div class="carrito-scroll">
       <div id="items-carrito" class="items-carrito"></div>
-    </div>
 
-    <div class="totales-carrito">
-      <p>Total a pagar: <span id="total-carrito-precio">$0</span></p>
-    </div>
+      <!-- ============ PASO 1: TIPO DE ENTREGA ============ -->
+      <div class="seccion-paso">
+        <div class="paso-header">
+          <span class="paso-numero">1</span>
+          <h3>¿Cómo deseas recibirlo?</h3>
+        </div>
+        <div class="opciones-entrega">
+          <label class="opcion-card entrega-card">
+            <input type="radio" name="tipo-entrega" value="Domicilio">
+            <div class="card-icono">🛵</div>
+            <div class="card-texto">
+              <strong>A Domicilio</strong>
+              <small>Te lo llevamos</small>
+            </div>
+          </label>
+          <label class="opcion-card entrega-card">
+            <input type="radio" name="tipo-entrega" value="Recoger">
+            <div class="card-icono">🏠</div>
+            <div class="card-texto">
+              <strong>Recoger</strong>
+              <small>Pasa al local</small>
+            </div>
+          </label>
+          <label class="opcion-card entrega-card">
+            <input type="radio" name="tipo-entrega" value="Comer">
+            <div class="card-icono">🍽️</div>
+            <div class="card-texto">
+              <strong>Comer aquí</strong>
+              <small>En el local</small>
+            </div>
+          </label>
+        </div>
 
-    <!-- TIPO DE ENTREGA -->
-    <div class="seccion-entrega">
-      <h3>📍 ¿Cómo deseas recibir tu pedido?</h3>
-      <div class="opciones-entrega">
-        <label class="opcion-entrega">
-          <input type="radio" name="tipo-entrega" value="Domicilio" /> 🚀 A Domicilio
-        </label>
-        <label class="opcion-entrega">
-          <input type="radio" name="tipo-entrega" value="Recoger" /> 🏠 Recoger en Local
-        </label>
-        <label class="opcion-entrega">
-          <input type="radio" name="tipo-entrega" value="Comer en el Local" /> 🍽️ Comer en el Local
-        </label>
-      </div>
-
-      <div id="campos-domicilio" class="campos-domicilio" style="display:none;">
-        <input type="text" id="dom-nombre" placeholder="👤 Tu nombre" autocomplete="name" />
-        <button id="btn-gps" type="button" onclick="obtenerUbicacionGPS()">📍 Compartir mi ubicación GPS actual</button>
-        <div id="status-gps"></div>
-      </div>
-    </div>
-
-    <!-- MÉTODO DE PAGO -->
-    <div class="seccion-pago">
-      <h3>💳 ¿Cómo vas a pagar?</h3>
-      <div class="opciones-pago">
-        <label class="opcion-pago">
-          <input type="radio" name="metodo-pago" value="efectivo" /> 💰 Efectivo
-        </label>
-        <label class="opcion-pago">
-          <input type="radio" name="metodo-pago" value="transferencia" /> 💳 Transferencia
-        </label>
-        <div class="nequi-info" style="display:none;">📱 Nequi: 3028393885</div>
-      </div>
-
-      <div class="opciones-efectivo" style="display:none;">
-        <h4 style="font-size:0.85rem;margin:6px 0 4px 0;color:#e65100;">¿Pagas exacto o necesitas cambio?</h4>
-        <label class="opcion-efectivo">
-          <input type="radio" name="tipo-efectivo" value="Pago exacto" /> ✅ Pago exacto
-        </label>
-        <label class="opcion-efectivo">
-          <input type="radio" name="tipo-efectivo" value="Necesito cambio" /> 💵 Necesito cambio
-        </label>
-        <div id="campo-cambio-efectivo" style="display:none;margin-top:8px;">
-          <label style="font-size:0.85rem;color:#e65100;font-weight:600;">💵 ¿Con cuánto vas a pagar?</label>
-          <input type="number" id="monto-paga-efectivo" placeholder="Ej: 50000 (sin puntos ni comas)" min="0" step="500" style="width:100%;padding:8px 10px;border:2px solid #ff4757;border-radius:8px;font-size:0.95rem;margin-top:4px;" />
+        <!-- Campos domicilio (se muestran dinámicamente) -->
+        <div id="campos-domicilio" class="campos-domicilio" style="display:none;">
+          <input type="text" id="dom-nombre" placeholder="👤 Tu nombre">
+          <button id="btn-gps" type="button" onclick="obtenerUbicacionGPS()">
+            📍 Compartir mi ubicación GPS
+          </button>
+          <div id="status-gps"></div>
         </div>
       </div>
 
-      <div class="opciones-transferencia" style="display:none;">
-        <p style="font-size:0.85rem;color:#1565c0;margin:4px 0;">📱 Realiza la transferencia a <strong>Nequi: 3028393885</strong></p>
-        <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;margin-top:6px;color:#1565c0;font-weight:600;">
-          <input type="checkbox" id="check-comprobante-transferencia" /> ✅ Ya realicé la transferencia
-        </label>
+      <!-- ============ PASO 2: MÉTODO DE PAGO ============ -->
+      <div class="seccion-paso">
+        <div class="paso-header">
+          <span class="paso-numero">2</span>
+          <h3>¿Cómo vas a pagar?</h3>
+        </div>
+        <div class="opciones-pago">
+          <label class="opcion-card pago-card">
+            <input type="radio" name="metodo-pago" value="efectivo">
+            <div class="card-icono">💵</div>
+            <div class="card-texto">
+              <strong>Efectivo</strong>
+              <small>Cash</small>
+            </div>
+          </label>
+          <label class="opcion-card pago-card">
+            <input type="radio" name="metodo-pago" value="transferencia">
+            <div class="card-icono">📱</div>
+            <div class="card-texto">
+              <strong>Nequi</strong>
+              <small>Transferencia</small>
+            </div>
+          </label>
+        </div>
+
+        <!-- Opciones de efectivo -->
+        <div class="opciones-efectivo" style="display:none;">
+          <div class="subtitulo-opcion">¿Necesitas cambio?</div>
+          <div class="efectivo-grid">
+            <label class="mini-card">
+              <input type="radio" name="tipo-efectivo" value="Pago exacto">
+              <span class="mini-icono">✅</span>
+              <span>Pago exacto</span>
+            </label>
+            <label class="mini-card">
+              <input type="radio" name="tipo-efectivo" value="Necesito cambio">
+              <span class="mini-icono">💸</span>
+              <span>Necesito cambio</span>
+            </label>
+          </div>
+
+          <!-- Campo de monto con botones rápidos -->
+          <div id="campo-cambio-efectivo" style="display:none;">
+            <label class="label-monto">¿Con cuánto pagas?</label>
+            <input type="number" id="monto-paga-efectivo" placeholder="$ 0" min="0">
+            <div class="montos-rapidos">
+              <button type="button" class="btn-monto-rapido" data-monto="20000">$20.000</button>
+              <button type="button" class="btn-monto-rapido" data-monto="50000">$50.000</button>
+              <button type="button" class="btn-monto-rapido" data-monto="100000">$100.000</button>
+            </div>
+            <div id="preview-cambio" class="preview-cambio"></div>
+          </div>
+        </div>
+
+        <!-- Info de Nequi -->
+        <div class="nequi-info" style="display:none;">
+          <div class="nequi-header">
+            <span class="nequi-logo">💜</span>
+            <strong>Transfiere a Nequi</strong>
+          </div>
+          <div class="nequi-numero" id="nequi-numero">3028393885</div>
+          <button type="button" class="btn-copiar-nequi" onclick="copiarNequi()">
+            📋 Copiar número
+          </button>
+          <label class="check-comprobante">
+            <input type="checkbox" id="check-comprobante-transferencia">
+            <span>✅ Ya realicé la transferencia</span>
+          </label>
+        </div>
       </div>
+
     </div>
 
-    <!-- FOOTER CARRITO -->
+    <!-- ============ FOOTER: TOTAL Y ACCIONES ============ -->
     <div class="footer-carrito">
-      <button id="btn-seguir-comiendo" class="btn-seguir-comiendo" type="button">➕ Añadir otro plato al pedido</button>
-      <button id="btn-confirmar-whatsapp" class="btn-confirmar-whatsapp" type="button">Confirmar Pedido y Enviar 💬</button>
+      <div class="total-sticky">
+        <span>Total a pagar</span>
+        <span id="total-carrito-precio">$0</span>
+      </div>
+      <button id="btn-seguir-comiendo" class="btn-seguir-comiendo" type="button">
+        ⬅ Seguir pidiendo
+      </button>
+      <button id="btn-confirmar-whatsapp" class="btn-confirmar-whatsapp" type="button">
+        💬 Confirmar pedido por WhatsApp
+      </button>
     </div>
+
   </div>
 </div>
 

@@ -144,31 +144,38 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================================================================
-  // 4. 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN
+  // 4. 🕒 CONTROL AUTOMÁTICO DE HORARIOS DE ATENCIÓN (DESHABILITADO PARA PRUEBAS)
   // =========================================================================
   function verificarHorarioAtencion() {
     const ahora = new Date();
-    const dia = ahora.getDay();
+    const diaSemana = ahora.getDay(); // 0=Dom, 1=Lun, 2=Mar, 3=Mié, 4=Jue, 5=Vie, 6=Sáb
     const hora = ahora.getHours();
     const minutos = ahora.getMinutes();
-    const tiempoEnMinutos = hora * 60 + minutos;
+    const minutosTotales = hora * 60 + minutos;
 
-    const inicioServicio = 17 * 60 + 30;
-    const finServicio = 23 * 60 + 30;
-    const esMartes = (dia === 2);
-    const esHoraPermitida = tiempoEnMinutos >= inicioServicio && tiempoEnMinutos <= finServicio;
-    const abierto = !esMartes && esHoraPermitida;
+    // Martes (día 2) → CERRADO todo el día
+    const esMartes = diaSemana === 2;
+
+    // Horario de atención: 5:30 PM (17:30) a 11:30 PM (23:30)
+    const aperturaMinutos = 17 * 60 + 30;  // 1050
+    const cierreMinutos  = 23 * 60 + 30;   // 1410
+    const enHorario = minutosTotales >= aperturaMinutos && minutosTotales <= cierreMinutos;
+
+    const abierto = !esMartes && enHorario;
 
     const botonesPedir = document.querySelectorAll(".btn-pedir-plato");
     botonesPedir.forEach(btn => {
-      if (!abierto) {
-        btn.disabled = true;
-        btn.textContent = "🔒 Cerrado por el momento";
-        btn.classList.add("btn-deshabilitado");
-      } else {
-        btn.disabled = false;
+      btn.disabled = !abierto;
+      if (abierto) {
         btn.textContent = "Añadir al Carrito 🛒";
         btn.classList.remove("btn-deshabilitado");
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+      } else {
+        btn.textContent = "⛔ Local cerrado";
+        btn.classList.add("btn-deshabilitado");
+        btn.style.opacity = "0.5";
+        btn.style.cursor = "not-allowed";
       }
     });
 
@@ -179,20 +186,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (heroBanner) heroBanner.appendChild(bannerEstado);
     }
 
-    if (!abierto) {
-      let mensaje = "🕒 <strong>Actualmente estamos cerrados.</strong>";
-      if (esMartes) {
-        mensaje = "🔒 <strong>Martes no tenemos servicio.</strong> ¡Te esperamos de Lunes, Miércoles a Domingo desde las 5:30 PM!";
-      } else if (!esMartes && !esHoraPermitida) {
-        mensaje = "⏳ <strong>Hoy abrimos a las 5:30 PM.</strong> ¡Prepara tu pedido!";
-      } else {
-        mensaje = "🛵 <strong>Horario de pedidos:</strong> Lunes, Miércoles a Domingo de 5:30 PM a 11:30 PM.";
-      }
-      bannerEstado.className = "banner-cerrado";
-      bannerEstado.innerHTML = mensaje;
-    } else {
+    if (abierto) {
       bannerEstado.className = "banner-abierto";
       bannerEstado.innerHTML = "🟢 <strong>¡Estamos recibiendo pedidos!</strong> (5:30 PM - 11:30 PM)";
+    } else if (esMartes) {
+      bannerEstado.className = "banner-cerrado";
+      bannerEstado.innerHTML = "🔴 <strong>Los martes no atendemos.</strong> ¡Te esperamos el miércoles desde las 5:30 PM! 🙏";
+    } else {
+      bannerEstado.className = "banner-cerrado";
+      bannerEstado.innerHTML = "🔴 <strong>Estamos cerrados ahora.</strong> Horario: 5:30 PM - 11:30 PM (Lunes a Domingo, excepto Martes)";
     }
   }
   verificarHorarioAtencion();
@@ -985,5 +987,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.removeEventListener('click', pedirPermiso);
   }, { once: true });
+// =========================================================================
+// 🆕 BOTONES DE MONTO RÁPIDO (EFECTIVO)
+// =========================================================================
+document.querySelectorAll('.btn-monto-rapido').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById('monto-paga-efectivo');
+    if (input) {
+      input.value = btn.dataset.monto;
+      input.dispatchEvent(new Event('input'));
+    }
+  });
+});
 
-}); // Cierre de DOMContentLoaded
+// Preview de cambio en tiempo real
+const inputMontoEfectivo = document.getElementById('monto-paga-efectivo');
+if (inputMontoEfectivo) {
+  inputMontoEfectivo.addEventListener('input', () => {
+    const monto = parseInt(inputMontoEfectivo.value) || 0;
+    const total = carrito.reduce((s, p) => s + (p.precio * p.cantidad), 0);
+    const preview = document.getElementById('preview-cambio');
+    if (!preview) return;
+    if (monto > 0 && total > 0) {
+      const cambio = monto - total;
+      if (cambio >= 0) {
+        

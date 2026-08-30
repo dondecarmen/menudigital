@@ -1011,4 +1011,39 @@ if (inputMontoEfectivo) {
     if (monto > 0 && total > 0) {
       const cambio = monto - total;
       if (cambio >= 0) {
-        
+        preview.innerHTML = `💰 Tu cambio: <strong>$${cambio.toLocaleString('es-CO')}</strong>`;
+        preview.style.background = '#d4edda';
+        preview.style.color = '#155724';
+      } else {
+        preview.innerHTML = `⚠️ Faltan <strong>$${Math.abs(cambio).toLocaleString('es-CO')}</strong>`;
+        preview.style.background = '#f8d7da';
+        preview.style.color = '#721c24';
+      }
+      preview.classList.add('visible');
+    } else {
+      preview.classList.remove('visible');
+    }
+  });
+}
+
+// =========================================================================
+// 🆕 COPIAR NÚMERO DE NEQUI
+// =========================================================================
+window.copiarNequi = function() {
+  const numero = document.getElementById('nequi-numero')?.textContent.trim();
+  if (!numero) return;
+  navigator.clipboard.writeText(numero).then(() => {
+    const btn = document.querySelector('.btn-copiar-nequi');
+    const textoOriginal = btn.innerHTML;
+    btn.innerHTML = '✅ ¡Copiado!';
+    btn.style.background = '#4caf50';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.innerHTML = textoOriginal;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2000);
+  });
+};
+
+}); // Cierre de DOMContentLoaded
